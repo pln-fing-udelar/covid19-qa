@@ -17,3 +17,9 @@
   ```
 
 3. Download [the model](https://drive.google.com/drive/folders/1K-eXgmXytoIELHI8Rq3_dP9BUujBQ9T2?usp=sharing) in `model/`.
+
+## Run
+
+```bash
+python main.py
+```
