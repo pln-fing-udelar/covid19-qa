@@ -1,4 +1,6 @@
-# Installation
+# COVID-19 QA
+
+## Installation
 
 1. Setup the env. Install miniconda:
 
