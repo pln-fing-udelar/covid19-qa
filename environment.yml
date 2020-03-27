@@ -7,4 +7,5 @@ dependencies:
     - git+https://github.com/bryant1410/transformers@a06383e5
   - cudatoolkit=10.1.243
   - cudnn=7.6.5
+  - python=3.8.1
   - pytorch=1.4.0
