@@ -12,7 +12,7 @@
 2. Open a new terminal after the installation.
 
   ```bash
-  conda create -f environment.yml
+  conda env create -f environment.yml
   conda activate covid19-qa
   ```
 
