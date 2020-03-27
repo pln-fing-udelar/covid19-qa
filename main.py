@@ -11,6 +11,8 @@ def qa(dataset):
 
 
 def test():
+    PATH_MODEL_FOLDER = "model"
+    
     kwargs = {
         "model": PATH_MODEL_FOLDER,
         "config": PATH_MODEL_FOLDER,
