@@ -42,14 +42,18 @@ def highlight_answer(context: str, question: str, qa_pipeline: Pipeline) -> Tupl
     return result['answer'], result['score']
 
 
-def rank_answers(answers: Iterable[Tuple[str, float]]) -> Iterator[Tuple[str, float]]:
-    """Each element in 'answers' has a score. Returns a list sorted in descending order."""
+def rank_answers(answers: Iterable[Tuple[str, float]], clean_mode: bool) -> Iterator[Tuple[str, float]]:
+    """Each element in 'answers' has a score. Returns a list sorted in descending order.
+    In clean_mode, empty answers won't be returned.
+    """
+    if clean_mode:
+        answers = list(filter(lambda elem: elem[0]!= "", answers))
+
     return sorted(answers, reverse=True, key=lambda x: x[1])
 
 
 def qa(path_data: str, question: str) -> Iterator[Tuple[str, float]]:
     """Given a dataset with multiple texts, returns the top 10 most confident paragraphs with the highlighted answer.
-
     Highlighted text *like this*.
     """
     qa_pipeline = pipeline("question-answering", model=PATH_MODEL_FOLDER, config=PATH_MODEL_FOLDER,
@@ -59,11 +63,13 @@ def qa(path_data: str, question: str) -> Iterator[Tuple[str, float]]:
     answers = [highlight_answer(context, question, qa_pipeline)
                for context, _ in generate_context_snippets(path_data, docs, snippet_size=5)]
 
-    return rank_answers(answers)
+    return rank_answers(answers,True)
 
 
 def main() -> None:
-    print(qa(PATH_DATA, "¿Qué criticó Da Silveira?"))
+    ans = qa(PATH_DATA, "¿Qué criticó Da Silveira?")
+    for answer in ans:
+        print("[Respuesta: " + answer[0] + "]  [Puntaje: " + str(answer[1]) + "]")
 
 
 if __name__ == "__main__":
