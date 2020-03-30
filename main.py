@@ -8,7 +8,7 @@ DATASET_PATH = './data'
 
 def get_most_relevant_docs(dataset, question, n):
     # Given a question and a dataset, returns the 'n' most relevant docs to find the answer
-    relevant_docs = []
+    relevant_docs = ['t001','t002']
     
     return relevant_docs # list containing 'n' text_id's
 
@@ -36,10 +36,12 @@ def generate_context_snippets(dataset, relevant_docs, snippet_size):
 
     return context_snippets
 
-def highlight_answer(context,question):
+def highlight_answer(context,question,qa_pipeline):
     # Given a context and a question, returns a pair (highlighted answer, score)
+    
+    result = qa_pipeline({"question": question, "context": context}, version_2_with_negative=True)
 
-    pass
+    return result['answer'], result['score'] 
 
 def rank_answers(answers):
     # Each element in 'answers' has a score. Returns a list sorted in descending order.
@@ -52,19 +54,31 @@ def qa(dataset, question):
     # Given a dataset with multiple texts, returns the top 10 most confident paragraphs with the highlighted answer.
     # Highlighted text *like this*.
 
-    number_of_docs = 10
+    PATH_MODEL_FOLDER = './model'
+    
+    kwargs = {
+        "model": PATH_MODEL_FOLDER,
+        "config": PATH_MODEL_FOLDER,
+        "tokenizer": PATH_MODEL_FOLDER,
+    }
+
+    qa_pipeline = pipeline("question-answering", **kwargs)
+
+
+    number_of_docs = 2 # pongo 2 para probar
     snippet_size = 5
+    answers = []
     docs = get_most_relevant_docs(dataset,question,number_of_docs)
     context_snippets = generate_context_snippets(dataset,docs,snippet_size)
     for context in context_snippets:
-        answers.append(highlight_answer(context,question))
+        answers.append(highlight_answer(context,question,qa_pipeline))
     
     print(rank_answers(answers))
 
     pass
 
 def test():
-    PATH_MODEL_FOLDER = "model"
+    PATH_MODEL_FOLDER = './model'
     
     kwargs = {
         "model": PATH_MODEL_FOLDER,
@@ -81,5 +95,6 @@ def test():
     print(result)
 
 
+
 if __name__ == "__main__":
-    qa(DATASET_PATH, "¿Cuándo fue el primer caso de COVID-19?")
+    qa(DATASET_PATH, "¿Qué criticó Da Silveira?")
