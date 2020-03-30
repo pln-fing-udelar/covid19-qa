@@ -1,0 +1,17 @@
+name: CI
+on: [pull_request, push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup Conda
+      uses: s-weigand/setup-conda@v1
+      with:
+        activate-conda: false
+    - name: Install environment
+      run: conda env create -f environment.yml
+    - name: Run main.py
+      run: |
+        source activate covid19-qa
+        python main.py
