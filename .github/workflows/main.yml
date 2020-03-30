@@ -18,6 +18,7 @@ jobs:
     - name: Download the model
       if: steps.cache-model.outputs.cache-hit != 'true'
       run: |
+        mkdir -p model
         pushd model/
         wget 'https://drive.google.com/open?id=16-e_vF6nal0wsg7USU9uXfUdvGPaA39E' -O config.json
         wget 'https://drive.google.com/open?id=10kLRr0g13zCJBSWVHVpURoXuCLlZSDHa' -O pytorch_model.bin
