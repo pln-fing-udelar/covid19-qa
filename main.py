@@ -8,7 +8,7 @@ DATASET_PATH = './data'
 
 def get_most_relevant_docs(dataset, question, n):
     # Given a question and a dataset, returns the 'n' most relevant docs to find the answer
-    relevant_docs = ['t001','t002']
+    relevant_docs = ['t001','t002','t004','t005','t006','t007','t008']  # el texto t003 da error
     
     return relevant_docs # list containing 'n' text_id's
 
@@ -65,7 +65,7 @@ def qa(dataset, question):
     qa_pipeline = pipeline("question-answering", **kwargs)
 
 
-    number_of_docs = 2 # pongo 2 para probar
+    number_of_docs = 7 # no se está usando este valor
     snippet_size = 5
     answers = []
     docs = get_most_relevant_docs(dataset,question,number_of_docs)
