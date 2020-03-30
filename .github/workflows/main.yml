@@ -20,16 +20,17 @@ jobs:
       run: |
         mkdir -p model
         pushd model/
-        wget 'https://drive.google.com/open?id=16-e_vF6nal0wsg7USU9uXfUdvGPaA39E' -O config.json
-        wget 'https://drive.google.com/open?id=10kLRr0g13zCJBSWVHVpURoXuCLlZSDHa' -O pytorch_model.bin
-        wget 'https://drive.google.com/open?id=1ng88EpoDYfFphqHjycSwasd5358qtxXj' -O special_tokens_map.json
-        wget 'https://drive.google.com/open?id=1VNJLHEd1TKaQX74lWRAO5ppDt0N9zZx8' -O tokenizer_config.json
-        wget 'https://drive.google.com/open?id=1mvyH7QMMflwc3X5ZP6smeXnK5CP33t1G' -O training_args.bin
-        wget 'https://drive.google.com/open?id=1PrEw91STInaysC06dqL8QaER_m19R2tJ' -O vocab.txt
+        wget 'https://drive.google.com/uc?id=16-e_vF6nal0wsg7USU9uXfUdvGPaA39E&export=download' -O config.json
+        wget 'https://drive.google.com/uc?id=10kLRr0g13zCJBSWVHVpURoXuCLlZSDHa&export=download' -O pytorch_model.bin
+        wget 'https://drive.google.com/uc?id=1ng88EpoDYfFphqHjycSwasd5358qtxXj&export=download' -O special_tokens_map.json
+        wget 'https://drive.google.com/uc?id=1VNJLHEd1TKaQX74lWRAO5ppDt0N9zZx8&export=download' -O tokenizer_config.json
+        wget 'https://drive.google.com/uc?id=1mvyH7QMMflwc3X5ZP6smeXnK5CP33t1G&export=download' -O training_args.bin
+        wget 'https://drive.google.com/uc?id=1PrEw91STInaysC06dqL8QaER_m19R2tJ&export=download' -O vocab.txt
         popd
     - name: Install environment
       run: conda env create -f environment.yml
     - name: Run main.py
       run: |
         source activate covid19-qa
+        python -c 'import nltk; nltk.download("punkt")'
         python main.py

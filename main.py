@@ -1,98 +1,70 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from transformers import pipeline
-from xml.dom import minidom
-from nltk.tokenize import sent_tokenize
 import os
+from typing import Iterable, Iterator, Tuple
+from xml.dom import minidom
 
-DATASET_PATH = './data'
+from nltk.tokenize import sent_tokenize
+from transformers import Pipeline, pipeline
 
-def generate_context_snippets(dataset, docs, snippet_size):
-    # A snippet is a set of snippet_size sentences.
+PATH_DATA = 'data'
+PATH_MODEL_FOLDER = 'model'
+
+
+def generate_context_snippets(path_data: str, docs: Iterator[str], snippet_size: int) -> Iterator[Tuple[str, str]]:
+    """A snippet is a set of snippet_size sentences."""
     context_snippets = []
 
     for text_id in docs:
-        xml = minidom.parse(os.path.join(dataset, text_id + ".xml"))
+        xml = minidom.parse(os.path.join(path_data, text_id + ".xml"))
         article = xml.getElementsByTagName('article')
         article_text = article[0].firstChild.nodeValue
         sentences = sent_tokenize(article_text)
-        offset = len(sentences)//snippet_size
+        offset = len(sentences) // snippet_size
         remainder = len(sentences) % snippet_size
 
         for x in range(offset):
             snippet_text = ' '.join(
-                map(str, sentences[x*snippet_size:(x+1)*snippet_size]))
-            context_snippets.append((snippet_text,text_id))
+                map(str, sentences[x * snippet_size:(x + 1) * snippet_size]))
+            context_snippets.append((snippet_text, text_id))
 
         if remainder > 0:
             snippet_text = ' '.join(
-                map(str, sentences[offset*snippet_size:offset*snippet_size + remainder]))
-            context_snippets.append((snippet_text,text_id))
+                map(str, sentences[offset * snippet_size:offset * snippet_size + remainder]))
+            context_snippets.append((snippet_text, text_id))
 
     return context_snippets
 
-def highlight_answer(context,question,qa_pipeline):
-    # Given a context and a question, returns a pair (highlighted answer, score)
-    
+
+def highlight_answer(context: str, question: str, qa_pipeline: Pipeline) -> Tuple[str, float]:
+    """Given a context and a question, returns a pair (highlighted answer, score)"""
     result = qa_pipeline({"question": question, "context": context}, version_2_with_negative=True)
+    return result['answer'], result['score']
 
-    return result['answer'], result['score'] 
 
-def rank_answers(answers):
-    # Each element in 'answers' has a score. Returns a list sorted in descending order.
-    answers.sort(reverse=True, key=lambda x: x[1])
+def rank_answers(answers: Iterable[Tuple[str, float]]) -> Iterator[Tuple[str, float]]:
+    """Each element in 'answers' has a score. Returns a list sorted in descending order."""
+    return sorted(answers, reverse=True, key=lambda x: x[1])
 
-    return answers
 
-def qa(dataset, question):
-    # Given a dataset with multiple texts, returns the top 10 most confident paragraphs with the highlighted answer.
-    # Highlighted text *like this*.
+def qa(path_data: str, question: str) -> Iterator[Tuple[str, float]]:
+    """Given a dataset with multiple texts, returns the top 10 most confident paragraphs with the highlighted answer.
 
-    PATH_MODEL_FOLDER = './model'
-    
-    kwargs = {
-        "model": PATH_MODEL_FOLDER,
-        "config": PATH_MODEL_FOLDER,
-        "tokenizer": PATH_MODEL_FOLDER,
-    }
+    Highlighted text *like this*.
+    """
+    qa_pipeline = pipeline("question-answering", model=PATH_MODEL_FOLDER, config=PATH_MODEL_FOLDER,
+                           tokenizer=PATH_MODEL_FOLDER)
 
-    qa_pipeline = pipeline("question-answering", **kwargs)
+    docs = [file_name[:-4] for file_name in os.listdir(path_data) if file_name.endswith(".xml")]
+    answers = [highlight_answer(context, question, qa_pipeline)
+               for context, _ in generate_context_snippets(path_data, docs, snippet_size=5)]
 
-    snippet_size = 5
-    answers = []
-    docs = []
+    return rank_answers(answers)
 
-    for dirpath, dir_list, file_list in os.walk(dataset):
-        for file_name in file_list:
-            if file_name[-4:]==".xml":
-                docs.append(file_name[:-4])
 
-    context_snippets = generate_context_snippets(dataset,docs,snippet_size)
-    for context in context_snippets:
-        answers.append(highlight_answer(context[0],question,qa_pipeline))
-    
-    print(rank_answers(answers))
+def main() -> None:
+    print(qa(PATH_DATA, "¿Qué criticó Da Silveira?"))
 
-    pass
-
-def test():
-    PATH_MODEL_FOLDER = './model'
-    
-    kwargs = {
-        "model": PATH_MODEL_FOLDER,
-        "config": PATH_MODEL_FOLDER,
-        "tokenizer": PATH_MODEL_FOLDER,
-    }
-
-    qa_pipeline = pipeline("question-answering", **kwargs)
-    
-    context = "Manuel Romero está colaborando activamente con huggingface/transformers para traer el poder de las últimas técnicas de procesamiento de lenguaje natural al idioma español."
-    question = "¿Para qué lenguaje está trabajando?"
-
-    result = qa_pipeline({"question": question, "context": context}, version_2_with_negative=True)
-    print(result)
-
-    
 
 if __name__ == "__main__":
-    qa(DATASET_PATH, "¿Qué criticó Da Silveira?")
+    main()
