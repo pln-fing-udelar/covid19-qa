@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import os
-from typing import Iterable, Iterator, Tuple
+from typing import Dict, Iterable, Iterator, Tuple
 from xml.dom import minidom
 
 from nltk.tokenize import sent_tokenize
@@ -36,20 +36,32 @@ def generate_context_snippets(path_data: str, docs: Iterator[str], snippet_size:
     return context_snippets
 
 
-def highlight_answer(context: str, question: str, qa_pipeline: Pipeline) -> Tuple[str, float]:
+def highlight_answer(text_id: str, context: str, question: str, qa_pipeline: Pipeline) -> Dict:
     """Given a context and a question, returns a pair (highlighted answer, score)"""
     result = qa_pipeline({"question": question, "context": context}, version_2_with_negative=True)
-    return result['answer'], result['score']
+    if len(result['answer']) == 0:
+        return {
+            "text_id": text_id,
+            "answer": "",
+            "in_context": "",
+            "score": result['score']
+        }
+    else:
+        return {
+            "text_id": text_id,
+            "answer": result['answer'],
+            "in_context": context[:result['start']] + '{{' + result['answer'] + '}}' + context[result['end']:],
+            "score": result['score']
+        }
 
-
-def rank_answers(answers: Iterable[Tuple[str, float]], clean_mode: bool) -> Iterator[Tuple[str, float]]:
+def rank_answers(answers: Dict, clean_mode: bool) -> Dict:
     """Each element in 'answers' has a score. Returns a list sorted in descending order.
     In clean_mode, empty answers won't be returned.
     """
     if clean_mode:
-        answers = list(filter(lambda elem: elem[0]!= "", answers))
+        answers = list(filter(lambda elem: elem['answer']!= "", answers))
 
-    return sorted(answers, reverse=True, key=lambda x: x[1])
+    return sorted(answers, reverse=True, key=lambda x: x['score'])
 
 
 def qa(path_data: str, question: str) -> Iterator[Tuple[str, float]]:
@@ -60,8 +72,8 @@ def qa(path_data: str, question: str) -> Iterator[Tuple[str, float]]:
                            tokenizer=PATH_MODEL_FOLDER)
 
     docs = [file_name[:-4] for file_name in os.listdir(path_data) if file_name.endswith(".xml")]
-    answers = [highlight_answer(context, question, qa_pipeline)
-               for context, _ in generate_context_snippets(path_data, docs, snippet_size=5)]
+    answers = [highlight_answer(text_id, context, question, qa_pipeline)
+               for context, text_id in generate_context_snippets(path_data, docs, snippet_size=5)]
 
     return rank_answers(answers,True)
 
@@ -69,7 +81,12 @@ def qa(path_data: str, question: str) -> Iterator[Tuple[str, float]]:
 def main() -> None:
     ans = qa(PATH_DATA, "¿Qué criticó Da Silveira?")
     for answer in ans:
-        print("[Respuesta: " + answer[0] + "]  [Puntaje: " + str(answer[1]) + "]")
+        print("** Text id:",answer['text_id'])
+        print("** Answer:",answer['answer'])
+        print("** Score:",answer['score'])
+        print("** In context:")
+        print(answer['in_context'])
+        print()
 
 
 if __name__ == "__main__":
