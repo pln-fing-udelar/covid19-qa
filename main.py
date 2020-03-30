@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 from transformers import pipeline
 from xml.dom import minidom
 from nltk.tokenize import sent_tokenize

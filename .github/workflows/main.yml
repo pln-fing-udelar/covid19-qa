@@ -1,0 +1,35 @@
+name: CI
+on: [pull_request, push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup Conda
+      uses: s-weigand/setup-conda@v1
+      with:
+        activate-conda: false
+    - name: Model cache
+      id: cache-model
+      uses: actions/cache@v1
+      with:
+        path: model
+        key: ${{ runner.os }}-model
+    - name: Download the model
+      if: steps.cache-model.outputs.cache-hit != 'true'
+      run: |
+        mkdir -p model
+        pushd model/
+        wget 'https://drive.google.com/open?id=16-e_vF6nal0wsg7USU9uXfUdvGPaA39E' -O config.json
+        wget 'https://drive.google.com/open?id=10kLRr0g13zCJBSWVHVpURoXuCLlZSDHa' -O pytorch_model.bin
+        wget 'https://drive.google.com/open?id=1ng88EpoDYfFphqHjycSwasd5358qtxXj' -O special_tokens_map.json
+        wget 'https://drive.google.com/open?id=1VNJLHEd1TKaQX74lWRAO5ppDt0N9zZx8' -O tokenizer_config.json
+        wget 'https://drive.google.com/open?id=1mvyH7QMMflwc3X5ZP6smeXnK5CP33t1G' -O training_args.bin
+        wget 'https://drive.google.com/open?id=1PrEw91STInaysC06dqL8QaER_m19R2tJ' -O vocab.txt
+        popd
+    - name: Install environment
+      run: conda env create -f environment.yml
+    - name: Run main.py
+      run: |
+        source activate covid19-qa
+        python main.py
