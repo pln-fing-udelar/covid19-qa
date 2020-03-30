@@ -25,12 +25,12 @@ def generate_context_snippets(dataset, relevant_docs, snippet_size):
         remainder = len(sentences) % snippet_size
 
         for x in range(offset):
-            snippet_text = ','.join(
+            snippet_text = ' '.join(
                 map(str, sentences[x*snippet_size:(x+1)*snippet_size]))
             context_snippets.append(snippet_text)
 
         if remainder > 0:
-            snippet_text = ','.join(
+            snippet_text = ' '.join(
                 map(str, sentences[offset*snippet_size:offset*snippet_size + remainder]))
             context_snippets.append(snippet_text)
 
