@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import os
-from typing import Any, Dict, Iterable, Iterator, Tuple
+from dataclasses import dataclass
+from typing import Iterable, Iterator, Tuple
 from xml.dom import minidom
 
 from nltk.tokenize import sent_tokenize
@@ -9,6 +10,14 @@ from transformers import Pipeline, pipeline
 
 PATH_DATA = 'data'
 PATH_MODEL_FOLDER = 'model'
+
+
+@dataclass
+class Answer:
+    text_id: str
+    text: str
+    in_context: str
+    score: float
 
 
 def generate_context_snippets(path_data: str, docs: Iterator[str], snippet_size: int) -> Iterator[Tuple[str, str]]:
@@ -36,36 +45,27 @@ def generate_context_snippets(path_data: str, docs: Iterator[str], snippet_size:
     return context_snippets
 
 
-def highlight_answer(text_id: str, context: str, question: str, qa_pipeline: Pipeline) -> Dict[str, Any]:
+def highlight_answer(text_id: str, context: str, question: str, qa_pipeline: Pipeline) -> Answer:
     """Given a context and a question, returns a pair (highlighted answer, score)"""
     result = qa_pipeline({"question": question, "context": context}, version_2_with_negative=True)
     if len(result['answer']) == 0:
-        return {
-            "text_id": text_id,
-            "answer": "",
-            "in_context": "",
-            "score": result['score']
-        }
+        return Answer(text_id=text_id, text="", in_context="", score=result["score"])
     else:
-        return {
-            "text_id": text_id,
-            "answer": result['answer'],
-            "in_context": context[:result['start']] + '{{' + result['answer'] + '}}' + context[result['end']:],
-            "score": result['score']
-        }
+        return Answer(text_id=text_id, text=result["answer"], score=result["score"],
+                      in_context=context[:result['start']] + '{{' + result['answer'] + '}}' + context[result['end']:])
 
 
-def rank_answers(answers: Iterable[Dict[str, Any]], clean_mode: bool) -> Iterator[Dict[str, Any]]:
+def rank_answers(answers: Iterable[Answer], clean_mode: bool) -> Iterator[Answer]:
     """Each element in 'answers' has a score. Returns a list sorted in descending order.
     In clean_mode, empty answers won't be returned.
     """
     if clean_mode:
-        answers = list(filter(lambda elem: elem['answer'] != "", answers))
+        answers = list(filter(lambda elem: elem.text != "", answers))
 
-    return sorted(answers, reverse=True, key=lambda x: x['score'])
+    return sorted(answers, reverse=True, key=lambda x: x.score)
 
 
-def qa(path_data: str, question: str) -> Iterator[Dict[str, Any]]:
+def qa(path_data: str, question: str) -> Iterator[Answer]:
     """Given a dataset with multiple texts, returns the top 10 most confident paragraphs with the highlighted answer.
     Highlighted text *like this*.
     """
@@ -80,13 +80,12 @@ def qa(path_data: str, question: str) -> Iterator[Dict[str, Any]]:
 
 
 def main() -> None:
-    ans = qa(PATH_DATA, "¿Qué criticó Da Silveira?")
-    for answer in ans:
-        print("** Text id:", answer['text_id'])
-        print("** Answer:", answer['answer'])
-        print("** Score:", answer['score'])
+    for answer in qa(PATH_DATA, "¿Qué criticó Da Silveira?"):
+        print("** Text id:", answer.text_id)
+        print("** Answer:", answer.text)
+        print("** Score:", answer.score)
         print("** In context:")
-        print(answer['in_context'])
+        print(answer.in_context)
         print()
 
 
