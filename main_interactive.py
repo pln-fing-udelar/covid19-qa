@@ -9,7 +9,8 @@ def main() -> None:
 
     qa_pipeline = pipeline("question-answering", model=PATH_MODEL_FOLDER,
                     config=PATH_MODEL_FOLDER, tokenizer=PATH_MODEL_FOLDER)
-
+    
+    print("\nWrite a question or 'exit'.")
     question = input('Question: ')
     while question.lower() not in ['exit','salir']:
         start = time.time()
@@ -22,7 +23,7 @@ def main() -> None:
             print()
         end = time.time()
         print('Time elapsed: ',end - start)
-        command = input('-> ')
+        question = input('Question: ')
 
 
 if __name__ == "__main__":
