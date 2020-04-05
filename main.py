@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import os
+import time
 from dataclasses import dataclass
 from typing import Iterable, Iterator, Tuple
 from xml.dom import minidom
@@ -80,6 +81,7 @@ def qa(path_data: str, question: str) -> Iterator[Answer]:
 
 
 def main() -> None:
+    start = time.time()
     for answer in qa(PATH_DATA, "¿Qué criticó Da Silveira?"):
         print("** Text id:", answer.text_id)
         print("** Answer:", answer.text)
@@ -87,6 +89,8 @@ def main() -> None:
         print("** In context:")
         print(answer.in_context)
         print()
+    end = time.time()
+    print('Time elapsed: ',end - start)
 
 
 if __name__ == "__main__":
