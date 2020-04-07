@@ -1,0 +1,385 @@
+{
+  "order": 10000,
+  "version": 1,
+  "index_patterns": [
+    "tweets*"
+  ],
+  "settings": {
+    "index": {
+      "number_of_shards": 1,
+      "number_of_replicas": 0
+    },
+    "analysis": {
+      "char_filter": {
+        "space_hashtags": {
+          "type": "mapping",
+          "mappings": [
+            "#=>|#"
+          ]
+        }
+      },
+      "filter": {
+        "hashtag_mentions": {
+          "type": "word_delimiter",
+          "generate_word_parts": false,
+          "generate_number_parts": false,
+          "split_on_case_change": false,
+          "split_on_numerics": false,
+          "type_table": [
+            "# => ALPHANUM",
+            "@ => ALPHANUM",
+            "_ => ALPHANUM"
+          ]
+        },
+        "bigramas-comunes": {
+          "type": "common_grams",
+          "common_words": [
+            "el",
+            "la",
+            "los",
+            "las",
+            "un",
+            "una",
+            "unos",
+            "unas",
+            "al",
+            "del",
+            "lo"
+          ]
+        },
+        "quitar-url": {
+          "type": "pattern_replace",
+          "pattern": "(http\\S+)",
+          "replacement": ""
+        },
+        "quitar-stopwords": {
+          "type": "stop",
+          "stopwords": "_spanish_"
+        },
+        "length_min_2": {
+          "type": "pattern_replace",
+          "pattern": "(\\b[a-zA-Z0-9]{1}\\b)|(\\b[a-zA-Z]{2}\\b)",
+          "replacement": ""
+        },
+        "exclude_nums": {
+          "type": "keep_types",
+          "types": [
+            "<NUM>"
+          ],
+          "mode": "exclude"
+        }
+      },
+      "analyzer": {
+        "twitter_analyzer": {
+          "type": "custom",
+          "char_filter": "space_hashtags",
+          "tokenizer": "whitespace",
+          "filter": [
+            "lowercase",
+            "asciifolding",
+            "quitar-url",
+            "hashtag_mentions",
+            "quitar-stopwords",
+            "length_min_2"
+          ]
+        },
+        "nlp_analyzer": {
+          "type": "custom",
+          "char_filter": "space_hashtags",
+          "tokenizer": "tweeter_tokenizer",
+          "filter": [
+            "lowercase",
+            "hashtag_mentions"
+          ]
+        }
+      },
+      "tokenizer": {
+        "tweeter_tokenizer": {
+          "type": "pattern",
+          "pattern": "(\\w+|\\S*[\\S*])",
+          "group": 1
+        }
+      }
+    }
+  },
+  "mappings": {
+    "properties": {
+      "tweet_coordinates": {
+        "type": "geo_point"
+      },
+      "tweet_id": {
+        "type": "keyword"
+      },
+      "retweet_count": {
+        "type": "integer"
+      },
+      "tweet_created_at": {
+        "type": "date"
+      },
+      "is_a_retweet": {
+        "type": "boolean",
+        "fields": {
+          "keyword": {
+            "type": "keyword"
+          }
+        }
+      },
+      "original_tweet_id": {
+        "type": "keyword"
+      },
+      "favorite_count": {
+        "type": "integer"
+      },
+      "tweet_content": {
+        "type": "text",
+        "fields": {
+          "tags": {
+            "type": "text",
+            "analyzer": "twitter_analyzer",
+            "term_vector": "yes",
+            "fielddata": true
+          },
+          "tags_token_number": {
+            "type": "token_count",
+            "analyzer": "twitter_analyzer"
+          }
+        }
+      },
+      "original_tweet_created_at": {
+        "type": "date"
+      },
+      "tweet_lang": {
+        "type": "keyword"
+      },
+      "hashtags": {
+        "type": "keyword"
+      },
+      "media_urls": {
+        "type": "keyword"
+      },
+      "media_widths": {
+        "type": "keyword"
+      },
+      "media_heights": {
+        "type": "keyword"
+      },
+      "urls": {
+        "type": "keyword"
+      },
+      "user_mentions_id": {
+        "type": "keyword"
+      },
+      "user_mentions_pseudo": {
+        "type": "keyword"
+      },
+      "inserted_in_es_at": {
+        "type": "date"
+      },
+      "original_retweet_count": {
+        "type": "integer"
+      },
+      "author": {
+        "type": "object",
+        "properties": {
+          "author_description": {
+            "type": "text",
+            "fields": {
+              "tags": {
+                "type": "text",
+                "analyzer": "twitter_analyzer",
+                "term_vector": "yes",
+                "fielddata": true
+              },
+              "tags_token_number": {
+                "type": "token_count",
+                "analyzer": "twitter_analyzer"
+              }
+            }
+          },
+          "is_author_protected": {
+            "type": "boolean"
+          },
+          "author_location": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword"
+              },
+              "tags": {
+                "type": "text",
+                "analyzer": "twitter_analyzer",
+                "term_vector": "yes",
+                "fielddata": true
+              },
+              "tags_token_number": {
+                "type": "token_count",
+                "analyzer": "twitter_analyzer"
+              }
+            }
+          },
+          "author_lang": {
+            "type": "keyword"
+          },
+          "author_account_creation": {
+            "type": "date"
+          },
+          "is_author_verified": {
+            "type": "boolean"
+          },
+          "author_id": {
+            "type": "keyword"
+          },
+          "author_name": {
+            "type": "keyword"
+          },
+          "author_pseudo": {
+            "type": "keyword"
+          },
+          "author_friends_count": {
+            "type": "integer"
+          },
+          "author_followers_count": {
+            "type": "integer"
+          }
+        }
+      },
+      "original_author": {
+        "type": "object",
+        "properties": {
+          "author_description": {
+            "type": "text",
+            "fields": {
+              "tags": {
+                "type": "text",
+                "analyzer": "twitter_analyzer",
+                "term_vector": "yes",
+                "fielddata": true
+              },
+              "tags_token_number": {
+                "type": "token_count",
+                "analyzer": "twitter_analyzer"
+              }
+            }
+          },
+          "is_author_protected": {
+            "type": "boolean"
+          },
+          "author_location": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword"
+              },
+              "tags": {
+                "type": "text",
+                "analyzer": "twitter_analyzer",
+                "term_vector": "yes",
+                "fielddata": true
+              },
+              "tags_token_number": {
+                "type": "token_count",
+                "analyzer": "twitter_analyzer"
+              }
+            }
+          },
+          "author_lang": {
+            "type": "keyword"
+          },
+          "author_account_creation": {
+            "type": "date"
+          },
+          "is_author_verified": {
+            "type": "boolean"
+          },
+          "author_id": {
+            "type": "keyword"
+          },
+          "author_name": {
+            "type": "keyword"
+          },
+          "author_pseudo": {
+            "type": "keyword"
+          },
+          "author_friends_count": {
+            "type": "integer"
+          },
+          "author_followers_count": {
+            "type": "integer"
+          }
+        }
+      },
+      "pipeline": {
+        "type": "object",
+        "properties": {
+          "listener_origin": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword"
+              }
+            }
+          },
+          "kafka_topic": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword"
+              }
+            }
+          }
+        }
+      },
+      "enriched": {
+        "type": "object",
+        "properties": {
+          "location": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword"
+                  }
+                }
+              },
+              "field": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword"
+                  }
+                }
+              },
+              "coordinates": {
+                "type": "geo_point"
+              },
+              "score": {
+                "type": "float"
+              },
+              "time_ms": {
+                "type": "float"
+              }
+            }
+          },
+          "sentiment": {
+            "type": "object",
+            "properties": {
+              "sentiment": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword"
+                  }
+                }
+              },
+              "time_ms": {
+                "type": "float"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

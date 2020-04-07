@@ -1,0 +1,46 @@
+{
+  "order": 10000,
+  "version": 1,
+  "index_patterns": [
+    "covid*"
+  ],
+  "settings": {
+    "index": {
+      "number_of_shards": 1,
+      "number_of_replicas": 0
+    },
+    "analysis": {
+      "filter": {
+        "quitar-stopwords": {
+          "type": "stop",
+          "ignore_case": true,
+          "stopwords": "_spanish_"
+        }
+      },
+      "analyzer": {
+        "normal_analyzer": {
+          "type": "custom",
+          "tokenizer": "standard",
+          "filter": [
+            "lowercase",
+            "asciifolding",
+            "quitar-stopwords"
+          ]
+        }
+      }
+    }
+  },
+  "mappings": {
+    "properties": {
+      "html": {
+        "type": "text",
+        "analyzer": "normal_analyzer",
+        "fields": {
+          "raw": {
+            "type": "text"
+          }
+        }
+      }
+    }
+  }
+}
