@@ -34,7 +34,8 @@ def load_snippets(file_name):
     for snippet in doc.getElementsByTagName('snippet'):
         questions = []
         for question in snippet.getElementsByTagName('question'):
-            questions.append((question.attributes['q'].value,question.attributes['a'].value))
+            if len(question.attributes['q'].value) > 0:
+                questions.append((question.attributes['q'].value,question.attributes['a'].value))
         text = snippet.getElementsByTagName('text')[0].firstChild.nodeValue
         snippets.append((text,questions))
     return snippets
