@@ -6,7 +6,7 @@ RUN logstash-plugin install logstash-filter-rest
 
 RUN curl https://jdbc.postgresql.org/download/postgresql-42.2.10.jar --output /usr/share/logstash/logstash-core/lib/jars/postgresql-42.2.10.jar
 COPY config/logstash.yml /usr/share/logstash/config/logstash.yml
-COPY twitter-template.json /etc/logstash/templates/tweets-template.json
+COPY template.json /etc/logstash/templates/template.json
 COPY pipeline /usr/share/logstash/pipeline
 RUN mkdir /tmp/datos
 ADD datos /tmp/datos

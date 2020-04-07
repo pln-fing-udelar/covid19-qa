@@ -11,20 +11,28 @@
     },
     "analysis": {
       "filter": {
-        "quitar-stopwords": {
+        "remove-stopwords": {
           "type": "stop",
           "ignore_case": true,
           "stopwords": "_spanish_"
+        },
+        "change-synonyms": {
+          "type": "synonym",
+          "synonyms": [
+            "covid-19 => coronavirus",
+            "covid => coronavirus"
+          ]
         }
       },
       "analyzer": {
-        "normal_analyzer": {
+        "covid-analyzer": {
           "type": "custom",
           "tokenizer": "standard",
           "filter": [
             "lowercase",
             "asciifolding",
-            "quitar-stopwords"
+            "remove-stopwords",
+            "change-synonyms"
           ]
         }
       }
@@ -32,9 +40,9 @@
   },
   "mappings": {
     "properties": {
-      "html": {
+      "article_text": {
         "type": "text",
-        "analyzer": "normal_analyzer",
+        "analyzer": "covid-analyzer",
         "fields": {
           "raw": {
             "type": "text"
