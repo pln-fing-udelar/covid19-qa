@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from itertools import groupby
 
 import numpy as np
@@ -5,11 +6,7 @@ import torch
 from transformers import squad_convert_examples_to_features
 from transformers.pipelines import QuestionAnsweringPipeline, SUPPORTED_TASKS
 
-
-def chunks(lst, n):
-    """Yield successive n-sized chunks from lst."""
-    for i in range(0, len(lst), n):
-        yield lst[i:i + n]
+from covid19_qa.util import chunks
 
 
 class OurQuestionAnsweringPipeline(QuestionAnsweringPipeline):
