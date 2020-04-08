@@ -1,0 +1,54 @@
+{
+  "order": 10000,
+  "version": 1,
+  "index_patterns": [
+    "covid*"
+  ],
+  "settings": {
+    "index": {
+      "number_of_shards": 1,
+      "number_of_replicas": 0
+    },
+    "analysis": {
+      "filter": {
+        "remove-stopwords": {
+          "type": "stop",
+          "ignore_case": true,
+          "stopwords": "_spanish_"
+        },
+        "change-synonyms": {
+          "type": "synonym",
+          "synonyms": [
+            "covid-19 => coronavirus",
+            "covid => coronavirus"
+          ]
+        }
+      },
+      "analyzer": {
+        "covid-analyzer": {
+          "type": "custom",
+          "tokenizer": "standard",
+          "filter": [
+            "lowercase",
+            "asciifolding",
+            "remove-stopwords",
+            "change-synonyms"
+          ]
+        }
+      }
+    }
+  },
+  "mappings": {
+    "properties": {
+      "article_text": {
+        "type": "text",
+        "analyzer": "covid-analyzer",
+        "fields": {
+          "raw": {
+            "type": "text"
+          }
+        }
+      }
+    }
+  }
+}

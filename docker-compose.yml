@@ -1,0 +1,36 @@
+version: "3.1"
+services:
+
+  elasticsearch-covid:
+    build: elasticsearch/
+    volumes:
+      - ./elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+    ports:
+      - 19200:9200
+      - 19300:9300
+    environment:
+      ES_JAVA_OPTS: "-Xmx256m -Xms256m"
+
+  logstash-covid:
+    build: logstash/
+    volumes:
+      - ./logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml
+      - ./logstash/template.json:/etc/logstash/templates/template.json
+      - ./logstash/pipeline:/usr/share/logstash/pipeline
+      - ./data:/tmp/datos
+    ports:
+      - 15000:5000
+    depends_on:
+      - elasticsearch-covid
+    environment:
+      LS_JAVA_OPTS: "-Xmx500m -Xms500m"
+
+  jupyter-covid:
+    build: jupyter/
+    ports:
+      - 18888:8888
+    volumes:
+      - ./jupyter/notebooks:/home/jovyan/work
+    depends_on:
+      - elasticsearch-covid
+
