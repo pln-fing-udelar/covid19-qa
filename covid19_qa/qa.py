@@ -2,31 +2,17 @@
 import importlib
 import os
 import time
-from dataclasses import dataclass
-from typing import Iterator
+from typing import Iterator, Tuple
 
-from nltk import sent_tokenize
+from nltk import sent_tokenize, RegexpTokenizer
 from transformers import Pipeline, pipeline
 from xml.dom import minidom  # noqa
 
+from covid19_qa.models import Snippet, Answer
 from covid19_qa.util import chunks
 
 PATH_DATA_FOLDER = "data"
 PATH_MODEL_FOLDER = "model"
-
-
-@dataclass
-class Snippet:
-    doc_id: str
-    text: str
-
-
-@dataclass
-class Answer:
-    snippet: Snippet
-    text: str
-    in_context: str
-    score: float
 
 
 def _generate_snippets(path_data_folder: str, doc_ids: Iterator[str], snippet_size: int) -> Iterator[Snippet]:
@@ -80,7 +66,30 @@ def answer_question(qa_pipeline: Pipeline, question: str, snippet_size: int = 5,
     return _rank_answers(answers)
 
 
-def create_pipeline(device: int = -1) -> Pipeline:
+def create_qa_pipeline(device: int = -1) -> Pipeline:
     importlib.import_module("covid19_qa.pipelines")
     return pipeline("question-answering", model=PATH_MODEL_FOLDER, config=PATH_MODEL_FOLDER,
                     tokenizer=PATH_MODEL_FOLDER, device=device)
+
+
+def calculate_f1(expected: str, candidate: str, tokenizer=RegexpTokenizer(r"\w+")) -> float:
+    expected_tokens = set(t.lower() for t in tokenizer.tokenize(expected))
+    candidate_tokens = set(t.lower() for t in tokenizer.tokenize(candidate))
+    if expected_tokens and candidate_tokens:
+        intersection = expected_tokens & candidate_tokens
+        p = len(intersection) / len(expected_tokens)
+        r = len(intersection) / len(candidate_tokens)
+        return 0.0 if p + r == 0 else 2 * p * r / (p + r)
+    else:
+        return float(bool(expected_tokens) == bool(candidate_tokens))
+
+
+def load_snippets(file_name: str) -> Iterator[Tuple[Snippet, Iterator[Tuple[str, str]]]]:
+    parsed_xml_file = minidom.parse(file_name)
+    for snippet in parsed_xml_file.getElementsByTagName("snippet"):
+        questions = []
+        for question in snippet.getElementsByTagName("question"):
+            if question.attributes["q"].value:
+                questions.append((question.attributes["q"].value, question.attributes["a"].value))
+        text = snippet.getElementsByTagName("text")[0].firstChild.nodeValue
+        yield Snippet(doc_id="", text=text), questions  # FIXME

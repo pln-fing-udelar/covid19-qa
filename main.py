@@ -4,9 +4,10 @@ import argparse
 import time
 
 from transformers import Pipeline
+from xml.dom import minidom  # noqa
 
 from covid19_qa.argparse_with_defaults import ArgumentParserWithDefaults
-from covid19_qa.qa import answer_question, create_pipeline
+from covid19_qa.qa import answer_question, create_qa_pipeline, calculate_f1, load_snippets
 
 
 def _parse_args() -> argparse.Namespace:
@@ -41,7 +42,7 @@ def main() -> None:
 
     args = _parse_args()
 
-    qa_pipeline = create_pipeline(device=args.device)
+    qa_pipeline = create_qa_pipeline(device=args.device)
 
     if args.mode == "interactive":
         print("Write a question or 'exit'.")
@@ -50,7 +51,35 @@ def main() -> None:
             _show_answers(args, qa_pipeline, question)
             question = input("Question: ")
     elif args.mode == "evaluation":
-        raise NotImplementedError
+        snippets = list(load_snippets("snippets.xml"))
+
+        input_ = [{"question": question, "context": snippet.text}
+                  for snippet, question_answer_pairs in snippets
+                  for question, answer in question_answer_pairs]
+
+        # answer_question(qa_pipeline, question, snippet_size=args.snippet_size, batch_size=args.batch_size,
+        #                 threads=args.threads)
+        results = qa_pipeline(input_, version_2_with_negative=True, batch_size=args.batch_size, threads=args.threads)
+
+        num_questions = 0
+        exact_match = 0
+        f1 = 0
+        for snippet, question_answer_pairs in snippets:
+            print(snippet.text)
+            for question, answer in question_answer_pairs:
+                result = results[num_questions]
+                num_questions += 1
+                print("Question:", question)
+                print("Expected:", answer)
+                print("Candidate:", result)
+                actual_answer = result["answer"]
+                if result["score"] < 0.5:
+                    actual_answer = ""
+                if answer == actual_answer:
+                    exact_match += 1
+                f1 += calculate_f1(answer, actual_answer)
+        print("EM:", exact_match / num_questions)
+        print("F1:", f1 / num_questions)
     elif args.mode == "trial":
         _show_answers(args, qa_pipeline, question="¿Qué criticó Da Silveira?")
     else:
