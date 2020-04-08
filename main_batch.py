@@ -46,20 +46,19 @@ def highlight_answers(context_textid_list: Iterable[Tuple[str, str]], question: 
                       qa_pipeline: Pipeline) -> Iterator[Answer]:
     """Given a context and a question, returns a pair (highlighted answer, score)"""
     contexts, text_ids = list(zip(*context_textid_list))
-    questions = [{"question": question, "context": c} for c in contexts]
-    results = qa_pipeline(questions, version_2_with_negative=True, batch_size=32, threads=8)
+    questions = [{"question": question, "context": c} for c in contexts] * 10
+    start = time.time()
+    results = qa_pipeline(questions, version_2_with_negative=True, batch_size=342, threads=20)
+    print("Model time:", time.time() - start)
 
     answers = []
     for result, context, text_id in zip(results, contexts, text_ids):
-        if len(result['answer']) == 0:
-            answers.append(Answer(text_id=text_id, text="", in_context="",
-                                  score=result["score"]))
+        if result['answer']:
+            in_context = f"{context[:result['start']]}{{{{{result['answer']}}}}}{context[result['end']:]}"
+            answers.append(Answer(text_id=text_id, text=result["answer"], score=result["score"],
+                                  in_context=in_context))
         else:
-            answers.append(Answer(text_id=text_id, text=result["answer"],
-                                  score=result["score"],
-                                  in_context=context[:result['start']]
-                                             + '{{' + result['answer'] + '}}'
-                                             + context[result['end']:]))
+            answers.append(Answer(text_id=text_id, text="", in_context="", score=result["score"]))
     return answers
 
 
@@ -76,8 +75,7 @@ def rank_answers(answers: Iterable[Answer], clean_mode: bool) -> Iterator[Answer
 def qa(qa_pipeline: Pipeline, question: str) -> Iterator[Answer]:
     """
     """
-    docs = [file_name[:-4] for file_name in os.listdir(PATH_DATA)
-            if file_name.endswith(".xml")]
+    docs = [file_name[:-4] for file_name in os.listdir(PATH_DATA) if file_name.endswith(".xml")]
     context_textid_list = generate_context_snippets(PATH_DATA, docs, snippet_size=5)
     answers = highlight_answers(context_textid_list, question, qa_pipeline)
     return rank_answers(answers, True)
@@ -89,7 +87,7 @@ def main() -> None:
     importlib.import_module("pipelines")
 
     qa_pipeline = pipeline("question-answering", model=PATH_MODEL_FOLDER,
-                           config=PATH_MODEL_FOLDER, tokenizer=PATH_MODEL_FOLDER)
+                           config=PATH_MODEL_FOLDER, tokenizer=PATH_MODEL_FOLDER)  # , device=0)
     for answer in qa(qa_pipeline, "¿Qué criticó Da Silveira?"):
         print("** Text id:", answer.text_id)
         print("** Answer:", answer.text)

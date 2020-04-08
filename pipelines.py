@@ -2,11 +2,8 @@ from itertools import groupby
 
 import numpy as np
 import torch
-from transformers import squad_convert_examples_to_features, is_tf_available
+from transformers import squad_convert_examples_to_features
 from transformers.pipelines import QuestionAnsweringPipeline, SUPPORTED_TASKS
-
-if is_tf_available():
-    import tensorflow as tf
 
 
 def chunks(lst, n):
@@ -62,8 +59,8 @@ class OurQuestionAnsweringPipeline(QuestionAnsweringPipeline):
 
         min_null_score = 1000000  # large and positive
         all_answers = []
-        for features_list_batch, examples_batch in zip(*[chunks(x, kwargs["batch_size"]) for x in [features_list,
-                                                                                                   examples]]):
+        for features_list_batch, examples_batch in zip(*[chunks(x, kwargs["batch_size"])
+                                                         for x in [features_list, examples]]):
             fw_args_list = [self.inputs_for_model([f.__dict__ for f in features]) for features in features_list_batch]
             starts = None
             ends = None
