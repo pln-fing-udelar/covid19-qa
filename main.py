@@ -31,7 +31,7 @@ def _show_answers(args: argparse.Namespace, qa_pipeline: Pipeline, question: str
     for answer in answers:
         print("** Doc ID:", answer.snippet.doc_id)
         print("** Answer:", answer.text)
-        print(f"** Score: {round(answer.score * 100)}%")
+        print(f"** Score: {answer.score * 100:d}%")
         print("** In context:")
         print(answer.in_context)
         print()
@@ -66,20 +66,20 @@ def main() -> None:
         f1 = 0
         for snippet, question_answer_pairs in snippets:
             print(snippet.text)
-            for question, answer in question_answer_pairs:
+            for question, expected_answer in question_answer_pairs:
                 result = results[num_questions]
                 num_questions += 1
                 print("Question:", question)
-                print("Expected:", answer)
+                print("Expected:", expected_answer)
                 print("Candidate:", result)
                 actual_answer = result["answer"]
                 if result["score"] < 0.5:
                     actual_answer = ""
-                if answer == actual_answer:
+                if expected_answer == actual_answer:
                     exact_match += 1
-                f1 += calculate_f1(answer, actual_answer)
-        print("EM:", exact_match / num_questions)
-        print("F1:", f1 / num_questions)
+                f1 += calculate_f1(expected=expected_answer, actual=actual_answer)
+        print(f"EM: {exact_match / num_questions * 100:5.1f}%")
+        print(f"F1: {f1 / num_questions * 100:5.1f}%")
     elif args.mode == "trial":
         _show_answers(args, qa_pipeline, question="¿Qué criticó Da Silveira?")
     else:

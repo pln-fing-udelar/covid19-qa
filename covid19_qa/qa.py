@@ -72,9 +72,9 @@ def create_qa_pipeline(device: int = -1) -> Pipeline:
                     tokenizer=PATH_MODEL_FOLDER, device=device)
 
 
-def calculate_f1(expected: str, candidate: str, tokenizer=RegexpTokenizer(r"\w+")) -> float:
+def calculate_f1(expected: str, actual: str, tokenizer=RegexpTokenizer(r"\w+")) -> float:
     expected_tokens = set(t.lower() for t in tokenizer.tokenize(expected))
-    candidate_tokens = set(t.lower() for t in tokenizer.tokenize(candidate))
+    candidate_tokens = set(t.lower() for t in tokenizer.tokenize(actual))
     if expected_tokens and candidate_tokens:
         intersection = expected_tokens & candidate_tokens
         p = len(intersection) / len(expected_tokens)
