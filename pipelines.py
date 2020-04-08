@@ -55,7 +55,8 @@ class OurQuestionAnsweringPipeline(QuestionAnsweringPipeline):
             False,
             threads=kwargs["threads"],
         )
-        features_list = [list(x) for _, x in groupby(features_list_all, lambda f: f.example_index)]
+        features_list = [list(example_features)
+                         for _example_index, example_features in groupby(features_list_all, lambda f: f.example_index)]
 
         all_answers = []
         for features_list_batch, examples_batch in zip(*[chunks(x, kwargs["batch_size"])
@@ -97,11 +98,12 @@ class OurQuestionAnsweringPipeline(QuestionAnsweringPipeline):
             for start, end, features, features_len, example in zip(starts, ends, features_list_batch, features_lens,
                                                                    examples_batch):
                 min_null_score = 1000000  # large and positive
+                min_null_score_raw = 1000000
                 answers = []
-                for (feature, start_, end_) in zip(features, start, end):
+                for (feature, start_raw, end_raw) in zip(features, start, end):
                     # Normalize logits and spans to retrieve the answer
-                    start_ = np.exp(start_) / np.sum(np.exp(start_))
-                    end_ = np.exp(end_) / np.sum(np.exp(end_))
+                    start_ = np.exp(start_raw) / np.sum(np.exp(start_raw))
+                    end_ = np.exp(end_raw) / np.sum(np.exp(end_raw))
 
                     # Mask padding and question
                     start_, end_ = (
@@ -110,7 +112,11 @@ class OurQuestionAnsweringPipeline(QuestionAnsweringPipeline):
                     )
 
                     if kwargs["version_2_with_negative"]:
-                        min_null_score = min(min_null_score, (start_[0] * end_[0]).item())
+                        null_score_raw = (start_raw[0] + end_raw[0]).item()
+                        null_score = (start_[0] * end_[0]).item()
+                        if null_score < min_null_score:
+                            min_null_score = null_score
+                            min_null_score_raw = null_score_raw
 
                     start_[0] = end_[0] = 0
 
@@ -121,6 +127,7 @@ class OurQuestionAnsweringPipeline(QuestionAnsweringPipeline):
                     answers += [
                         {
                             "score": score.item(),
+                            "score_raw": (start_raw[s] + end_raw[e]).item(),
                             "start": np.where(char_to_word == feature.token_to_orig_map[s])[0][0].item(),
                             "end": np.where(char_to_word == feature.token_to_orig_map[e])[0][-1].item(),
                             "answer": " ".join(
@@ -131,7 +138,13 @@ class OurQuestionAnsweringPipeline(QuestionAnsweringPipeline):
                     ]
 
                 if kwargs["version_2_with_negative"]:
-                    answers.append({"score": min_null_score, "start": 0, "end": 0, "answer": ""})
+                    answers.append({
+                        "score": min_null_score,
+                        "score_raw": min_null_score_raw,
+                        "start": 0,
+                        "end": 0,
+                        "answer": "",
+                    })
 
                 answers = sorted(answers, key=lambda x: x["score"], reverse=True)[: kwargs["topk"]]
                 all_answers += answers
