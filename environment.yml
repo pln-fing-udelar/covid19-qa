@@ -4,10 +4,10 @@ channels:
   - pytorch
 dependencies:
   - pip:
-    - git+https://github.com/bryant1410/transformers@a06383e5
+    - transformers==2.8.0
   - cudatoolkit=10.1.243
   - cudnn=7.6.5
-  - pip=20.0.2
-  - python=3.8.1
+  - pip=20.0
+  - python=3.8
   - pytorch=1.4.0
   - nltk=3.4.5
