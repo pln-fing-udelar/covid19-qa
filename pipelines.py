@@ -57,7 +57,6 @@ class OurQuestionAnsweringPipeline(QuestionAnsweringPipeline):
         )
         features_list = [list(x) for _, x in groupby(features_list_all, lambda f: f.example_index)]
 
-        min_null_score = 1000000  # large and positive
         all_answers = []
         for features_list_batch, examples_batch in zip(*[chunks(x, kwargs["batch_size"])
                                                          for x in [features_list, examples]]):
@@ -97,6 +96,7 @@ class OurQuestionAnsweringPipeline(QuestionAnsweringPipeline):
 
             for start, end, features, features_len, example in zip(starts, ends, features_list_batch, features_lens,
                                                                    examples_batch):
+                min_null_score = 1000000  # large and positive
                 answers = []
                 for (feature, start_, end_) in zip(features, start, end):
                     # Normalize logits and spans to retrieve the answer
