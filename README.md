@@ -21,11 +21,25 @@
 ## Run
 
 ```bash
-./scripts/main.py
+./main.py
+```
+
+Check out the help (`./main.py -h`) to see the available options.
+
+### Run with some optimizations
+
+```bash
+./main.py --batch-size 672 --device 0 --threads 20
 ```
 
 ## Elastic Search
 
-### With Docker & DockerCompose
+TODO
+
+### With Docker & Docker Compose
+
+TODO
 
 ### With Docker
+
+TODO
