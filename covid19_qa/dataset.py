@@ -3,10 +3,7 @@ import xml.etree.ElementTree as ET
 from dataclasses import dataclass
 from typing import Iterator
 
-from nltk import sent_tokenize
-
 from covid19_qa.pipeline import Instance
-from covid19_qa.util import chunks
 
 PATH_DATA_FOLDER = "data/articles"
 PATH_ANNOTATED_FILE = "data/annotated.xml"
@@ -18,8 +15,7 @@ class Document:
     text: str
 
 
-def load_documents(doc_ids: Iterator[str], path_data_folder: str = PATH_DATA_FOLDER,
-                   snippet_size: int = 5) -> Iterator[Document]:
+def load_documents(doc_ids: Iterator[str], path_data_folder: str = PATH_DATA_FOLDER) -> Iterator[Document]:
     for doc_id in doc_ids:
         file_path = os.path.join(path_data_folder, doc_id + ".xml")
 
@@ -27,10 +23,7 @@ def load_documents(doc_ids: Iterator[str], path_data_folder: str = PATH_DATA_FOL
         assert article_element.tag == "article"
 
         text = article_element.text
-        sentences = sent_tokenize(text)
-
-        for i, snippet_sentences in enumerate(chunks(sentences, snippet_size)):
-            yield Document(id=f"{doc_id}.{i:02d}", text=" ".join(snippet_sentences))
+        yield Document(id=doc_id, text=text)
 
 
 def all_doc_ids(path_data_folder: str = PATH_DATA_FOLDER) -> Iterator[str]:

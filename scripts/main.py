@@ -15,8 +15,9 @@ logger = logging.getLogger(__name__)
 
 
 def _show_answers(args: argparse.Namespace, qa_pipeline: Pipeline, question: str) -> None:
-    answers = answer_question_from_all_docs(question, qa_pipeline, top_k=args.top_k, snippet_size=args.snippet_size,
-                                            batch_size=args.batch_size, threads=args.threads)
+    answers = answer_question_from_all_docs(question, qa_pipeline, top_k=args.top_k,
+                                            top_k_per_instance=args.top_k_per_document, batch_size=args.batch_size,
+                                            threads=args.threads)
     for answer in answers:
         print("** Doc ID:", answer.instance.qas_id)
         print("** Answer:", answer.text)
@@ -55,10 +56,10 @@ def _parse_args() -> argparse.Namespace:
     parser.add_argument("--batch-size", type=int, default=32)
     parser.add_argument("--device", type=int, default=-1,
                         help="device where the model is run. -1 is CPU, otherwise it's the GPU ID")
-    parser.add_argument("--snippet-size", type=int, default=5)
     parser.add_argument("--threads", type=int, default=4,
                         help="number of threads used to convert the instances to features")
-    parser.add_argument("--top-k", type=int)
+    parser.add_argument("--top-k", type=int, default=10)
+    parser.add_argument("--top-k-per-document", type=int, default=5)
     parser.add_argument("-v", "--verbose", action="store_true")
 
     subparsers = parser.add_subparsers(title="mode", description="Run mode. Use 'trial' to just try things out. "

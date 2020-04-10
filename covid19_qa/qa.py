@@ -48,9 +48,9 @@ def answer_question_from_documents(documents: Iterator[Document], question: str,
 
 def answer_question_from_doc_ids(doc_ids: Iterator[str], question: str, qa_pipeline: Pipeline,
                                  top_k: Optional[int] = None, top_k_per_instance: int = 1,
-                                 remove_empty_answers: bool = True, snippet_size: int = 5, batch_size: int = 32,
+                                 remove_empty_answers: bool = True, batch_size: int = 32,
                                  threads: int = 1) -> Iterator[Answer]:
-    snippets = load_documents(doc_ids=doc_ids, snippet_size=snippet_size)
+    snippets = load_documents(doc_ids=doc_ids)
     return answer_question_from_documents(snippets, question, qa_pipeline, top_k=top_k,
                                           top_k_per_instance=top_k_per_instance,
                                           remove_empty_answers=remove_empty_answers, batch_size=batch_size,
@@ -58,10 +58,10 @@ def answer_question_from_doc_ids(doc_ids: Iterator[str], question: str, qa_pipel
 
 
 def answer_question_from_all_docs(question: str, qa_pipeline: Pipeline, top_k: Optional[int] = None,
-                                  top_k_per_instance: int = 1, remove_empty_answers: bool = True, snippet_size: int = 5,
-                                  batch_size: int = 32, threads: int = 1) -> Iterator[Answer]:
+                                  top_k_per_instance: int = 1, remove_empty_answers: bool = True, batch_size: int = 32,
+                                  threads: int = 1) -> Iterator[Answer]:
     doc_ids = all_doc_ids()
     return answer_question_from_doc_ids(doc_ids, question, qa_pipeline, top_k=top_k,
                                         top_k_per_instance=top_k_per_instance,
-                                        remove_empty_answers=remove_empty_answers, snippet_size=snippet_size,
-                                        batch_size=batch_size, threads=threads)
+                                        remove_empty_answers=remove_empty_answers, batch_size=batch_size,
+                                        threads=threads)

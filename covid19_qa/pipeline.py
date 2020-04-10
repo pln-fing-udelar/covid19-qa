@@ -34,8 +34,23 @@ class Answer:
 
     @property
     def in_context(self) -> str:
-        return f"{self.instance.context_text[:self.start]}{{{{{self.text}}}}}{self.instance.context_text[self.end:]}" \
-            if self.text else ""
+        if self.text:
+            half_window_size = 50
+
+            span_start = abs(self.start - half_window_size)
+            span_end = self.end + half_window_size
+
+            prefix = self.instance.context_text[span_start:self.start]
+            if span_start > 0:
+                prefix = "[…]" + prefix
+
+            suffix = self.instance.context_text[self.end:span_end]
+            if span_end < len(self.instance.context_text):
+                suffix += "[…]"
+
+            return f"{prefix}*{self.text}*{suffix}"
+        else:
+            return ""
 
     @property
     def sort_key(self) -> float:
