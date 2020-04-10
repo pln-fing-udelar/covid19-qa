@@ -2,12 +2,10 @@ import os
 import json
 import re
 import xml.etree.ElementTree as ET
-from html.parser import HTMLParser
-
 
 PATH_ARTICLES_FOLDER = "data/la_diaria_v1"
 
-def generate_xml_files(json_name: str):
+def generate_corpus_from_json(json_name: str):
     """Given a JSON containing news, creates several files acording to our XML schema """
 
     id_counter = 1
@@ -46,4 +44,4 @@ def create_xml_file(id: int, html: str, slug: str):
 	pass
 
 if __name__ == "__main__":
-	generate_xml_files("la_diaria_v1.json")
+	generate_corpus_from_json("la_diaria_v1.json")
