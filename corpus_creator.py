@@ -22,7 +22,7 @@ def generate_corpus_from_json(json_name: str):
 
 def create_xml_file(id: int, html: str, slug: str):
 
-	date = re.split("-",(re.findall("datetime=\"([^>]*)T[^>]*>.*?>",html)[0])) # get article date
+	date = re.split("-",re.search("<time[^>]*datetime=\"(\d+-\d+-\d+).",html).group(1)) # get article date
 
 	year = date[0]
 	month = date[1]
