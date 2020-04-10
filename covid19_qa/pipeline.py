@@ -202,6 +202,8 @@ class OurQuestionAnsweringPipeline(QuestionAnsweringPipeline):
                     sort_mode=kwargs["sort_mode"],
                 )
                 for f, s, e in zip(feature_indices, start_indices, end_indices)
+                # If topk is very large, it may be the case that some invalid answer was selected:
+                if s in features[f].token_to_orig_map and e in features[f].token_to_orig_map
             )
 
             # We leave the unique answers.
@@ -226,10 +228,8 @@ class OurQuestionAnsweringPipeline(QuestionAnsweringPipeline):
                 else:
                     unique_answers_by_start_and_end[(answer.start, answer.end)] = answer
 
-            unique_answers = list(unique_answers_by_start_and_end.values())
-
             unique_answers = [answer
-                              for answer in unique_answers
+                              for answer in unique_answers_by_start_and_end.values()
                               if kwargs["min_score"] is None or answer.sort_score >= kwargs["min_score"]]
 
             if kwargs["version_2_with_negative"]:
