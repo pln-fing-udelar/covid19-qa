@@ -1,95 +1,67 @@
 # -*- coding: utf-8 -*-
-import importlib
-import os
+import heapq
+import logging
 import time
-from typing import Iterator, Tuple
+from typing import Iterator, Optional
 
-from nltk import sent_tokenize, RegexpTokenizer
-from transformers import Pipeline, pipeline
-from xml.dom import minidom  # noqa
+from transformers import Pipeline
 
-from covid19_qa.models import Snippet, Answer
-from covid19_qa.util import chunks
+from covid19_qa.dataset import all_doc_ids, Document, load_documents
+from covid19_qa.pipeline import Answer, Instance
 
-PATH_DATA_FOLDER = "data"
-PATH_MODEL_FOLDER = "model"
+logger = logging.getLogger(__name__)
 
 
-def _generate_snippets(path_data_folder: str, doc_ids: Iterator[str], snippet_size: int) -> Iterator[Snippet]:
-    """Returns a list of snippets."""
-    for doc_id in doc_ids:
-        file_path = os.path.join(path_data_folder, doc_id + ".xml")
-        parsed_xml_file = minidom.parse(file_path)
-        article = parsed_xml_file.getElementsByTagName("article")
-        article_text = article[0].firstChild.nodeValue
-        sentences = sent_tokenize(article_text)
-
-        for snippet_sentences in chunks(sentences, snippet_size):
-            yield Snippet(doc_id=doc_id, text=" ".join(snippet_sentences))
-
-
-def _highlight_answers(snippets: Iterator[Snippet], question: str, qa_pipeline: Pipeline,
-                       batch_size: int = 32, threads: int = 1) -> Iterator[Answer]:
-    """Given a context and a question, returns a pair (highlighted answer, score)"""
-    snippets = list(snippets)
-
-    input_ = [{"question": question, "context": snippet.text} for snippet in snippets]
-
+def answer_from_instances(instances: Iterator[Instance], qa_pipeline: Pipeline, top_k: Optional[int] = None,
+                          top_k_per_instance: int = 1, remove_empty_answers: bool = True, batch_size: int = 32,
+                          threads: int = 1) -> Iterator[Answer]:
     start_time = time.time()
-    results = qa_pipeline(input_, version_2_with_negative=True, batch_size=batch_size, threads=threads)
-    print("Model time:", time.time() - start_time)
 
-    for result, snippet in zip(results, snippets):
-        if result["answer"]:
-            in_context = f"{snippet.text[:result['start']]}{{{{{result['answer']}}}}}{snippet.text[result['end']:]}"
-            yield Answer(snippet=snippet, text=result["answer"], score=result["score"], in_context=in_context)
-        else:
-            yield Answer(snippet=snippet, text="", in_context="", score=result["score"])
+    answers = qa_pipeline(instances, version_2_with_negative=True, topk=top_k_per_instance, batch_size=batch_size,
+                          threads=threads)
 
+    if remove_empty_answers:
+        answers = (a for a in answers if a.text)
 
-def _rank_answers(answers: Iterator[Answer], clean_mode: bool = True) -> Iterator[Answer]:
-    """Returns the answers sorted by score in descending order.
+    # `nlargest` needs a `Sized` `Iterable` and `sorted` needs an `Iterable`.
+    answers = list(answers)
 
-    In `clean_mode`, empty answers won't be returned.
-    """
-    if clean_mode:
-        answers = [a for a in answers if a.text]
+    # We need to measure here, because before the answers may not have been generated yet.
+    logger.info(f"Model time: {time.time() - start_time:6.1f}s")
 
-    return sorted(answers, reverse=True, key=lambda a: a.score)
-
-
-def answer_question(qa_pipeline: Pipeline, question: str, snippet_size: int = 5, batch_size: int = 32,
-                    threads: int = 1) -> Iterator[Answer]:
-    doc_ids = [file_name[:-4] for file_name in os.listdir(PATH_DATA_FOLDER) if file_name.endswith(".xml")]
-    snippets = _generate_snippets(PATH_DATA_FOLDER, doc_ids, snippet_size=snippet_size)
-    answers = _highlight_answers(snippets, question, qa_pipeline, batch_size=batch_size, threads=threads)
-    return _rank_answers(answers)
-
-
-def create_qa_pipeline(device: int = -1) -> Pipeline:
-    importlib.import_module("covid19_qa.pipelines")
-    return pipeline("question-answering", model=PATH_MODEL_FOLDER, config=PATH_MODEL_FOLDER,
-                    tokenizer=PATH_MODEL_FOLDER, device=device)
-
-
-def calculate_f1(expected: str, actual: str, tokenizer=RegexpTokenizer(r"\w+")) -> float:
-    expected_tokens = set(t.lower() for t in tokenizer.tokenize(expected))
-    candidate_tokens = set(t.lower() for t in tokenizer.tokenize(actual))
-    if expected_tokens and candidate_tokens:
-        intersection = expected_tokens & candidate_tokens
-        p = len(intersection) / len(expected_tokens)
-        r = len(intersection) / len(candidate_tokens)
-        return 0.0 if p + r == 0 else 2 * p * r / (p + r)
+    if top_k is None:
+        return sorted(answers, reverse=True, key=lambda a: a.sort_key)
     else:
-        return float(bool(expected_tokens) == bool(candidate_tokens))
+        return heapq.nlargest(top_k, answers, key=lambda a: a.sort_key)
 
 
-def load_snippets(file_name: str) -> Iterator[Tuple[Snippet, Iterator[Tuple[str, str]]]]:
-    parsed_xml_file = minidom.parse(file_name)
-    for snippet in parsed_xml_file.getElementsByTagName("snippet"):
-        questions = []
-        for question in snippet.getElementsByTagName("question"):
-            if question.attributes["q"].value:
-                questions.append((question.attributes["q"].value, question.attributes["a"].value))
-        text = snippet.getElementsByTagName("text")[0].firstChild.nodeValue
-        yield Snippet(doc_id="", text=text), questions  # FIXME
+def answer_question_from_documents(documents: Iterator[Document], question: str, qa_pipeline: Pipeline,
+                                   top_k: Optional[int] = None, top_k_per_instance: int = 1,
+                                   remove_empty_answers: bool = True, batch_size: int = 32,
+                                   threads: int = 1) -> Iterator[Answer]:
+    instances = (Instance(qas_id=doc.id, question_text=question, context_text=doc.text, answer_text=None,
+                          start_position_character=None, title=question)
+                 for doc in documents)
+    return answer_from_instances(instances, qa_pipeline, top_k=top_k, top_k_per_instance=top_k_per_instance,
+                                 remove_empty_answers=remove_empty_answers, batch_size=batch_size, threads=threads)
+
+
+def answer_question_from_doc_ids(doc_ids: Iterator[str], question: str, qa_pipeline: Pipeline,
+                                 top_k: Optional[int] = None, top_k_per_instance: int = 1,
+                                 remove_empty_answers: bool = True, snippet_size: int = 5, batch_size: int = 32,
+                                 threads: int = 1) -> Iterator[Answer]:
+    snippets = load_documents(doc_ids=doc_ids, snippet_size=snippet_size)
+    return answer_question_from_documents(snippets, question, qa_pipeline, top_k=top_k,
+                                          top_k_per_instance=top_k_per_instance,
+                                          remove_empty_answers=remove_empty_answers, batch_size=batch_size,
+                                          threads=threads)
+
+
+def answer_question_from_all_docs(question: str, qa_pipeline: Pipeline, top_k: Optional[int] = None,
+                                  top_k_per_instance: int = 1, remove_empty_answers: bool = True, snippet_size: int = 5,
+                                  batch_size: int = 32, threads: int = 1) -> Iterator[Answer]:
+    doc_ids = all_doc_ids()
+    return answer_question_from_doc_ids(doc_ids, question, qa_pipeline, top_k=top_k,
+                                        top_k_per_instance=top_k_per_instance,
+                                        remove_empty_answers=remove_empty_answers, snippet_size=snippet_size,
+                                        batch_size=batch_size, threads=threads)

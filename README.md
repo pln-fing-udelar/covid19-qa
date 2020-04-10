@@ -22,10 +22,10 @@
 ## Run
 
 ```bash
-python main.py
+./scripts/main.py
 ```
 
-## Elasticsearch
+## Elastic Search
 
 ### With Docker & DockerCompose
 

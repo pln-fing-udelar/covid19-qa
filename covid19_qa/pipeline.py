@@ -1,16 +1,53 @@
 # -*- coding: utf-8 -*-
+from dataclasses import dataclass
 from itertools import groupby
+from typing import Iterator
 
 import numpy as np
 import torch
-from transformers import squad_convert_examples_to_features
+from transformers import Pipeline, pipeline, squad_convert_examples_to_features, SquadExample
 from transformers.pipelines import QuestionAnsweringPipeline, SUPPORTED_TASKS
 
 from covid19_qa.util import chunks
 
+Instance = SquadExample
+
+
+ANSWER_SORT_FIELD = "score"
+assert ANSWER_SORT_FIELD in {"score", "score_raw"}
+
+
+@dataclass
+class Answer:
+    instance: Instance
+    text: str
+    score: float
+    score_raw: float
+    start: int
+    # We keep the null scores as a reference (even if the answer is already the null one).
+    null_score: float
+    null_score_raw: float
+
+    @property
+    def end(self) -> int:
+        return self.start + len(self.text)
+
+    @property
+    def in_context(self) -> str:
+        return f"{self.instance.context_text[:self.start]}{{{{{self.text}}}}}{self.instance.context_text[self.end:]}" \
+            if self.text else ""
+
+    @property
+    def sort_key(self) -> float:
+        return getattr(self, ANSWER_SORT_FIELD)
+
+    @property
+    def null_sort_key(self) -> float:
+        return getattr(self, f"null_{ANSWER_SORT_FIELD}")
+
 
 class OurQuestionAnsweringPipeline(QuestionAnsweringPipeline):
-    def __call__(self, *texts, **kwargs):
+    def __call__(self, *texts, **kwargs) -> Iterator[Answer]:
         """
         Args:
             We support multiple use-cases, the following are exclusive:
@@ -20,7 +57,7 @@ class OurQuestionAnsweringPipeline(QuestionAnsweringPipeline):
             context: (str, List[str]), batch of context(s) associated with the provided question keyword argument
         Returns:
             dict: {'answer': str, 'score": float, 'start": int, "end": int}
-            answer: the textual answer in the intial context
+            answer: the textual answer in the initial context
             score: the score the current answer scored for the model
             start: the character index in the original string corresponding to the beginning of the answer' span
             end: the character index in the original string corresponding to the ending of the answer' span
@@ -55,7 +92,6 @@ class OurQuestionAnsweringPipeline(QuestionAnsweringPipeline):
         features_list = [list(example_features)
                          for _example_index, example_features in groupby(features_list_all, lambda f: f.example_index)]
 
-        all_answers = []
         for features_list_batch, examples_batch in zip(*[chunks(x, kwargs["batch_size"])
                                                          for x in [features_list, examples]]):
             fw_args_list = [self.inputs_for_model([f.__dict__ for f in features]) for features in features_list_batch]
@@ -94,8 +130,8 @@ class OurQuestionAnsweringPipeline(QuestionAnsweringPipeline):
 
             for start, end, features, features_len, example in zip(starts, ends, features_list_batch, features_lens,
                                                                    examples_batch):
-                min_null_score = 1000000  # large and positive
-                min_null_score_raw = 1000000
+                min_null_score = 1
+                min_null_score_raw = 1000000  # large and positive
                 answers = []
                 for (feature, start_raw, end_raw) in zip(features, start, end):
                     # Normalize logits and spans to retrieve the answer
@@ -122,33 +158,43 @@ class OurQuestionAnsweringPipeline(QuestionAnsweringPipeline):
 
                     # Convert the answer (tokens) back to the original text
                     answers += [
-                        {
-                            "score": score.item(),
-                            "score_raw": (start_raw[s] + end_raw[e]).item(),
-                            "start": np.where(char_to_word == feature.token_to_orig_map[s])[0][0].item(),
-                            "end": np.where(char_to_word == feature.token_to_orig_map[e])[0][-1].item(),
-                            "answer": " ".join(
+                        Answer(
+                            instance=example,
+                            text=" ".join(
                                 example.doc_tokens[feature.token_to_orig_map[s]: feature.token_to_orig_map[e] + 1]
                             ),
-                        }
+                            score=score.item(),
+                            score_raw=(start_raw[s] + end_raw[e]).item(),
+                            start=np.where(char_to_word == feature.token_to_orig_map[s])[0][0].item(),
+                            null_score=-1,  # We don't know it yet.
+                            null_score_raw=-1,  # We don't know it yet.
+                        )
                         for s, e, score in zip(starts, ends, scores)
                     ]
 
                 if kwargs["version_2_with_negative"]:
-                    answers.append({
-                        "score": min_null_score,
-                        "score_raw": min_null_score_raw,
-                        "start": 0,
-                        "end": 0,
-                        "answer": "",
-                    })
+                    answers.append(Answer(
+                        instance=example,
+                        text="",
+                        score=min_null_score,
+                        score_raw=min_null_score_raw,
+                        start=0,
+                        null_score=min_null_score,  # The same, as this is the null one.
+                        null_score_raw=min_null_score_raw,  # The same, as this is the null one.
+                    ))
 
-                answers = sorted(answers, key=lambda x: x["score"], reverse=True)[: kwargs["topk"]]
-                all_answers += answers
-
-        if len(all_answers) == 1:
-            return all_answers[0]
-        return all_answers
+                for answer in sorted(answers, key=lambda a: a.sort_key, reverse=True)[: kwargs["topk"]]:
+                    # We assign it now that we now it.
+                    answer.null_score = min_null_score
+                    answer.null_score_raw = min_null_score_raw
+                    yield answer
 
 
 SUPPORTED_TASKS["question-answering"]["impl"] = OurQuestionAnsweringPipeline
+
+PATH_MODEL_FOLDER = "model"
+
+
+def create_qa_pipeline(path_model_folder: str = PATH_MODEL_FOLDER, device: int = -1) -> Pipeline:
+    return pipeline("question-answering", model=path_model_folder, config=path_model_folder,
+                    tokenizer=path_model_folder, device=device)
