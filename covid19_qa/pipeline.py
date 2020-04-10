@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 from dataclasses import dataclass
 from itertools import groupby
-from typing import Iterator
+from typing import Iterator, Tuple
 
 import numpy as np
+import scipy.special
 import torch
 from transformers import Pipeline, pipeline, squad_convert_examples_to_features, SquadExample
 from transformers.pipelines import QuestionAnsweringPipeline, SUPPORTED_TASKS
@@ -11,7 +12,6 @@ from transformers.pipelines import QuestionAnsweringPipeline, SUPPORTED_TASKS
 from covid19_qa.util import chunks
 
 Instance = SquadExample
-
 
 ANSWER_SORT_FIELD = "score"
 assert ANSWER_SORT_FIELD in {"score", "score_raw"}
@@ -80,7 +80,7 @@ class OurQuestionAnsweringPipeline(QuestionAnsweringPipeline):
 
         # Convert inputs to features
         examples = self._args_parser(*texts, **kwargs)
-        features_list_all = squad_convert_examples_to_features(
+        features_list_flat = squad_convert_examples_to_features(
             examples,
             self.tokenizer,
             kwargs["max_seq_len"],
@@ -89,105 +89,124 @@ class OurQuestionAnsweringPipeline(QuestionAnsweringPipeline):
             False,
             threads=kwargs["threads"],
         )
-        features_list = [list(example_features)
-                         for _example_index, example_features in groupby(features_list_all, lambda f: f.example_index)]
 
-        for features_list_batch, examples_batch in zip(*[chunks(x, kwargs["batch_size"])
-                                                         for x in [features_list, examples]]):
-            fw_args_list = [self.inputs_for_model([f.__dict__ for f in features]) for features in features_list_batch]
-            starts = None
-            ends = None
+        start_logits_flat = np.empty((len(features_list_flat), kwargs["max_seq_len"]))
+        end_logits_flat = np.empty_like(start_logits_flat)
+
+        for batch_idx, features_batch in enumerate(chunks(features_list_flat, kwargs["batch_size"])):
+            batch_size = len(features_batch)
+            kwargs_as_lists = self.inputs_for_model([f.__dict__ for f in features_batch])
             # Manage tensor allocation on correct device
             with self.device_placement():
                 if self.framework == "tf":
-                    raise NotImplementedError("tf not supported")
+                    raise ValueError("tf not supported")
                 else:
                     with torch.no_grad():
-                        # We obtain any value for the dictionary to compute the list length (number of features).
-                        features_lens = torch.tensor([len(next(iter(fw_args.values()))) for fw_args in fw_args_list],
-                                                     device=self.device, dtype=torch.int16)
-                        max_feature_len = features_lens.max().item()
+                        kwargs_as_tensors = {k: torch.tensor(v, device=self.device, dtype=torch.int64)
+                                             for k, v in kwargs_as_lists.items()}
+                        starts, ends = self.model(**kwargs_as_tensors)
 
-                        fw_args_batch = {}
-                        for k, v0 in fw_args_list[0].items():
-                            batch_size = len(fw_args_list)
-                            seq_length = len(v0[0])
-                            # zeros so attention_mask extra position has zeros.
-                            fw_args_batch[k] = torch.zeros(batch_size, max_feature_len, seq_length, device=self.device,
-                                                           dtype=torch.int64)
-                            for i, fw_args in enumerate(fw_args_list):
-                                t = torch.tensor(fw_args[k], device=self.device, dtype=torch.int64)
-                                fw_args_batch[k][i, :len(t)] = t
+                        start_logits_flat[batch_idx * batch_size: (batch_idx + 1) * batch_size] = starts.cpu().numpy()
+                        end_logits_flat[batch_idx * batch_size: (batch_idx + 1) * batch_size] = ends.cpu().numpy()
 
-                            fw_args_batch[k] = fw_args_batch[k].view(-1, seq_length)
+        indices_and_features_iterable = groupby(enumerate(features_list_flat), lambda t: t[1].example_index)
+        for example, (_, indices_and_features) in zip(examples, indices_and_features_iterable):
+            indices, features = zip(*indices_and_features)
 
-                        starts, ends = self.model(**fw_args_batch)
+            char_to_word = np.array(example.char_to_word_offset)
 
-                        starts = starts.view(batch_size, max_feature_len, -1)
-                        ends = ends.view(batch_size, max_feature_len, -1)
+            start_logits, end_logits = start_logits_flat[indices, :], end_logits_flat[indices, :]
 
-                        starts, ends = starts.cpu().numpy(), ends.cpu().numpy()
+            # Normalize logits and spans to retrieve the answer
+            start_probs = scipy.special.softmax(start_logits, axis=1)
+            end_probs = scipy.special.softmax(end_logits, axis=1)
 
-            for start, end, features, features_len, example in zip(starts, ends, features_list_batch, features_lens,
-                                                                   examples_batch):
-                min_null_score = 1
-                min_null_score_raw = 1000000  # large and positive
-                answers = []
-                for (feature, start_raw, end_raw) in zip(features, start, end):
-                    # Normalize logits and spans to retrieve the answer
-                    start_ = np.exp(start_raw) / np.sum(np.exp(start_raw))
-                    end_ = np.exp(end_raw) / np.sum(np.exp(end_raw))
+            # Mask padding and question
+            p_mask = np.array([feature.p_mask for feature in features])
+            start_probs, end_probs = start_probs * (1 - p_mask), end_probs * (1 - p_mask)
 
-                    # Mask padding and question
-                    start_, end_ = (
-                        start_ * np.abs(np.array(feature.p_mask) - 1),
-                        end_ * np.abs(np.array(feature.p_mask) - 1),
-                    )
+            if kwargs["version_2_with_negative"]:
+                min_null_score = (start_probs[:, 0] * end_probs[:, 0]).min().item()
+                min_null_score_raw = (start_logits[:, 0] + start_logits[:, 0]).min().item()
+            else:
+                min_null_score = 0
+                min_null_score_raw = -1000000
 
-                    if kwargs["version_2_with_negative"]:
-                        null_score_raw = (start_raw[0] + end_raw[0]).item()
-                        null_score = (start_[0] * end_[0]).item()
-                        if null_score < min_null_score:
-                            min_null_score = null_score
-                            min_null_score_raw = null_score_raw
+            start_probs[:, 0] = end_probs[:, 0] = 0
 
-                    start_[0] = end_[0] = 0
+            feature_indices, starts, ends, scores = self.decode(start_probs, end_probs, kwargs["topk"],
+                                                                kwargs["max_answer_len"])
 
-                    starts, ends, scores = self.decode(start_, end_, kwargs["topk"], kwargs["max_answer_len"])
-                    char_to_word = np.array(example.char_to_word_offset)
+            # Convert the answer (tokens) back to the original text
+            answers = [
+                Answer(
+                    instance=example,
+                    text=" ".join(
+                        example.doc_tokens[features[i].token_to_orig_map[s]: features[i].token_to_orig_map[e] + 1]
+                    ),
+                    score=score.item(),
+                    score_raw=(start_logits[i, s] + end_logits[i, e]).item(),
+                    start=np.where(char_to_word == features[i].token_to_orig_map[s])[0][0].item(),
+                    null_score=min_null_score,
+                    null_score_raw=min_null_score_raw,
+                )
+                for i, s, e, score in zip(feature_indices, starts, ends, scores)
+            ]
 
-                    # Convert the answer (tokens) back to the original text
-                    answers += [
-                        Answer(
-                            instance=example,
-                            text=" ".join(
-                                example.doc_tokens[feature.token_to_orig_map[s]: feature.token_to_orig_map[e] + 1]
-                            ),
-                            score=score.item(),
-                            score_raw=(start_raw[s] + end_raw[e]).item(),
-                            start=np.where(char_to_word == feature.token_to_orig_map[s])[0][0].item(),
-                            null_score=-1,  # We don't know it yet.
-                            null_score_raw=-1,  # We don't know it yet.
-                        )
-                        for s, e, score in zip(starts, ends, scores)
-                    ]
+            if kwargs["version_2_with_negative"]:
+                answers.append(Answer(
+                    instance=example,
+                    text="",
+                    score=min_null_score,
+                    score_raw=min_null_score_raw,
+                    start=0,
+                    null_score=min_null_score,  # The same one, as this is the null answer itself.
+                    null_score_raw=min_null_score_raw,  # The same one, as this is the null answer itself.
+                ))
 
-                if kwargs["version_2_with_negative"]:
-                    answers.append(Answer(
-                        instance=example,
-                        text="",
-                        score=min_null_score,
-                        score_raw=min_null_score_raw,
-                        start=0,
-                        null_score=min_null_score,  # The same, as this is the null one.
-                        null_score_raw=min_null_score_raw,  # The same, as this is the null one.
-                    ))
+            for answer in sorted(answers, key=lambda a: a.sort_key, reverse=True)[: kwargs["topk"]]:
+                yield answer
 
-                for answer in sorted(answers, key=lambda a: a.sort_key, reverse=True)[: kwargs["topk"]]:
-                    # We assign it now that we now it.
-                    answer.null_score = min_null_score
-                    answer.null_score_raw = min_null_score_raw
-                    yield answer
+    def decode(self, start: np.ndarray, end: np.ndarray, topk: int,
+               max_answer_len: int) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
+        """
+        Take the output of any QuestionAnswering head and will generate probabilities for each span to be
+        the actual answer.
+        In addition, it filters out some unwanted/impossible cases like answer len being greater than
+        max_answer_len or answer end position being before the starting position.
+        The method supports output the k-best answer through the topk argument.
+
+        Args:
+            start: numpy array, holding individual start probabilities for each token
+            end: numpy array, holding individual end probabilities for each token
+            topk: int, indicates how many possible answer span(s) to extract from the model's output
+            max_answer_len: int, maximum size of the answer to extract from the model's output
+        """
+        # Ensure we have batch axis
+        if start.ndim == 1:
+            start = start[None]
+
+        if end.ndim == 1:
+            end = end[None]
+
+        # Compute the score of each tuple(start, end) to be the real answer
+        outer = np.matmul(np.expand_dims(start, -1), np.expand_dims(end, 1))
+
+        # Remove candidate with end < start and end - start > max_answer_len
+        candidates = np.tril(np.triu(outer), max_answer_len - 1)
+
+        #  Inspired by Chen & al. (https://github.com/facebookresearch/DrQA)
+        scores_flat = candidates.flatten()
+        if topk == 1:
+            idx_sort = [np.argmax(scores_flat)]
+        elif len(scores_flat) < topk:
+            idx_sort = np.argsort(-scores_flat)
+        else:
+            idx = np.argpartition(-scores_flat, topk)[0:topk]
+            idx_sort = idx[np.argsort(-scores_flat[idx])]
+
+        feature_idx, start, end = np.unravel_index(idx_sort, candidates.shape)
+        return feature_idx, start, end, candidates[feature_idx, start, end]
 
 
 SUPPORTED_TASKS["question-answering"]["impl"] = OurQuestionAnsweringPipeline
