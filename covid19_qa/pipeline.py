@@ -95,6 +95,7 @@ class OurQuestionAnsweringPipeline(QuestionAnsweringPipeline):
         kwargs.setdefault("version_2_with_negative", False)
         kwargs.setdefault("batch_size", 1)
         kwargs.setdefault("threads", 1)
+        kwargs.setdefault("min_score", None)  # It has priority over "topk" and it doesn't apply to the null answer.
         kwargs.setdefault("sort_mode", DEFAULT_SORT_MODE)
 
         if kwargs["topk"] < 1:
@@ -225,6 +226,10 @@ class OurQuestionAnsweringPipeline(QuestionAnsweringPipeline):
                     unique_answers_by_start_and_end[(answer.start, answer.end)] = answer
 
             unique_answers = list(unique_answers_by_start_and_end.values())
+
+            unique_answers = [answer
+                              for answer in unique_answers
+                              if kwargs["min_score"] is None or answer.sort_score >= kwargs["min_score"]]
 
             if kwargs["version_2_with_negative"]:
                 unique_answers.append(null_answer)

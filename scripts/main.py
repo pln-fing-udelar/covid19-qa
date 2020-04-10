@@ -16,8 +16,8 @@ logger = logging.getLogger(__name__)
 
 def _show_answers(args: argparse.Namespace, qa_pipeline: Pipeline, question: str) -> None:
     answers = answer_question_from_all_docs(question, qa_pipeline, top_k=args.top_k,
-                                            top_k_per_instance=args.top_k_per_document, sort_mode=args.sort_mode,
-                                            batch_size=args.batch_size, threads=args.threads)
+                                            top_k_per_instance=args.top_k_per_document, min_score=args.min_score,
+                                            sort_mode=args.sort_mode, batch_size=args.batch_size, threads=args.threads)
     for answer in answers:
         print("** Doc ID:", answer.instance.qas_id)
         print("** Answer:", answer.text)
@@ -40,8 +40,8 @@ def _interact(args: argparse.Namespace, qa_pipeline: Pipeline) -> None:
 
 def _evaluate(args: argparse.Namespace, qa_pipeline: Pipeline) -> None:
     results = evaluate_with_all_annotated_instances(qa_pipeline, merge_all_texts=args.merge_all_texts,
-                                                    sort_mode=args.sort_mode, batch_size=args.batch_size,
-                                                    threads=args.threads)
+                                                    min_score=args.min_score, sort_mode=args.sort_mode,
+                                                    batch_size=args.batch_size, threads=args.threads)
     for k, v in results.items():
         if isinstance(v, float):
             print(f"{k}: {v:5.1f}")
@@ -61,6 +61,7 @@ def _parse_args() -> argparse.Namespace:
     parser.add_argument("--batch-size", type=int, default=32)
     parser.add_argument("--device", type=int, default=-1,
                         help="device where the model is run. -1 is CPU, otherwise it's the GPU ID")
+    parser.add_argument("--min-score", type=float)
     parser.add_argument("--sort-mode", choices=sorted(SORT_MODE_CHOICES), default=DEFAULT_SORT_MODE)
     parser.add_argument("--threads", type=int, default=4,
                         help="number of threads used to convert the instances to features")
