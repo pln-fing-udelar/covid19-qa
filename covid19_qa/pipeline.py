@@ -123,8 +123,9 @@ class OurQuestionAnsweringPipeline(QuestionAnsweringPipeline):
         start_logits_flat = np.empty((len(features_list_flat), kwargs["max_seq_len"]))
         end_logits_flat = np.empty_like(start_logits_flat)
 
-        for batch_idx, features_batch in enumerate(chunks(features_list_flat, kwargs["batch_size"])):
-            batch_size = len(features_batch)
+        max_batch_size = kwargs["batch_size"]
+
+        for batch_idx, features_batch in enumerate(chunks(features_list_flat, max_batch_size)):
             kwargs_as_lists = self.inputs_for_model([f.__dict__ for f in features_batch])
             # Manage tensor allocation on correct device
             with self.device_placement():
@@ -136,10 +137,10 @@ class OurQuestionAnsweringPipeline(QuestionAnsweringPipeline):
                                              for k, v in kwargs_as_lists.items()}
                         start_indices, end_indices = self.model(**kwargs_as_tensors)
 
-                        batch_start_idx = batch_idx * batch_size
-                        batch_end_idx = (batch_idx + 1) * batch_size
-                        start_logits_flat[batch_start_idx: batch_end_idx] = start_indices.cpu().numpy()
-                        end_logits_flat[batch_start_idx: batch_end_idx] = end_indices.cpu().numpy()
+                        batch_start_idx = batch_idx * max_batch_size
+                        batch_end_idx = (batch_idx + 1) * max_batch_size
+                        start_logits_flat[batch_start_idx:batch_end_idx] = start_indices.cpu().numpy()
+                        end_logits_flat[batch_start_idx:batch_end_idx] = end_indices.cpu().numpy()
 
         # Don't convert into (batch_size, max_features_len, max_seq_length)
         # because there may be a very long doc (with a lot of features; i.e., max_features_len may be very large).
