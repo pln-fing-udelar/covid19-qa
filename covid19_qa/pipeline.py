@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from dataclasses import dataclass
 from itertools import groupby
-from typing import Iterator, Tuple
+from typing import Iterator, Literal, MutableMapping, Optional, Tuple
 
 import numpy as np
 import scipy.special
@@ -11,22 +11,32 @@ from transformers.pipelines import QuestionAnsweringPipeline, SUPPORTED_TASKS
 
 from covid19_qa.util import chunks
 
+SORT_MODE_CHOICES = {"prob", "logit"}
+DEFAULT_SORT_MODE = "prob"
+TYPE_SORT_MODE = Literal["prob", "logit"]
+
 Instance = SquadExample
 
-ANSWER_SORT_FIELD = "score"
-assert ANSWER_SORT_FIELD in {"score", "score_raw"}
 
-
-@dataclass
+@dataclass(frozen=True)
 class Answer:
     instance: Instance
     text: str
-    score: float
-    score_raw: float
+    prob: float
+    logit: float
     start: int
-    # We keep the null scores as a reference (even if the answer is already the null one).
-    null_score: float
-    null_score_raw: float
+    sort_mode: TYPE_SORT_MODE = DEFAULT_SORT_MODE
+    null_answer: Optional["Answer"] = None  # We keep the null answer as a reference (even if this is the one).
+    in_context_window_size_half: int = 100
+
+    def __post_init__(self):
+        if not self.text:  # `self` is the null answer.
+            # If the answer is null, we assign the null answer as `self` here,
+            # because doing it from outside in an immutable class is impossible.
+            #
+            # This way of assigning is a workaround because the class is immutable,
+            # and it fails to assign in the common way.
+            object.__setattr__(self, "null_answer", self)
 
     @property
     def end(self) -> int:
@@ -35,10 +45,8 @@ class Answer:
     @property
     def in_context(self) -> str:
         if self.text:
-            half_window_size = 50
-
-            span_start = abs(self.start - half_window_size)
-            span_end = self.end + half_window_size
+            span_start = abs(self.start - self.in_context_window_size_half)
+            span_end = self.end + self.in_context_window_size_half
 
             prefix = self.instance.context_text[span_start:self.start]
             if span_start > 0:
@@ -48,17 +56,18 @@ class Answer:
             if span_end < len(self.instance.context_text):
                 suffix += "[…]"
 
-            return f"{prefix}*{self.text}*{suffix}"
+            return f"{prefix}**{self.text}**{suffix}"
         else:
             return ""
 
     @property
-    def sort_key(self) -> float:
-        return getattr(self, ANSWER_SORT_FIELD)
+    def sort_score(self) -> float:
+        return getattr(self, self.sort_mode)
 
-    @property
-    def null_sort_key(self) -> float:
-        return getattr(self, f"null_{ANSWER_SORT_FIELD}")
+    def one_inside_the_other_one(self, another_answer: "Answer") -> bool:
+        # We suppose they both refer to the same instance.
+        return (self.start <= another_answer.start and another_answer.end <= self.end) \
+               or (another_answer.start <= self.start and self.end <= another_answer.end)
 
 
 class OurQuestionAnsweringPipeline(QuestionAnsweringPipeline):
@@ -86,12 +95,17 @@ class OurQuestionAnsweringPipeline(QuestionAnsweringPipeline):
         kwargs.setdefault("version_2_with_negative", False)
         kwargs.setdefault("batch_size", 1)
         kwargs.setdefault("threads", 1)
+        kwargs.setdefault("sort_mode", DEFAULT_SORT_MODE)
 
         if kwargs["topk"] < 1:
-            raise ValueError("topk parameter should be >= 1 (got {})".format(kwargs["topk"]))
+            raise ValueError(f"topk parameter should be >= 1 (got {kwargs['topk']})")
 
         if kwargs["max_answer_len"] < 1:
-            raise ValueError("max_answer_len parameter should be >= 1 (got {})".format(kwargs["max_answer_len"]))
+            raise ValueError(f"max_answer_len parameter should be >= 1 (got {kwargs['max_answer_len']})")
+
+        if kwargs["sort_mode"] not in SORT_MODE_CHOICES:
+            raise ValueError(f"sort_mode parameter should be in {SORT_MODE_CHOICES} (got {kwargs['sort_mode']})")
+        sort_with_prob = kwargs["sort_mode"] == "prob"
 
         # Convert inputs to features
         examples = self._args_parser(*texts, **kwargs)
@@ -119,10 +133,15 @@ class OurQuestionAnsweringPipeline(QuestionAnsweringPipeline):
                     with torch.no_grad():
                         kwargs_as_tensors = {k: torch.tensor(v, device=self.device, dtype=torch.int64)
                                              for k, v in kwargs_as_lists.items()}
-                        starts, ends = self.model(**kwargs_as_tensors)
+                        start_indices, end_indices = self.model(**kwargs_as_tensors)
 
-                        start_logits_flat[batch_idx * batch_size: (batch_idx + 1) * batch_size] = starts.cpu().numpy()
-                        end_logits_flat[batch_idx * batch_size: (batch_idx + 1) * batch_size] = ends.cpu().numpy()
+                        batch_start_idx = batch_idx * batch_size
+                        batch_end_idx = (batch_idx + 1) * batch_size
+                        start_logits_flat[batch_start_idx: batch_end_idx] = start_indices.cpu().numpy()
+                        end_logits_flat[batch_start_idx: batch_end_idx] = end_indices.cpu().numpy()
+
+        # Don't convert into (batch_size, max_features_len, max_seq_length)
+        # because there may be a very long doc (with a lot of features; i.e., max_features_len may be very large).
 
         indices_and_features_iterable = groupby(enumerate(features_list_flat), lambda t: t[1].example_index)
         for example, (_, indices_and_features) in zip(examples, indices_and_features_iterable):
@@ -138,52 +157,83 @@ class OurQuestionAnsweringPipeline(QuestionAnsweringPipeline):
 
             # Mask padding and question
             p_mask = np.array([feature.p_mask for feature in features])
-            start_probs, end_probs = start_probs * (1 - p_mask), end_probs * (1 - p_mask)
+            p_bool_mask = p_mask == 1
+            start_logits[p_bool_mask], end_logits[p_bool_mask] = -np.inf, -np.inf
+            start_probs[p_bool_mask], end_probs[p_bool_mask] = 0, 0
 
             if kwargs["version_2_with_negative"]:
-                min_null_score = (start_probs[:, 0] * end_probs[:, 0]).min().item()
-                min_null_score_raw = (start_logits[:, 0] + start_logits[:, 0]).min().item()
+                null_answer = Answer(
+                    instance=example,
+                    text="",
+                    prob=(start_probs[:, 0] * end_probs[:, 0]).min().item(),
+                    logit=(start_logits[:, 0] + start_logits[:, 0]).min().item(),
+                    start=0,
+                    sort_mode=kwargs["sort_mode"],
+                )
             else:
-                min_null_score = 0
-                min_null_score_raw = -1000000
+                null_answer = None
 
             start_probs[:, 0] = end_probs[:, 0] = 0
+            start_logits[:, 0] = end_logits[:, 0] = -np.inf
 
-            feature_indices, starts, ends, scores = self.decode(start_probs, end_probs, kwargs["topk"],
-                                                                kwargs["max_answer_len"])
+            if sort_with_prob:
+                start_scores, end_scores = start_probs, end_probs
+            else:
+                start_scores, end_scores = start_logits, end_logits
+
+            # We increase the top-k because there can be repeated answers here
+            # (e.g., they start in different tokens of the same word).
+            feature_indices, start_indices, end_indices = self.decode(start_scores, end_scores, 5 * kwargs["topk"],
+                                                                      kwargs["max_answer_len"], sort_with_prob)
 
             # Convert the answer (tokens) back to the original text
-            answers = [
+            answers = (
                 Answer(
                     instance=example,
                     text=" ".join(
-                        example.doc_tokens[features[i].token_to_orig_map[s]: features[i].token_to_orig_map[e] + 1]
+                        example.doc_tokens[features[f].token_to_orig_map[s]: features[f].token_to_orig_map[e] + 1]
                     ),
-                    score=score.item(),
-                    score_raw=(start_logits[i, s] + end_logits[i, e]).item(),
-                    start=np.where(char_to_word == features[i].token_to_orig_map[s])[0][0].item(),
-                    null_score=min_null_score,
-                    null_score_raw=min_null_score_raw,
+                    prob=(start_probs[f, s] * end_probs[f, e]).item(),
+                    logit=(start_logits[f, s] + end_logits[f, e]).item(),
+                    start=np.where(char_to_word == features[f].token_to_orig_map[s])[0][0].item(),
+                    null_answer=null_answer,
+                    sort_mode=kwargs["sort_mode"],
                 )
-                for i, s, e, score in zip(feature_indices, starts, ends, scores)
-            ]
+                for f, s, e in zip(feature_indices, start_indices, end_indices)
+            )
+
+            # We leave the unique answers.
+            # An answer in considered non-unique if it's inside another one.
+            #
+            # Note that if they have the same text and they're in the same positions then only one will be kept.
+            # If they have the same text but are in different positions we leave them, and this is good
+            # (i.e., it's like having more evidence).
+            #
+            # We use `(start, end)` to uniquely identify the answer (note they answer the same `example`).
+            unique_answers_by_start_and_end: MutableMapping[Tuple[int, int], Answer] = {}
+            for answer in answers:
+                # We iterate with copy because we may delete items.
+                for start_and_end, another_answer in list(unique_answers_by_start_and_end.items()):
+                    if answer.one_inside_the_other_one(another_answer):
+                        if answer.sort_score > another_answer.sort_score:
+                            # TODO: we could make a new answer with the widest answer (keeping the largest score).
+                            #   Or other strategies with overlapping answers.
+                            del unique_answers_by_start_and_end[start_and_end]
+                            unique_answers_by_start_and_end[(answer.start, answer.end)] = answer
+                        break
+                else:
+                    unique_answers_by_start_and_end[(answer.start, answer.end)] = answer
+
+            unique_answers = list(unique_answers_by_start_and_end.values())
 
             if kwargs["version_2_with_negative"]:
-                answers.append(Answer(
-                    instance=example,
-                    text="",
-                    score=min_null_score,
-                    score_raw=min_null_score_raw,
-                    start=0,
-                    null_score=min_null_score,  # The same one, as this is the null answer itself.
-                    null_score_raw=min_null_score_raw,  # The same one, as this is the null answer itself.
-                ))
+                unique_answers.append(null_answer)
 
-            for answer in sorted(answers, key=lambda a: a.sort_key, reverse=True)[: kwargs["topk"]]:
+            for answer in sorted(unique_answers, key=lambda a: a.sort_score, reverse=True)[: kwargs["topk"]]:
                 yield answer
 
     def decode(self, start: np.ndarray, end: np.ndarray, topk: int,
-               max_answer_len: int) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
+               max_answer_len: int, sort_with_prob: bool = True) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
         """
         Take the output of any QuestionAnswering head and will generate probabilities for each span to be
         the actual answer.
@@ -196,6 +246,7 @@ class OurQuestionAnsweringPipeline(QuestionAnsweringPipeline):
             end: numpy array, holding individual end probabilities for each token
             topk: int, indicates how many possible answer span(s) to extract from the model's output
             max_answer_len: int, maximum size of the answer to extract from the model's output
+            sort_with_prob: bool, if to interpret the scores as probabilities (True) or as logits
         """
         # Ensure we have batch axis
         if start.ndim == 1:
@@ -205,10 +256,15 @@ class OurQuestionAnsweringPipeline(QuestionAnsweringPipeline):
             end = end[None]
 
         # Compute the score of each tuple(start, end) to be the real answer
-        outer = np.matmul(np.expand_dims(start, -1), np.expand_dims(end, 1))
+        if sort_with_prob:
+            candidates = np.matmul(np.expand_dims(start, -1), np.expand_dims(end, 1))
+        else:
+            candidates = np.expand_dims(start, -1) + np.expand_dims(end, 1)
 
-        # Remove candidate with end < start and end - start > max_answer_len
-        candidates = np.tril(np.triu(outer), max_answer_len - 1)
+        # Remove candidates with end < start
+        candidates[..., np.tri(*candidates.shape[-2:], k=-1, dtype=bool)] = candidates.min()  # noqa
+        # Remove candidates with end - start > max_answer_len
+        candidates[..., ~np.tri(*candidates.shape[-2:], k=max_answer_len - 1, dtype=bool)] = candidates.min()  # noqa
 
         #  Inspired by Chen & al. (https://github.com/facebookresearch/DrQA)
         scores_flat = candidates.flatten()
@@ -220,8 +276,7 @@ class OurQuestionAnsweringPipeline(QuestionAnsweringPipeline):
             idx = np.argpartition(-scores_flat, topk)[0:topk]
             idx_sort = idx[np.argsort(-scores_flat[idx])]
 
-        feature_idx, start, end = np.unravel_index(idx_sort, candidates.shape)
-        return feature_idx, start, end, candidates[feature_idx, start, end]
+        return np.unravel_index(idx_sort, candidates.shape)
 
 
 SUPPORTED_TASKS["question-answering"]["impl"] = OurQuestionAnsweringPipeline
