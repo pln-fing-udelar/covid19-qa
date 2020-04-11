@@ -7,6 +7,7 @@ import numpy as np
 import scipy.special
 import torch
 from transformers import Pipeline, pipeline, squad_convert_examples_to_features, SquadExample
+from transformers.data.metrics.squad_metrics import compute_exact
 from transformers.pipelines import QuestionAnsweringPipeline, SUPPORTED_TASKS
 
 from covid19_qa.util import chunks
@@ -63,6 +64,9 @@ class Answer:
     @property
     def sort_score(self) -> float:
         return getattr(self, self.sort_mode)
+
+    def is_exactly_correct(self) -> bool:
+        return bool(compute_exact(self.instance.answer_text, self.text))
 
     def one_inside_the_other_one(self, another_answer: "Answer") -> bool:
         # We suppose they both refer to the same instance.

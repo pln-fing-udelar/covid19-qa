@@ -4,11 +4,15 @@ import argparse
 import logging
 import time
 
+import matplotlib.pyplot as plt
+import numpy as np
+import seaborn as sns
 from transformers import Pipeline
 
 from covid19_qa.argparse_with_defaults import ArgumentParserWithDefaults
+from covid19_qa.dataset import load_all_annotated_instances
 from covid19_qa.pipeline import create_qa_pipeline, DEFAULT_SORT_MODE, SORT_MODE_CHOICES
-from covid19_qa.qa import answer_question_from_all_docs
+from covid19_qa.qa import answer_question_from_all_docs, answer_from_instances
 from covid19_qa.evaluation import evaluate_with_all_annotated_instances
 
 logger = logging.getLogger(__name__)
@@ -49,6 +53,23 @@ def _evaluate(args: argparse.Namespace, qa_pipeline: Pipeline) -> None:
             print(f"{k}: {v}")
 
 
+def _plot_scores(args: argparse.Namespace, qa_pipeline: Pipeline) -> None:
+    sns.set()
+
+    instances = list(load_all_annotated_instances())
+    instances = instances
+    answers = answer_from_instances(instances, qa_pipeline, remove_empty_answers=False, min_score=args.min_score,
+                                    top_k_per_instance=args.top_k_per_document, sort_mode=args.sort_mode,
+                                    batch_size=args.batch_size, threads=args.threads)
+    correct_scores = np.asarray([answer.sort_score for answer in answers if answer.is_exactly_correct()])
+    incorrect_scores = np.asarray([answer.sort_score for answer in answers if not answer.is_exactly_correct()])
+
+    kwargs = {"bins": 20, "kde": False, "norm_hist": True}
+    sns.distplot(correct_scores, label="correct", **kwargs)
+    sns.distplot(incorrect_scores, label="incorrect", **kwargs)
+    plt.show()
+
+
 def _try(args: argparse.Namespace, qa_pipeline: Pipeline) -> None:
     question = "¿Qué criticó Da Silveira?"
     print("Question:", question)
@@ -80,6 +101,9 @@ def _parse_args() -> argparse.Namespace:
     evaluate_subparser = subparsers.add_parser("evaluate")
     evaluate_subparser.add_argument("--merge-all-texts", action="store_true")
     evaluate_subparser.set_defaults(func=_evaluate)
+
+    plot_scores_subparser = subparsers.add_parser("plot-scores")
+    plot_scores_subparser.set_defaults(func=_plot_scores)
 
     try_subparser = subparsers.add_parser("try")
     try_subparser.set_defaults(func=_try)
