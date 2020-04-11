@@ -21,6 +21,7 @@ jobs:
         mkdir -p model
         pushd model/
         wget 'https://drive.google.com/uc?id=16-e_vF6nal0wsg7USU9uXfUdvGPaA39E&export=download' -O config.json
+        wget 'https://drive.google.com/uc?id=11kvUvYJZ-B8p1cgn6XnqAnSJgHRM1s2K&export=download' -O modelcard.json
 
         # See https://stackoverflow.com/a/32742700/1165181
         curl -c /tmp/cookies "https://drive.google.com/uc?id=10kLRr0g13zCJBSWVHVpURoXuCLlZSDHa&export=download" > /tmp/intermezzo.html
@@ -36,5 +37,4 @@ jobs:
     - name: Run main.py
       run: |
         source activate covid19-qa
-        python -c 'import nltk; nltk.download("punkt")'
         python main.py
