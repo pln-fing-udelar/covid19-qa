@@ -291,9 +291,10 @@ class OurQuestionAnsweringPipeline(QuestionAnsweringPipeline):
 
 SUPPORTED_TASKS["question-answering"]["impl"] = OurQuestionAnsweringPipeline
 
-PATH_MODEL_FOLDER = "model"
+DEFAULT_MODEL = "mrm8488/distill-bert-base-spanish-wwm-cased-finetuned-spa-squad2-es"  # "model"
 
 
-def create_qa_pipeline(path_model_folder: str = PATH_MODEL_FOLDER, device: int = -1) -> Pipeline:
-    return pipeline("question-answering", model=path_model_folder, config=path_model_folder,
-                    tokenizer=path_model_folder, device=device)
+def create_qa_pipeline(pretrained_model_name_or_folder_path: str = DEFAULT_MODEL, device: int = -1) -> Pipeline:
+    return pipeline("question-answering", model=pretrained_model_name_or_folder_path,
+                    config=pretrained_model_name_or_folder_path, tokenizer=pretrained_model_name_or_folder_path,
+                    device=device)
