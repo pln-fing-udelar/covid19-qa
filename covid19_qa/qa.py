@@ -55,8 +55,8 @@ def answer_question_from_doc_ids(doc_ids: Iterator[str], question: str, qa_pipel
                                  remove_empty_answers: bool = True, min_score: Optional[float] = None,
                                  sort_mode: TYPE_SORT_MODE = DEFAULT_SORT_MODE, batch_size: int = 32,
                                  threads: int = 1) -> Iterator[Answer]:
-    snippets = load_documents(doc_ids=doc_ids)
-    return answer_question_from_documents(snippets, question, qa_pipeline, top_k=top_k,
+    documents = load_documents(doc_ids=doc_ids)
+    return answer_question_from_documents(documents, question, qa_pipeline, top_k=top_k,
                                           top_k_per_instance=top_k_per_instance,
                                           remove_empty_answers=remove_empty_answers, min_score=min_score,
                                           sort_mode=sort_mode,
