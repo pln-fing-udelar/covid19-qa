@@ -43,7 +43,7 @@ def _interact(args: argparse.Namespace, qa_pipeline: Pipeline) -> None:
 
 
 def _evaluate(args: argparse.Namespace, qa_pipeline: Pipeline) -> None:
-    results = evaluate_with_all_annotated_instances(qa_pipeline, merge_all_texts=args.merge_all_texts,
+    results = evaluate_with_all_annotated_instances(qa_pipeline, search_all_texts=args.search_all_texts,
                                                     min_score=args.min_score, sort_mode=args.sort_mode,
                                                     batch_size=args.batch_size, threads=args.threads)
     for k, v in results.items():
@@ -99,7 +99,7 @@ def _parse_args() -> argparse.Namespace:
     interact_subparser.set_defaults(func=_interact)
 
     evaluate_subparser = subparsers.add_parser("evaluate")
-    evaluate_subparser.add_argument("--merge-all-texts", action="store_true")
+    evaluate_subparser.add_argument("--search-all-texts", action="store_true")
     evaluate_subparser.set_defaults(func=_evaluate)
 
     plot_scores_subparser = subparsers.add_parser("plot-scores")
