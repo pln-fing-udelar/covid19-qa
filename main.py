@@ -71,7 +71,7 @@ def _plot_scores(args: argparse.Namespace, qa_pipeline: Pipeline) -> None:
 
 
 def _try(args: argparse.Namespace, qa_pipeline: Pipeline) -> None:
-    question = "¿Quién convocó al caceroleo?"
+    question = "¿Cuánto tests se hicieron?"
     print("Question:", question)
     print()
     _show_answers(args, qa_pipeline, question=question)
