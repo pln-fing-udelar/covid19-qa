@@ -71,10 +71,12 @@ def _plot_scores(args: argparse.Namespace, qa_pipeline: Pipeline) -> None:
 
 
 def _try(args: argparse.Namespace, qa_pipeline: Pipeline) -> None:
-    question = "¿Cuántos tests de coronavirus se hicieron?"
-    print("Question:", question)
-    print()
-    _show_answers(args, qa_pipeline, question=question)
+    #question = "¿Cuántos tests de coronavirus se hicieron?"
+    questions = ["¿Quién hace los tests?", "¿Se hacen tests a personas con síntomas leves?", "¿Por qué renunció la Directora de Epidemiología del MSP?", "¿El Ministro Salinas dijo el martes que las personas con síntomas leves no se pueden hacer el test?", "¿En cuántos hogares se caceroleó?", "¿Cómo se propone salir de la crisis?", "¿Cuántas personas apoyaron el caceroleo?", "¿Se recomienda usar el celular?"]
+    for question in questions:
+        print("Question:", question)
+        print()
+        _show_answers(args, qa_pipeline, question=question)
 
 
 def _parse_args() -> argparse.Namespace:
