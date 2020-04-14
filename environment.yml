@@ -5,6 +5,7 @@ channels:
 dependencies:
   - pip:
     - transformers==2.8.0
+    - elasticsearch==7.6.0
   - cudatoolkit=10.1.243
   - cudnn=7.6.5
   - numpy=1.18.1
