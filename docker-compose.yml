@@ -34,3 +34,13 @@ services:
     depends_on:
       - elasticsearch-covid
 
+  api:
+    build: api/
+    ports:
+      - 5000:5000
+    environment:
+      - PYTHONUNBUFFERED=1
+      - FLASK_ENV=development
+    volumes:
+      - ./api/app:/usr/src/app
+
