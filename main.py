@@ -72,7 +72,7 @@ def _plot_scores(args: argparse.Namespace, qa_pipeline: Pipeline) -> None:
 
 def _try(args: argparse.Namespace, qa_pipeline: Pipeline) -> None:
     #question = "¿Cuántos tests de coronavirus se hicieron?"
-    questions = ["¿Cuál es el total de casos de coronavirus en Uruguay?", "¿Cuántos casos en CTI hay en Uruguay?", "¿Cuántos testeos se realizan por día?", "¿Cuantos fallecidos hubo por Coronavirus?", "¿Que opinó Lacalle sobre el caceroleo?", "¿Cuándo vence el plazo para el llamado de ANII?", "¿Cuánto es el financiamiento de ANII para diseño de respiradores?", "¿Cuánto financimiento por proyecto da ANII para diseño de respiradores?", "¿Qué grupos de la Facultad de Ingeniería trabajan en temas de emergencia sanitaria?", "¿Cuántos casos confirmados hay en Uruguay?", "¿Quién desarrolló los kits de diagnóstico?", "¿Cómo se financia el fondo coronavirus?"]
+    questions = ["¿A partir de qué ingreso se hará el descuento a funcionarios?", "¿Cuánto tiempo durará la rebaja de sueldos?", "¿A partir de qué ingreso se hará el descuento a funcionarios?", "¿Va a haber descuentos sobre las jubilaciones", "¿El transporte funcionará en sus frecuencias normales?", "¿Cuál es la edad de mayor riesgo para contraer la enfermedad?", "¿El ministerio va a tomar más medidas para recaudar fondos?", "¿Cuánto van a aumentar las asignaciones familiares?", "¿Cuándo se entregan las canastas?", "¿Qué medidas se tomarán para monotributistas"]
     for question in questions:
         print("Question:", question)
         print()
