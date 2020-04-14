@@ -33,7 +33,7 @@ def create_xml_file(id_: int, html: str, slug: str) -> None:
     article.text = re.sub(r"<.*?>", "", html)  # clean html tags
 
     with open(os.path.join(PATH_ARTICLES_FOLDER, xml_id + ".xml"), "w") as file:
-        file.write(ET.tostring(article, encoding='unicode'))
+        file.write('\n'.join(ET.tostringlist(article, encoding='unicode')))
 
 
 if __name__ == "__main__":

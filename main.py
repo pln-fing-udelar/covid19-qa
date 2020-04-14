@@ -3,6 +3,7 @@
 import argparse
 import logging
 import time
+from typing import Callable, Iterator
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -11,17 +12,14 @@ from transformers import Pipeline
 
 from covid19_qa.argparse_with_defaults import ArgumentParserWithDefaults
 from covid19_qa.dataset import load_all_annotated_instances
-from covid19_qa.pipeline import create_qa_pipeline, DEFAULT_SORT_MODE, SORT_MODE_CHOICES
-from covid19_qa.qa import answer_question_from_all_docs, answer_from_instances
+from covid19_qa.pipeline import create_qa_pipeline, Answer, DEFAULT_SORT_MODE, SORT_MODE_CHOICES
+from covid19_qa.qa import answer_question_from_all_docs, answer_question_from_all_docs_with_es, answer_from_instances
 from covid19_qa.evaluation import evaluate_with_all_annotated_instances
 
 logger = logging.getLogger(__name__)
 
 
-def _show_answers(args: argparse.Namespace, qa_pipeline: Pipeline, question: str) -> None:
-    answers = answer_question_from_all_docs(question, qa_pipeline, top_k=args.top_k,
-                                            top_k_per_instance=args.top_k_per_document, min_score=args.min_score,
-                                            sort_mode=args.sort_mode, batch_size=args.batch_size, threads=args.threads)
+def _display_answers(answers: Iterator[Answer]) -> None:
     for answer in answers:
         print("** Doc ID:", answer.instance.qas_id)
         print("** Answer:", answer.text)
@@ -34,12 +32,27 @@ def _show_answers(args: argparse.Namespace, qa_pipeline: Pipeline, question: str
         print()
 
 
-def _interact(args: argparse.Namespace, qa_pipeline: Pipeline) -> None:
+def _all_docs_answers(args: argparse.Namespace, qa_pipeline: Pipeline, question: str) -> Iterator[Answer]:
+   return answer_question_from_all_docs(question, qa_pipeline, top_k=args.top_k,
+                                        top_k_per_instance=args.top_k_per_document, min_score=args.min_score,
+                                        sort_mode=args.sort_mode, batch_size=args.batch_size, threads=args.threads)
+
+def _all_docs_answers_with_es(args: argparse.Namespace, qa_pipeline: Pipeline, question: str) -> Iterator[Answer]:
+    return answer_question_from_all_docs_with_es(question, qa_pipeline, top_k=args.top_k,
+                                                 top_k_per_instance=args.top_k_per_document, min_score=args.min_score,
+                                                 sort_mode=args.sort_mode, batch_size=args.batch_size, threads=args.threads)
+
+
+def _interact(args: argparse.Namespace, qa_pipeline: Pipeline, 
+              get_answers: Callable = _all_docs_answers) -> None:
     print("Write a question or 'exit'.")
     question = input("Question: ")
     while question.lower() != "exit":
-        _show_answers(args, qa_pipeline, question)
+        _display_answers(get_answers(args, qa_pipeline, question))
         question = input("Question: ")
+
+def _interact_es(args: argparse.Namespace, qa_pipeline: Pipeline) -> None:
+    _interact(args, qa_pipeline, _all_docs_answers_with_es)
 
 
 def _evaluate(args: argparse.Namespace, qa_pipeline: Pipeline) -> None:
@@ -74,7 +87,7 @@ def _try(args: argparse.Namespace, qa_pipeline: Pipeline) -> None:
     question = "¿Qué criticó Da Silveira?"
     print("Question:", question)
     print()
-    _show_answers(args, qa_pipeline, question=question)
+    _display_answers(_all_docs_answers(args, qa_pipeline, question=question))
 
 
 def _parse_args() -> argparse.Namespace:
@@ -97,6 +110,9 @@ def _parse_args() -> argparse.Namespace:
 
     interact_subparser = subparsers.add_parser("interact")
     interact_subparser.set_defaults(func=_interact)
+
+    interact_es_subparser = subparsers.add_parser("interact_es")
+    interact_es_subparser.set_defaults(func=_interact_es)
 
     evaluate_subparser = subparsers.add_parser("evaluate")
     evaluate_subparser.add_argument("--search-all-texts", action="store_true")

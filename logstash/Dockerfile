@@ -9,7 +9,7 @@ COPY config/logstash.yml /usr/share/logstash/config/logstash.yml
 COPY template.json /etc/logstash/templates/template.json
 COPY pipeline /usr/share/logstash/pipeline
 RUN mkdir /tmp/datos
-ADD datos /tmp/datos
+# ADD datos /tmp/datos
 USER root
 RUN chown -R logstash:logstash /tmp/datos
 RUN chmod -R 777 /tmp/datos
