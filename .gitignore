@@ -2,4 +2,4 @@
 .idea
 jupyter/notebooks/.ipynb_checkpoints
 *.pyc
-
+/data/la_diaria_v1/*.xml
