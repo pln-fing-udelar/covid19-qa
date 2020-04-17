@@ -1,4 +1,4 @@
-version: "3.1"
+version: "3.7"
 services:
 
   elasticsearch-covid:
@@ -14,9 +14,6 @@ services:
   logstash-covid:
     build: logstash/
     volumes:
-      - ./logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml
-      - ./logstash/template.json:/etc/logstash/templates/template.json
-      - ./logstash/pipeline:/usr/share/logstash/pipeline
       - ./data/la_diaria_v1:/tmp/datos
     ports:
       - 15000:5000
@@ -25,15 +22,6 @@ services:
       - elasticsearch-covid
     environment:
       LS_JAVA_OPTS: "-Xmx500m -Xms500m"
-
-  jupyter-covid:
-    build: jupyter/
-    ports:
-      - 18888:8888
-    volumes:
-      - ./jupyter/notebooks:/home/jovyan/work
-    depends_on:
-      - elasticsearch-covid
   
   kibana-covid:
     build: kibana/
@@ -43,15 +31,26 @@ services:
       - ./kibana/config/kibana.yml:/usr/share/kibana/config/kibana.yml
     depends_on:
       - elasticsearch-covid
-
-  api:
-    build: api/
+  
+  corpus-creator-covid:
+    build: corpus-creator/
+    volumes:
+      - type: bind
+        source: ./data/la_diaria_v1
+        target: /data/la_diaria_v1
+  
+  qa-covid:
+    build: qa/
+    environment:
+      - FLASK_ENV=development
     ports:
       - 5000:5000
-    environment:
-      - PYTHONUNBUFFERED=1
-      - FLASK_ENV=development
     volumes:
-      - ./api/app:/usr/src/app
+      - ./data:/data
+      - type: bind
+        source: ./qa
+        target: /src
+    depends_on:
+      - elasticsearch-covid
 
 

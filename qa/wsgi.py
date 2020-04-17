@@ -2,8 +2,8 @@ import os
 from datetime import datetime
 
 import pytz
-from src import app
-from src.views import CovidView, TestView
+from api import app
+from api.views import CovidView, TestView
 
 datetime.now(tz=pytz.timezone('America/Montevideo'))
 

@@ -9,7 +9,7 @@ from flask_restx import Resource
 from .. import ns_covid_qa
 from ..views import custom_response
 
-log = logging.getLogger('covid19-api')
+# log = logging.getLogger('covid19-api')
 
 
 # TODO: Quitar estas definiciones e importar correctamente el modulo del Modelo

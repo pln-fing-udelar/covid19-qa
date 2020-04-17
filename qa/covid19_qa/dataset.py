@@ -5,8 +5,8 @@ from typing import Iterator
 
 from covid19_qa.pipeline import Instance
 
-PATH_DATA_FOLDER = "data/articles"
-PATH_ANNOTATED_FILE = "data/annotated.xml"
+PATH_DATA_FOLDER = "../data/articles"
+PATH_ANNOTATED_FILE = "../data/annotated.xml"
 
 
 @dataclass

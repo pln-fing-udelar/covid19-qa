@@ -33,8 +33,10 @@ jobs:
         wget 'https://drive.google.com/uc?id=1PrEw91STInaysC06dqL8QaER_m19R2tJ&export=download' -O vocab.txt
         popd
     - name: Install environment
-      run: conda env create -f environment.yml
+      run: |
+        cd qa
+        conda env create -f environment.yml
     - name: Run main.py
       run: |
         source activate covid19-qa
-        python main.py
+        python main.py --ignore-es=True

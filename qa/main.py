@@ -13,7 +13,7 @@ from transformers import Pipeline
 from covid19_qa.argparse_with_defaults import ArgumentParserWithDefaults
 from covid19_qa.dataset import load_all_annotated_instances
 from covid19_qa.pipeline import create_qa_pipeline, Answer, DEFAULT_SORT_MODE, SORT_MODE_CHOICES
-from covid19_qa.qa import answer_question_from_all_docs, answer_question_from_all_docs_with_es, answer_from_instances
+from covid19_qa.qa import answer_question_from_all_docs, answer_from_instances
 from covid19_qa.evaluation import evaluate_with_all_annotated_instances
 
 logger = logging.getLogger(__name__)
@@ -35,45 +35,37 @@ def _display_answers(answers: Iterator[Answer]) -> None:
 def _all_docs_answers(args: argparse.Namespace, qa_pipeline: Pipeline, question: str) -> Iterator[Answer]:
    return answer_question_from_all_docs(question, qa_pipeline, top_k=args.top_k,
                                         top_k_per_instance=args.top_k_per_document, min_score=args.min_score,
-                                        sort_mode=args.sort_mode, batch_size=args.batch_size, threads=args.threads)
+                                        sort_mode=args.sort_mode, batch_size=args.batch_size, threads=args.threads,
+                                        ignore_es=args.ignore_es)
 
-def _all_docs_answers_with_es(args: argparse.Namespace, qa_pipeline: Pipeline, question: str) -> Iterator[Answer]:
-    return answer_question_from_all_docs_with_es(question, qa_pipeline, top_k=args.top_k,
-                                                 top_k_per_instance=args.top_k_per_document, min_score=args.min_score,
-                                                 sort_mode=args.sort_mode, batch_size=args.batch_size, threads=args.threads)
-
-
-def _interact(args: argparse.Namespace, qa_pipeline: Pipeline, 
-              get_answers: Callable = _all_docs_answers) -> None:
+def _interact(args: argparse.Namespace, qa_pipeline: Pipeline) -> None:
     print("Write a question or 'exit'.")
     question = input("Question: ")
     while question.lower() != "exit":
-        _display_answers(get_answers(args, qa_pipeline, question))
+        _display_answers(_all_docs_answers(args, qa_pipeline, question))
         question = input("Question: ")
 
-def _interact_es(args: argparse.Namespace, qa_pipeline: Pipeline) -> None:
-    _interact(args, qa_pipeline, _all_docs_answers_with_es)
-
-
 def _evaluate(args: argparse.Namespace, qa_pipeline: Pipeline) -> None:
-    results = evaluate_with_all_annotated_instances(qa_pipeline, search_all_texts=args.search_all_texts,
-                                                    min_score=args.min_score, sort_mode=args.sort_mode,
-                                                    batch_size=args.batch_size, threads=args.threads)
+    results = evaluate_with_all_annotated_instances(
+        qa_pipeline, search_all_texts=args.search_all_texts,
+        min_score=args.min_score, sort_mode=args.sort_mode,
+        batch_size=args.batch_size, threads=args.threads)
     for k, v in results.items():
         if isinstance(v, float):
             print(f"{k}: {v:5.1f}")
         else:
             print(f"{k}: {v}")
 
-
 def _plot_scores(args: argparse.Namespace, qa_pipeline: Pipeline) -> None:
     sns.set()
 
     instances = list(load_all_annotated_instances())
     instances = instances
-    answers = answer_from_instances(instances, qa_pipeline, remove_empty_answers=False, min_score=args.min_score,
-                                    top_k_per_instance=args.top_k_per_document, sort_mode=args.sort_mode,
-                                    batch_size=args.batch_size, threads=args.threads)
+    answers = answer_from_instances(
+        instances, qa_pipeline, remove_empty_answers=False, min_score=args.min_score,
+        top_k_per_instance=args.top_k_per_document, sort_mode=args.sort_mode,
+        batch_size=args.batch_size, threads=args.threads
+    )
     correct_scores = np.asarray([answer.sort_score for answer in answers if answer.is_exactly_correct()])
     incorrect_scores = np.asarray([answer.sort_score for answer in answers if not answer.is_exactly_correct()])
 
@@ -87,6 +79,7 @@ def _try(args: argparse.Namespace, qa_pipeline: Pipeline) -> None:
     question = "¿Qué criticó Da Silveira?"
     print("Question:", question)
     print()
+    print(args)
     _display_answers(_all_docs_answers(args, qa_pipeline, question=question))
 
 
@@ -102,6 +95,7 @@ def _parse_args() -> argparse.Namespace:
     parser.add_argument("--top-k", type=int, default=10)
     parser.add_argument("--top-k-per-document", type=int, default=5)
     parser.add_argument("-v", "--verbose", action="store_true")
+    parser.add_argument("--ignore-es", type=bool, default=False)
 
     subparsers = parser.add_subparsers(title="mode", description="Run mode. Use 'trial' to just try things out. "
                                                                  "Use 'evaluation' to measure the performance. "
@@ -110,9 +104,6 @@ def _parse_args() -> argparse.Namespace:
 
     interact_subparser = subparsers.add_parser("interact")
     interact_subparser.set_defaults(func=_interact)
-
-    interact_es_subparser = subparsers.add_parser("interact_es")
-    interact_es_subparser.set_defaults(func=_interact_es)
 
     evaluate_subparser = subparsers.add_parser("evaluate")
     evaluate_subparser.add_argument("--search-all-texts", action="store_true")

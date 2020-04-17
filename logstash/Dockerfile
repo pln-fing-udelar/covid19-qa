@@ -4,7 +4,6 @@ FROM docker.elastic.co/logstash/logstash:7.6.0
 # Example: RUN logstash-plugin install logstash-filter-json
 RUN logstash-plugin install logstash-filter-rest
 
-RUN curl https://jdbc.postgresql.org/download/postgresql-42.2.10.jar --output /usr/share/logstash/logstash-core/lib/jars/postgresql-42.2.10.jar
 COPY config/logstash.yml /usr/share/logstash/config/logstash.yml
 COPY template.json /etc/logstash/templates/template.json
 COPY pipeline /usr/share/logstash/pipeline
