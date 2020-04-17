@@ -4,7 +4,8 @@ from typing import Iterator
 from covid19_qa.pipeline import Instance
 
 # FIXME: The elasticsearch configuration should be a setting
-es = Elasticsearch([{'host': '0.0.0.0', 'port': 19200}])
+es = Elasticsearch([{'host': 'elasticsearch-covid', 'port': 9200}])
+#es = Elasticsearch([{'host': '0.0.0.0', 'port': 19200}])
 
 def serch_query_string(query, index_pattern='covid*', size=10, fragments=1,
                        fragment_size=200,
