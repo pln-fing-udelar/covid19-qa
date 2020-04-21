@@ -1,8 +1,7 @@
 import { Fragment } from "preact";
-import Card from "../../components/card";
-import faq from "../../data/faq.json";
+import faqData from "../../data/faq.json";
 import SearchInput from "../../components/searchInput";
-
+import FaqCard from "./faqCard";
 const Home = () => {
   return (
     <Fragment>
@@ -14,24 +13,8 @@ const Home = () => {
           Preguntas frecuentes
         </h2>
         <div class="flex flex-col md:flex-row">
-          {faq.slice(0, 3).map((q) => (
-            <div class="mb-4 md:mb-0 md:mr-4">
-              <Card
-                title={q.question}
-                description={
-                  <p>
-                    {q.context.slice(0, q.answer_start_index)}
-                    <b>
-                      {q.context.slice(
-                        q.answer_start_index,
-                        q.answer_end_index
-                      )}
-                    </b>
-                    {q.context.slice(q.answer_end_index, q.context.length)}
-                  </p>
-                }
-              />
-            </div>
+          {faqData.slice(0, 3).map((faq) => (
+            <FaqCard faq={faq} />
           ))}
         </div>
       </section>
