@@ -8,6 +8,14 @@
 ```bash
 docker-compose build
 ```
+4. Create a super user and run the migrations for the external-api container
+```bash
+docker-compose run external-api bash
+
+# Inside the container:
+python manage.py migrate
+python manage.py createsuperuser
+```
 
 ## Installation without docker
 
@@ -44,7 +52,7 @@ docker-compose up logstash-covid
 
 1. Start the qa container in docker
 ```bash
-docker-compose up -d qa-covid
+docker-compose up -d external-api
 ```
 
 The swagger description of the services is in http://localhost:5000/
