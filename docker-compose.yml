@@ -52,5 +52,33 @@ services:
         target: /src
     depends_on:
       - elasticsearch-covid
+  
+  db-covid:
+    image: mdillon/postgis:9.6
+    environment:
+      - POSTGRES_DB=covid
+      - PGUSER=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - LANG=en_US.utf8
+
+  api-covid:
+    build: external-api/
+    environment:
+      - DB_NAME=covid
+      - DB_USER=postgres
+      - DB_PASS=postgres
+      - DB_HOST=db-covid
+      - DB_PORT=5432
+      - SECRET_KEY='secret'
+    ports:
+      - 8000:8000
+    volumes:
+      - type: bind
+        source: ./external-api
+        target: /src
+    depends_on:
+      - qa-covid
+      - db-covid
 
 

@@ -66,3 +66,11 @@ def load_all_annotated_instances(file_path: str = PATH_ANNOTATED_FILE) -> Iterat
                     yield Instance(qas_id=f"{snippet_id}.{q_id}", question_text=question, context_text=text,
                                    answer_text=answer, start_position_character=answer_start, is_impossible=not answer,
                                    answers=answers, title=question)
+
+
+def get_instances_from_doc_ids(doc_ids: Iterator[str], question: str) -> Iterator[Instance]:
+    documents = load_documents(doc_ids=doc_ids)
+    instances = (Instance(qas_id=doc.id, question_text=question, context_text=doc.text, answer_text=None,
+                          start_position_character=None, title=question)
+                 for doc in documents)
+    return instances

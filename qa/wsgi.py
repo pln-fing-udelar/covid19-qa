@@ -3,7 +3,7 @@ from datetime import datetime
 
 import pytz
 from api import app
-from api.views import CovidView, TestView
+from api.views import CovidView
 
 datetime.now(tz=pytz.timezone('America/Montevideo'))
 

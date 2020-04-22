@@ -8,7 +8,7 @@ es = Elasticsearch([{'host': 'elasticsearch-covid', 'port': 9200}])
 #es = Elasticsearch([{'host': '0.0.0.0', 'port': 19200}])
 
 def serch_query_string(query, index_pattern='covid*', size=10, fragments=1,
-                       fragment_size=200,
+                       fragment_size=700,
                        text_field='article_text',):
     return es.search(
         index=index_pattern,
@@ -43,7 +43,7 @@ def get_instances_from_es(question: str) -> Iterator[Instance]:
                     question_text=question,
                     context_text=fragment,
                     answer_text=None,
-                    start_position_character=None, 
+                    start_position_character=None,
                     title=question)
             )
     return instances

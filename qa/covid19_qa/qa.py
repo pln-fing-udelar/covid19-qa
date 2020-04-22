@@ -6,7 +6,7 @@ from typing import Iterator, Optional
 
 from transformers import Pipeline
 
-from covid19_qa.dataset import all_doc_ids, Document, load_documents
+from covid19_qa.dataset import all_doc_ids, get_instances_from_doc_ids, Document, load_documents
 from covid19_qa.pipeline import Answer, DEFAULT_SORT_MODE, Instance, TYPE_SORT_MODE
 from covid19_qa.elasticsearch_qa import get_instances_from_es
 
@@ -35,14 +35,6 @@ def answer_from_instances(instances: Iterator[Instance], qa_pipeline: Pipeline, 
         return sorted(answers, reverse=True, key=lambda a: a.sort_score)
     else:
         return heapq.nlargest(top_k, answers, key=lambda a: a.sort_score)
-
-def get_instances_from_doc_ids(doc_ids: Iterator[str], question: str) -> Iterator[Instance]:
-    documents = load_documents(doc_ids=doc_ids)
-    instances = (Instance(qas_id=doc.id, question_text=question, context_text=doc.text, answer_text=None,
-                          start_position_character=None, title=question)
-                 for doc in documents)
-    return instances
-
 
 def answer_question_from_all_docs(question: str, qa_pipeline: Pipeline, top_k: Optional[int] = None,
                                   top_k_per_instance: int = 1, remove_empty_answers: bool = True,
