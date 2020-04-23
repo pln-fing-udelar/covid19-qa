@@ -4,7 +4,6 @@ import json
 import os
 import re
 import xml.etree.ElementTree as ET
-from xml.dom.minidom import parse
 
 PATH_ARTICLES_FOLDER = "data/la_diaria_v1"
 
