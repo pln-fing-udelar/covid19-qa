@@ -24,13 +24,22 @@ def create_xml_file(id_: int, html: str, slug: str) -> None:
     month = date[1]
     day = date[2]
     xml_id = "t" + str(id_).zfill(4)
+    txt = re.sub(r"<.*?>", "", html) # clean html tags
+    txt = re.sub(r'\d+ De \w+ De \d+ \|', "",txt) # clean date
+    
+    capture_title = re.split('\s{3,}',txt) # title is surrounded by whitespaces
+    txt = re.sub(capture_title[1],'',txt,1)
+    
 
-    article = ET.Element('article')
+    article = ET.Element('article') # create xml
+    
     article.set("id", xml_id)
     article.set("date", year + "-" + month + "-" + day)
+    article.set("title",capture_title[1])
     article.set("url", "https://ladiaria.com.uy/articulo/" + year + "/" + month + "/" + slug)
     article.set("src", "ladiaria")
-    article.text = re.sub(r"<.*?>", "", html)  # clean html tags
+
+    article.text = txt
 
     with open(os.path.join(PATH_ARTICLES_FOLDER, xml_id + ".xml"), "w") as file:
         file.write('\n'.join(ET.tostringlist(article, encoding='unicode')))
@@ -38,3 +47,4 @@ def create_xml_file(id_: int, html: str, slug: str) -> None:
 
 if __name__ == "__main__":
     generate_corpus_from_json("la_diaria_v1.json")
+            
