@@ -1,4 +1,4 @@
-version: "3.1"
+version: "3.7"
 services:
 
   elasticsearch-covid:
@@ -14,33 +14,71 @@ services:
   logstash-covid:
     build: logstash/
     volumes:
-      - ./logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml
-      - ./logstash/template.json:/etc/logstash/templates/template.json
-      - ./logstash/pipeline:/usr/share/logstash/pipeline
-      - ./data:/tmp/datos
+      - ./data/la_diaria_v1:/tmp/datos
     ports:
       - 15000:5000
+      - 19600:9600
     depends_on:
       - elasticsearch-covid
     environment:
       LS_JAVA_OPTS: "-Xmx500m -Xms500m"
-
-  jupyter-covid:
-    build: jupyter/
+  
+  kibana-covid:
+    build: kibana/
     ports:
-      - 18888:8888
+      - 15601:5601
     volumes:
-      - ./jupyter/notebooks:/home/jovyan/work
+      - ./kibana/config/kibana.yml:/usr/share/kibana/config/kibana.yml
     depends_on:
       - elasticsearch-covid
-
-  api:
-    build: api/
+  
+  corpus-creator-covid:
+    build: corpus-creator/
+    volumes:
+      - type: bind
+        source: ./data/la_diaria_v1
+        target: /data/la_diaria_v1
+  
+  qa-covid:
+    build: qa/
+    environment:
+      - FLASK_ENV=development
     ports:
       - 5000:5000
-    environment:
-      - PYTHONUNBUFFERED=1
-      - FLASK_ENV=development
     volumes:
-      - ./api/app:/usr/src/app
+      - ./data:/data
+      - type: bind
+        source: ./qa
+        target: /src
+    depends_on:
+      - elasticsearch-covid
+  
+  db-covid:
+    image: mdillon/postgis:9.6
+    environment:
+      - POSTGRES_DB=covid
+      - PGUSER=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - LANG=en_US.utf8
+
+  api-covid:
+    build: external-api/
+    environment:
+      - DB_NAME=covid
+      - DB_USER=postgres
+      - DB_PASS=postgres
+      - DB_HOST=db-covid
+      - DB_PORT=5432
+      - SECRET_KEY='secret'
+    ports:
+      - 8000:8000
+    volumes:
+      - type: bind
+        source: ./external-api
+        target: /src
+    depends_on:
+      - qa-covid
+      - db-covid
+
 

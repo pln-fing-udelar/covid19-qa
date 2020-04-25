@@ -1,0 +1,19 @@
+name: covid19-qa
+channels:
+  - defaults
+  - pytorch
+dependencies:
+  - pip:
+    - transformers==2.8.0
+    - elasticsearch==7.6.0
+    - Flask==1.1.2
+    - flask-restx==0.2.0
+    - gunicorn==20.0.4
+  - cudatoolkit=10.1.243
+  - cudnn=7.6.5
+  - numpy=1.18.1
+  - pip=20.0
+  - python=3.8
+  - pytorch=1.4.0
+  - scipy=1.4.1
+  - seaborn=0.10.0
