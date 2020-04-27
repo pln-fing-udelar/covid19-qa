@@ -1,84 +1,82 @@
-version: "3.7"
+version: "3.8"
+networks:
+  backend:
+  frontend:
+volumes:
+  db-data:
 services:
 
-  elasticsearch-covid:
-    build: elasticsearch/
-    volumes:
-      - ./elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
-    ports:
-      - 19200:9200
-      - 19300:9300
+  elasticsearch:
+    build: elasticsearch
+    networks:
+      - backend
     environment:
       ES_JAVA_OPTS: "-Xmx256m -Xms256m"
 
-  logstash-covid:
-    build: logstash/
+  logstash:
+    build: logstash
+    networks:
+      - backend
     volumes:
-      - ./data/la_diaria_v1:/tmp/datos
-    ports:
-      - 15000:5000
-      - 19600:9600
+      - ./data/la_diaria_v1:/tmp/datos:ro
     depends_on:
-      - elasticsearch-covid
+      - elasticsearch
     environment:
       LS_JAVA_OPTS: "-Xmx500m -Xms500m"
-  
-  kibana-covid:
-    build: kibana/
-    ports:
-      - 15601:5601
-    volumes:
-      - ./kibana/config/kibana.yml:/usr/share/kibana/config/kibana.yml
+
+  kibana:
+    build: kibana
+    networks:
+      - backend
     depends_on:
-      - elasticsearch-covid
-  
-  corpus-creator-covid:
-    build: corpus-creator/
+      - elasticsearch
+
+  corpus-creator:
+    build: corpus-creator
     volumes:
-      - type: bind
-        source: ./data/la_diaria_v1
-        target: /data/la_diaria_v1
-  
-  qa-covid:
-    build: qa/
+      - ./data/la_diaria_v1:/data/la_diaria_v1
+
+  qa:
+    build: qa
+    networks:
+      - backend
+    volumes:
+      - ./data:/data:ro
+      - ~/.cache/torch/transformers:/root/.cache/torch/transformers  # So models aren't downloaded over and over.
     environment:
-      - FLASK_ENV=development
-    ports:
-      - 5000:5000
-    volumes:
-      - ./data:/data
-      - type: bind
-        source: ./qa
-        target: /src
+      - ES_HOST=elasticsearch
+      - ES_PORT=9200
+      - FLASK_ENV
+      - FLASK_SECRET_KEY
     depends_on:
-      - elasticsearch-covid
-  
-  db-covid:
+      - elasticsearch
+
+  db:
     image: mdillon/postgis:9.6
+    networks:
+      - backend
+    volumes:
+      - db-data:/var/lib/postgresql/data
     environment:
       - POSTGRES_DB=covid
       - PGUSER=postgres
       - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
       - LANG=en_US.utf8
+      - POSTGRES_PASSWORD
 
-  api-covid:
-    build: external-api/
+  api:
+    build: external-api
+    networks:
+      - backend
+      - frontend
     environment:
       - DB_NAME=covid
       - DB_USER=postgres
-      - DB_PASS=postgres
-      - DB_HOST=db-covid
+      - DB_HOST=db
       - DB_PORT=5432
-      - SECRET_KEY='secret'
-    ports:
-      - 8000:8000
-    volumes:
-      - type: bind
-        source: ./external-api
-        target: /src
+      - QA_SERVER=http://qa:5000
+      - DB_PASS
+      - SECRET_KEY
     depends_on:
-      - qa-covid
-      - db-covid
-
-
+      - db
+      - qa

@@ -1,0 +1,18 @@
+version: "3.8"
+services:
+
+  elasticsearch:
+    restart: always
+
+  qa:
+    restart: always
+    environment:
+      - ANSWER_THREADS=8
+      - BATCH_SIZE=672
+      - FLASK_ENV=production
+
+  db:
+    restart: always
+
+  api:
+    restart: always

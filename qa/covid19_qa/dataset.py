@@ -1,18 +1,11 @@
 import os
 import xml.etree.ElementTree as ET
-from dataclasses import dataclass
 from typing import Iterator
 
-from covid19_qa.pipeline import Instance
+from covid19_qa.pipeline import Instance, Document
 
 PATH_DATA_FOLDER = "../data/articles"
 PATH_ANNOTATED_FILE = "../data/annotated.xml"
-
-
-@dataclass
-class Document:
-    id: str
-    text: str
 
 
 def load_documents(doc_ids: Iterator[str], path_data_folder: str = PATH_DATA_FOLDER) -> Iterator[Document]:
@@ -23,7 +16,8 @@ def load_documents(doc_ids: Iterator[str], path_data_folder: str = PATH_DATA_FOL
         assert article_element.tag == "article"
 
         text = article_element.text
-        yield Document(id=doc_id, text=text)
+        yield Document(id=doc_id, text=text, title=article_element.attrib["title"], date=article_element.attrib["date"],
+                       source=article_element.attrib["src"], url=article_element.attrib["url"])
 
 
 def all_doc_ids(path_data_folder: str = PATH_DATA_FOLDER) -> Iterator[str]:
@@ -69,8 +63,6 @@ def load_all_annotated_instances(file_path: str = PATH_ANNOTATED_FILE) -> Iterat
 
 
 def get_instances_from_doc_ids(doc_ids: Iterator[str], question: str) -> Iterator[Instance]:
-    documents = load_documents(doc_ids=doc_ids)
-    instances = (Instance(qas_id=doc.id, question_text=question, context_text=doc.text, answer_text=None,
-                          start_position_character=None, title=question)
-                 for doc in documents)
-    return instances
+    for doc in load_documents(doc_ids=doc_ids):
+        yield Instance(qas_id=doc.id, question_text=question, context_text=doc.text, answer_text=None,
+                       start_position_character=None, document=doc)

@@ -16,7 +16,23 @@ SORT_MODE_CHOICES = {"prob", "logit"}
 DEFAULT_SORT_MODE = "prob"
 TYPE_SORT_MODE = Literal["prob", "logit"]
 
-Instance = SquadExample
+
+@dataclass
+class Document:
+    id: str
+    text: Optional[str]  # Sometimes we don't want to hold the whole text in memory and return it via the Internet.
+    title: str
+    date: str
+    source: str
+    url: str
+
+
+class Instance(SquadExample):
+    # Sometimes we're just asking questions without testing, mostly when we evaluate.
+    # So we can set the document to null then.
+    def __init__(self, document: Optional[Document] = None, **kwargs):
+        super().__init__(title=document.title, **kwargs)
+        self.document = document
 
 
 @dataclass(frozen=True)
@@ -96,7 +112,7 @@ class OurQuestionAnsweringPipeline(QuestionAnsweringPipeline):
         kwargs.setdefault("max_answer_len", 15)
         kwargs.setdefault("max_seq_len", 384)
         kwargs.setdefault("max_question_len", 64)
-        kwargs.setdefault("version_2_with_negative", False)
+        kwargs.setdefault("handle_impossible_answer", False)
         kwargs.setdefault("batch_size", 1)
         kwargs.setdefault("threads", 1)
         kwargs.setdefault("min_score", None)  # It has priority over "topk" and it doesn't apply to the null answer.
@@ -167,7 +183,7 @@ class OurQuestionAnsweringPipeline(QuestionAnsweringPipeline):
             start_logits[p_bool_mask], end_logits[p_bool_mask] = -np.inf, -np.inf
             start_probs[p_bool_mask], end_probs[p_bool_mask] = 0, 0
 
-            if kwargs["version_2_with_negative"]:
+            if kwargs["handle_impossible_answer"]:
                 null_answer = Answer(
                     instance=example,
                     text="",
@@ -236,7 +252,7 @@ class OurQuestionAnsweringPipeline(QuestionAnsweringPipeline):
                               for answer in unique_answers_by_start_and_end.values()
                               if kwargs["min_score"] is None or answer.sort_score >= kwargs["min_score"]]
 
-            if kwargs["version_2_with_negative"]:
+            if kwargs["handle_impossible_answer"]:
                 unique_answers.append(null_answer)
 
             for answer in sorted(unique_answers, key=lambda a: a.sort_score, reverse=True)[: kwargs["topk"]]:
@@ -291,7 +307,7 @@ class OurQuestionAnsweringPipeline(QuestionAnsweringPipeline):
 
 SUPPORTED_TASKS["question-answering"]["impl"] = OurQuestionAnsweringPipeline
 
-DEFAULT_MODEL = "mrm8488/distill-bert-base-spanish-wwm-cased-finetuned-spa-squad2-es"  # "model"
+DEFAULT_MODEL = "mrm8488/distill-bert-base-spanish-wwm-cased-finetuned-spa-squad2-es"  # "../model"
 
 
 def create_qa_pipeline(pretrained_model_name_or_folder_path: str = DEFAULT_MODEL, device: int = -1) -> Pipeline:
