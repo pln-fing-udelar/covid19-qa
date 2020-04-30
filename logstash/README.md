@@ -2,7 +2,9 @@
 
 ### Ejecución
 
-`docker-compose up logstash-covid`
+```bash
+docker-compose up logstash
+```
 
 Logstash va a indexar los archivos cada vez que sea ejecutado, puede configurarse para detectar nuevos archivos cada X tiempo.
 

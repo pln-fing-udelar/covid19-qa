@@ -3,7 +3,7 @@
 import argparse
 import logging
 import time
-from typing import Callable, Iterator
+from typing import Iterator
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -12,16 +12,19 @@ from transformers import Pipeline
 
 from covid19_qa.argparse_with_defaults import ArgumentParserWithDefaults
 from covid19_qa.dataset import load_all_annotated_instances
+from covid19_qa.evaluation import evaluate_with_all_annotated_instances
 from covid19_qa.pipeline import create_qa_pipeline, Answer, DEFAULT_SORT_MODE, SORT_MODE_CHOICES
 from covid19_qa.qa import answer_question_from_all_docs, answer_from_instances
-from covid19_qa.evaluation import evaluate_with_all_annotated_instances
 
 logger = logging.getLogger(__name__)
 
 
 def _display_answers(answers: Iterator[Answer]) -> None:
     for answer in answers:
-        print("** Doc ID:", answer.instance.qas_id)
+        print("** Doc ID:", answer.instance.document.id)
+        print("** Title:", answer.instance.document.title)
+        print("** URL:", answer.instance.document.url)
+        print("** Source:", answer.instance.document.source)
         print("** Answer:", answer.text)
         print(f"** Probability: {answer.prob * 100:3.0f}%")
         print(f"** Logit: {answer.logit:5.2f}")
@@ -33,10 +36,11 @@ def _display_answers(answers: Iterator[Answer]) -> None:
 
 
 def _all_docs_answers(args: argparse.Namespace, qa_pipeline: Pipeline, question: str) -> Iterator[Answer]:
-   return answer_question_from_all_docs(question, qa_pipeline, top_k=args.top_k,
-                                        top_k_per_instance=args.top_k_per_document, min_score=args.min_score,
-                                        sort_mode=args.sort_mode, batch_size=args.batch_size, threads=args.threads,
-                                        ignore_es=args.ignore_es)
+    return answer_question_from_all_docs(question, qa_pipeline, top_k=args.top_k,
+                                         top_k_per_instance=args.top_k_per_document, min_score=args.min_score,
+                                         sort_mode=args.sort_mode, batch_size=args.batch_size, threads=args.threads,
+                                         ignore_es=args.ignore_es)
+
 
 def _interact(args: argparse.Namespace, qa_pipeline: Pipeline) -> None:
     print("Write a question or 'exit'.")
@@ -45,16 +49,17 @@ def _interact(args: argparse.Namespace, qa_pipeline: Pipeline) -> None:
         _display_answers(_all_docs_answers(args, qa_pipeline, question))
         question = input("Question: ")
 
+
 def _evaluate(args: argparse.Namespace, qa_pipeline: Pipeline) -> None:
-    results = evaluate_with_all_annotated_instances(
-        qa_pipeline, search_all_texts=args.search_all_texts,
-        min_score=args.min_score, sort_mode=args.sort_mode,
-        batch_size=args.batch_size, threads=args.threads)
+    results = evaluate_with_all_annotated_instances(qa_pipeline, search_all_texts=args.search_all_texts,
+                                                    min_score=args.min_score, sort_mode=args.sort_mode,
+                                                    batch_size=args.batch_size, threads=args.threads)
     for k, v in results.items():
         if isinstance(v, float):
             print(f"{k}: {v:5.1f}")
         else:
             print(f"{k}: {v}")
+
 
 def _plot_scores(args: argparse.Namespace, qa_pipeline: Pipeline) -> None:
     sns.set()
@@ -95,7 +100,7 @@ def _parse_args() -> argparse.Namespace:
     parser.add_argument("--top-k", type=int, default=10)
     parser.add_argument("--top-k-per-document", type=int, default=5)
     parser.add_argument("-v", "--verbose", action="store_true")
-    parser.add_argument("--ignore-es", type=bool, default=False)
+    parser.add_argument("--ignore-es", action="store_true")
 
     subparsers = parser.add_subparsers(title="mode", description="Run mode. Use 'trial' to just try things out. "
                                                                  "Use 'evaluation' to measure the performance. "

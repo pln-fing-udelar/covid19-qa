@@ -19,6 +19,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 def get_env(key, default=None, f=None):
     return (f or (lambda x: x))(os.environ.get(key, default))
 
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
 
@@ -26,7 +27,7 @@ def get_env(key, default=None, f=None):
 SECRET_KEY = get_env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = bool(get_env("DEBUG", "False"))
 
 ALLOWED_HOSTS = [
     '127.0.0.1',
@@ -34,20 +35,19 @@ ALLOWED_HOSTS = [
     'localhost'
 ]
 
-
 # Application definition
 PROJECT_APPS = ['questions']
 
 INSTALLED_APPS = [
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'django_extensions',
-    'rest_framework',
-] + PROJECT_APPS
+                     'django.contrib.admin',
+                     'django.contrib.auth',
+                     'django.contrib.contenttypes',
+                     'django.contrib.sessions',
+                     'django.contrib.messages',
+                     'django.contrib.staticfiles',
+                     'django_extensions',
+                     'rest_framework',
+                 ] + PROJECT_APPS
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -85,7 +85,6 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 10
 }
 
-
 # Database
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
 DB_NAME = get_env('DB_NAME')
@@ -103,7 +102,6 @@ DATABASES = {
         'PORT': DB_PORT
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/2.0/ref/settings/#auth-password-validators
@@ -123,7 +121,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/2.0/topics/i18n/
 
@@ -137,10 +134,9 @@ USE_L10N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 
 STATIC_URL = '/static/'
 
-QA_SERVER = 'http://qa-covid:5000'
+QA_SERVER = get_env("QA_SERVER")

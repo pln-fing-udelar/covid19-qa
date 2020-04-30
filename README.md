@@ -3,23 +3,22 @@
 ## Installation
 
 1. Download [the model](https://drive.google.com/drive/folders/1K-eXgmXytoIELHI8Rq3_dP9BUujBQ9T2?usp=sharing) in `model/`.
-2. Download [docker](https://docs.docker.com/get-docker/) and [docker-compose](https://docs.docker.com/compose/install/).
-3. Build the docker images
-```bash
-docker-compose build
-```
-4. Create a super user and run the migrations for the api-covid container
-```bash
-docker-compose run api-covid bash
+2. Download [Docker](https://docs.docker.com/get-docker/) and [Docker Compose](https://docs.docker.com/compose/install/).
+3. Build the Docker images:
 
-# Inside the container:
-python manage.py migrate
-python manage.py createsuperuser
-```
+    ```bash
+    docker-compose build
+    ```
 
-## Installation without docker
+4. Create a super user and run the migrations for the `api` container:
 
-**This option allows you use only the "testing" data beacuse elasticsearch is not installed**.
+    ```bash
+    docker-compose run --rm api bash -c "python manage.py migrate; python manage.py createsuperuser"
+    ```
+
+## `qa` installation without Docker
+
+**This option allows you use only the "testing" data because Elasticsearch (ES) is not installed**.
 
 1. Setup the env. Install Miniconda (Linux setup; check online for MacOS and Windows):
 
@@ -38,65 +37,125 @@ python manage.py createsuperuser
 
 ## Generate the corpus and upload the data into elastic search
 
-1. Generate the xml from the json
+1. Generate the XML article files from the JSON file:
+
+    ```bash
+    docker-compose up corpus-creator
+    ```
+
+2. Upload the data into ES using Logstash:
+
+    ```bash
+    docker-compose up logstash
+    ```
+
+## Start the `api` server
+
+Start the `api` container in Docker Compose:
+
 ```bash
-docker-compose up corpus-creator-covid
+docker-compose up api
 ```
 
-2. Upload the data into ES using logstah
-```bash
-docker-compose up logstash-covid
-```
-
-## Start the api server
-
-1. Start the qa container in docker
-```bash
-docker-compose up -d api-covid
-```
-
-The swagger description of the services is in http://localhost:5000/
-
+The Swagger description of the services is in http://localhost:8000/
 
 ## Interact with the model
 
-The qa-covid container has a `main.py` script with some commands useful to test the model. 
+The `qa` container has a `main.py` script with some commands useful to test the model. 
 All the commands allow the flag `--ignore-es` to work with the testing data.
 
-1. Go into the `qa-covid` container.
-If the container is runnig
-```bash
-docker-compose exec qa-covid bash
-```
+1. Go into the `qa` container.
 
-If the containar is not running
-```bash
-docker-compose run qa-covid bash
-```
+    If the container is running:
 
-2. Inside the container, activate the conda env.
-```bash
-conda activate covid19-qa
-```
+    ```bash
+    docker-compose exec qa bash
+    ```
+    
+    If the container isn't running:
+
+    ```bash
+    docker-compose run qa bash
+    ```
+
+2. Inside the container, activate the conda env:
+
+    ```bash
+    conda activate covid19-qa
+    ```
 
 3. Execute the command. (Check out the help (`./main.py -h`) to see the available options.)
 Some examples:
-```bash
-# Execute the `try` with some optimizations
-./main.py --batch-size 672 --device 0 --threads 20
-# Execute the `try` with some optimizations without ES
-./main.py --batch-size 672 --device 0 --threads 20 --ignore-es True
-# Execute the interactive mode
-./main.py interact
-# Execute the interactive mode without ES
-./main.py --ignore-es True interact
-```
 
-## Query over elastic search
-A useful tool to interact with your elastic search cluster is [Kibana](https://www.elastic.co/kibana)
+    ```bash
+    # Execute the `try` with some optimizations:
+    ./main.py --batch-size 672 --device 0 --threads 20
+    # Execute the `try` with some optimizations and without Elasticsearch:
+    ./main.py --batch-size 672 --device 0 --threads 20 --ignore-es
+    # Execute the interactive mode:
+    ./main.py interact
+    # Execute the interactive mode and without Elastichsearch:
+    ./main.py --ignore-es interact
+    ```
 
-1. Run the kibana container
-```bash
-docker-compose up kibana-covid
-```
+## Query over Elasticsearch
+
+A useful tool to interact with your elastic search cluster is [Kibana](https://www.elastic.co/kibana).
+
+1. Run the Kibana container:
+
+    ```bash
+    docker-compose up kibana
+    ```
+
 2. In your browser, go to http://0.0.0.0:15601/app/kibana
+
+## Make Docker work with Nvidia
+
+The `qa` image is CUDA-enabled. It needs to run with the `nvidia` runtime to work well.
+
+1. Install [nvidia-docker-runtime](https://github.com/NVIDIA/nvidia-container-runtime).
+
+2. Run:
+
+    ```bash
+    sudo tee /etc/docker/daemon.json <<EOF
+    {
+        "runtimes": {
+            "nvidia": {
+                "path": "/usr/bin/nvidia-container-runtime",
+                "runtimeArgs": []
+            }
+        },
+        "default-runtime": "nvidia"
+    }
+    EOF
+    sudo systemctl daemon-reload
+    sudo systemctl restart docker
+    ```
+
+3. To test it (on a CUDA-enabled environment):
+
+    ```bash
+    docker-compose build qa
+    docker-compose run --rm qa python -c "import torch; torch.ones(2, device='cuda')"
+    ```
+
+## Run Docker Compose in production mode
+
+By default, Docker Compose will load both `docker-compose.yml` and `docker-compose.override.yml`.
+In production mode, any `docker-compose` command must include the flags
+`-f docker-compose.yml -f docker-compose.prod.yml`, like in:
+
+```bash
+docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
+```
+
+For it to work, you must first creat a `.env` file (filling with the env var values):
+
+```dotenv
+DB_PASS=<VALUE>
+FLASK_SECRET_KEY=<VALUE>
+POSTGRES_PASSWORD=<DB_PASS_VALUE>
+SECRET_KEY=<VALUE>
+```

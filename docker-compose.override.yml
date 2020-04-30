@@ -1,0 +1,45 @@
+version: "3.8"
+services:
+
+  elasticsearch:
+    volumes:
+      - ./elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro
+    ports:
+      - 19200:9200
+      - 19300:9300
+
+  logstash:
+    ports:
+      - 15000:5000
+      - 19600:9600
+
+  kibana:
+    volumes:
+      - ./kibana/config/kibana.yml:/usr/share/kibana/config/kibana.yml:ro
+    ports:
+      - 15601:5601
+
+  qa:
+    volumes:
+      - ./qa:/workspace:ro
+    environment:
+      - CUDA_VISIBLE_DEVICES=  # Set as if they were no GPU available (CPU mode).
+      - FLASK_ENV=development
+      - FLASK_SECRET_KEY=ze4f2fWLmEY9dADjhwvhym3U
+      - PYTHONUNBUFFERED=1
+    ports:
+      - 5000:5000
+
+  db:
+    environment:
+      - POSTGRES_PASSWORD=postgres
+
+  api:
+    volumes:
+      - ./external-api:/src:ro
+    environment:
+      - DB_PASS=postgres
+      - DEBUG=True
+      - SECRET_KEY=secret
+    ports:
+      - 8000:8000

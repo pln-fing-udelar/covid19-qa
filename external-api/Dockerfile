@@ -13,8 +13,13 @@ RUN apt-get update && apt-get install -y \
 RUN mkdir /src
 WORKDIR /src
 
-ADD requirements.pip /src
+COPY requirements.pip /src
 
 RUN pip install --upgrade pip && \
     pip install --no-cache-dir -r requirements.pip
+
+COPY external_api /src
+COPY questions /src
+COPY manage.py /src
+
 CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]

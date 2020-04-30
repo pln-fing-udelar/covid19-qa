@@ -1,6 +1,7 @@
+/data/la_diaria_v1/*.xml
 /model/
+*.pyc
+.DS_Store
+.env
 .idea
 jupyter/notebooks/.ipynb_checkpoints
-*.pyc
-*.DS_Store
-/data/la_diaria_v1/*.xml

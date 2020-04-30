@@ -36,8 +36,12 @@ jobs:
       run: |
         cd qa
         conda env create -f environment.yml
-    - name: Run main.py
+    - name: Reformat the corpus
       run: |
-        cd qa
         source activate covid19-qa
-        python main.py --ignore-es=True
+        python corpus-creator/corpus_creator.py
+    - name: Run QA main
+      run: |
+        source activate covid19-qa
+        cd qa
+        python main.py --ignore-es
