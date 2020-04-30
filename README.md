@@ -158,4 +158,35 @@ DB_PASS=<VALUE>
 FLASK_SECRET_KEY=<VALUE>
 POSTGRES_PASSWORD=<DB_PASS_VALUE>
 SECRET_KEY=<VALUE>
+TRAEFIK_EMAIL=<VALUE>
+TRAEFIK_DOMAIN=<VALUE>
 ```
+
+For every service you want exposed through the reverse proxy you should add this to the service block in `docker-compose.yml` file and change `SERVICE_NAME`:
+```
+depends_on:
+  - traefik
+networks:
+  - proxy
+labels:
+  - traefik.http.routers.whoami.rule=Host(`SERVICE_NAME.${TRAEFIK_DOMAIN}`)
+  - traefik.http.routers.whoami.tls=true
+  - traefik.http.routers.whoami.tls.certresolver=le
+```
+
+This is an example service:
+
+```
+whoami:
+    image: "containous/whoami"
+    restart: always
+    depends_on:
+      - traefik
+    networks:
+      - proxy
+    labels:
+      - traefik.http.routers.whoami.rule=Host(`whoami.${TRAEFIK_DOMAIN}`)
+      - traefik.http.routers.whoami.tls=true
+      - traefik.http.routers.whoami.tls.certresolver=le
+```
+
