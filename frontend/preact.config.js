@@ -1,12 +1,14 @@
 const { parsed } = require("dotenv").config();
 
 module.exports = (config, env, helpers) => {
-  config.devServer.proxy = [
-    {
-      path: "/api/**",
-      target: "http://localhost:8000",
-    },
-  ];
+  if (env.dev) {
+    config.devServer.proxy = [
+      {
+        path: "/api/**",
+        target: "http://localhost:8000",
+      },
+    ];
+  }
 
   const { plugin: definePlugin } = helpers.getPluginsByName(
     config,

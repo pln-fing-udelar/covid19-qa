@@ -1,14 +1,19 @@
-import { Fragment } from "preact";
 import faqData from "../../data/faq.json";
 import SearchInput from "../../components/searchInput";
 import FaqCard from "./faqCard";
 import FaqHeader from "../../components/faqHeader";
+import HomeLayout from "../../components/homeLayout";
+import { route } from "preact-router";
 
 const Home = () => {
   return (
-    <Fragment>
-      <section class="mx-6 sm:mx-8 md:mx-auto md:max-w-xl mt-16 mb-10 flex">
-        <SearchInput />
+    <HomeLayout>
+      <section class="mx-6 sm:mx-8 md:mx-auto md:max-w-xl mb-10 flex">
+        <SearchInput
+          onSubmit={(query) => {
+            route(`/search/${encodeURIComponent(query)}`);
+          }}
+        />
       </section>
       <section class="mx-auto flex flex-col">
         <div class="flex justify-between items-center mb-4">
@@ -23,7 +28,7 @@ const Home = () => {
           ))}
         </div>
       </section>
-    </Fragment>
+    </HomeLayout>
   );
 };
 

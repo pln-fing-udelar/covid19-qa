@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from "preact/hooks";
 
 // Hook taken from: https://usehooks.com/
-const useAsync = (asyncFunction, immediate = true) => {
+const useAsync = (asyncFunction, args = [], immediate = true) => {
   const [state, setState] = useState({
     status: "idle",
     data: null,
@@ -19,7 +19,7 @@ const useAsync = (asyncFunction, immediate = true) => {
   const execute = useCallback(() => {
     setState({ status: "loading", data: null, error: null });
 
-    return asyncFunction()
+    return asyncFunction(...args)
       .then((result) =>
         setState({ status: "success", data: result, error: null })
       )
@@ -33,7 +33,7 @@ ${asyncFunction}.`
         }
         setState({ status: "error", data: null, error });
       });
-  }, [asyncFunction]);
+  }, [asyncFunction, ...args]);
 
   // Call execute if we want to fire it right away.
 

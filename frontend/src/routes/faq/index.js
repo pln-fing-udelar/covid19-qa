@@ -1,7 +1,7 @@
-import { Fragment } from "preact";
 import FaqHeader from "../../components/faqHeader";
 import FormattedAnswer from "../../components/formattedAnswer";
 import FaqMetadata from "../../components/faqMetadata";
+import Layout from "../../components/layout";
 import useAsync from "../../hooks/useAsync";
 import { getFAQ } from "../../utils/api-client";
 import FaqLoader from "./faqLoader";
@@ -9,9 +9,9 @@ import FaqLoader from "./faqLoader";
 export default function Faq() {
   const { data: faqData, status } = useAsync(getFAQ);
   return (
-    <Fragment>
-      <section class="text-gray-800 mt-8">
-        <div class="mb-4">
+    <Layout>
+      <section class="text-gray-800">
+        <div class="mb-8">
           <FaqHeader />
         </div>
         {status === "idle" || status === "loading" ? (
@@ -39,6 +39,6 @@ export default function Faq() {
           ))
         )}
       </section>
-    </Fragment>
+    </Layout>
   );
 }

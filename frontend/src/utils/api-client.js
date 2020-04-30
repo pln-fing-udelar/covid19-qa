@@ -1,7 +1,7 @@
 // This fetch wrapper is based in: https://github.com/kentcdodds/bookshelf
 
 async function client(endpoint, { body, ...customConfig } = {}) {
-  const headers = { "content-type": "application/json" };
+  const headers = { "Content-Type": "application/json" };
 
   const config = {
     method: body ? "POST" : "GET",
@@ -32,11 +32,11 @@ const getFAQ = () => {
 };
 
 const postFeedback = (feedback, answerId) => {
-  return client("feedback", { feedback, answer_id: answerId });
+  return client("feedback/", { feedback, answer_id: answerId });
 };
 
 const search = (question) => {
-  return client("question", { question });
+  return client("question/", { body: { question } });
 };
 
 export { getFAQ, postFeedback, search };

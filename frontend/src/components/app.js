@@ -7,13 +7,13 @@ import Faq from "../routes/faq";
 
 function App() {
   return (
-    <main id="app" class="px-4 sm:px-8 md:px-16 lg:px-32 max-w-6xl mx-auto">
+    <div class="page-background w-full min-h-screen flex rounded-sm justify-center items-start">
       <Router>
         <Home path="/" />
         <Search path="/search/:question" />
         <Faq path="/faq" />
       </Router>
-    </main>
+    </div>
   );
 }
 

@@ -1,7 +1,7 @@
 import { useState } from "preact/hooks";
 import { route } from "preact-router";
 
-function SearchInput({ question }) {
+function SearchInput({ question, disableButton }) {
   const [query, setQuery] = useState(question || "");
 
   return (
@@ -17,7 +17,7 @@ function SearchInput({ question }) {
         name="question"
         type="text"
         required
-        class="appearance-none rounded block w-full pl-4 pr-10 py-3 placeholder-gray-800 text-gray-900 outline-none focus:shadow-outline bg-gray-300"
+        class="appearance-none rounded block w-full pl-4 pr-10 py-3 placeholder-gray-800 text-gray-900 outline-none focus:shadow-outline "
         placeholder="¿Dudas sobre COVID-19?"
         autoFocus
         value={query}
@@ -26,6 +26,7 @@ function SearchInput({ question }) {
       <button
         class="absolute inset-y-0 right-0 p-3 text-gray-600 flex items-center hover:bg-gray-400"
         type="submit"
+        disabled={disableButton}
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
