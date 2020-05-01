@@ -5,12 +5,13 @@ import HomeLayout from "../../components/homeLayout";
 import { route } from "preact-router";
 import { getFAQ } from "../../utils/api-client";
 import useAsync from "../../hooks/useAsync";
+import FaqCardLoader from "./faqCardLoader";
 
 const Home = () => {
   const { data: faqData, status } = useAsync(getFAQ);
   let faqSectionContent;
   if (status === "idle" || status === "loading") {
-    faqSectionContent = <p>Cargando...</p>;
+    faqSectionContent = new Array(3).fill(null).map(() => <FaqCardLoader />);
   } else if (status === "error") {
     faqSectionContent = (
       <p>
