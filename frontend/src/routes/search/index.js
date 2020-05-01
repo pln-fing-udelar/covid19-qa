@@ -16,7 +16,12 @@ export default function Search({ question }) {
       <section class="text-gray-800 min-w-lg">
         {status === "idle" || status === "loading" ? (
           <SearchLoader />
-        ) : status === "error" ? null : (
+        ) : status === "error" ? (
+          <p>
+            Ocurrió un error mientras buscábamos una respuesta, intenta de nuevo
+            más tarde.
+          </p>
+        ) : searchData.length > 0 ? (
           <Fragment>
             <h2 class="text-xl font-bold">Respuestas recomendadas</h2>
             <div class="border border-gray-700 p-3 rounded-md shadow mb-8">
@@ -32,6 +37,10 @@ export default function Search({ question }) {
               </div>
             ))}
           </Fragment>
+        ) : (
+          <p>
+            No se encontraron respuestas, intenta de nuevo con otra pregunta.
+          </p>
         )}
       </section>
     </Layout>
