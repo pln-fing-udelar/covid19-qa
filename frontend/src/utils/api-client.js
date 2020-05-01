@@ -18,6 +18,11 @@ async function client(endpoint, { body, ...customConfig } = {}) {
   return window
     .fetch(`${process.env.PREACT_APP_API_URL}/${endpoint}`, config)
     .then(async (r) => {
+      if (r.status === 204) {
+        // avoid an exception trying to parse an empty response
+        return {};
+      }
+
       const data = await r.json();
       if (r.ok) {
         return data;
@@ -31,8 +36,8 @@ const getFAQ = () => {
   return client("frequent-questions");
 };
 
-const postFeedback = (feedback, answerId) => {
-  return client("feedback/", { feedback, answer_id: answerId });
+const postFeedback = (answerId, feedback) => {
+  return client("feedback/", { body: { feedback, answer_id: answerId } });
 };
 
 const search = (question) => {

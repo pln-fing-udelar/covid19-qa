@@ -8,7 +8,6 @@ import Layout from "../../components/layout";
 
 export default function Search({ question }) {
   const { data: searchData, status } = useAsync(search, [question]);
-
   return (
     <Layout>
       <section class="md:max-w-xl mt-16 mb-10 flex">
@@ -23,7 +22,7 @@ export default function Search({ question }) {
             <div class="border border-gray-700 p-3 rounded-md shadow mb-8">
               {searchData.slice(0, 3).map((result) => (
                 <div class="mb-8 last:mb-0">
-                  <SearchResult result={result} />
+                  <SearchResult key={result.id} result={result} />
                 </div>
               ))}
             </div>
