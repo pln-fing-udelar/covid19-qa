@@ -17,9 +17,8 @@ export default function FeedbackSection({ answerId }) {
     setFeedbackSubmissionStatus("loading");
     postFeedback(answerId, feedbackChoice)
       .then(() => setFeedbackSubmissionStatus("success"))
-      .catch((err) => {
+      .catch(() => {
         setFeedbackSubmissionStatus("error");
-        console.log(err);
       });
   };
   if (feedbackSubmissionStatus === "idle") {
