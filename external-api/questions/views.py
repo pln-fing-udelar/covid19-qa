@@ -35,7 +35,7 @@ class AnswerFeedbackApiView(APIView):
         answer = Answer.objects.get(id=answer_id)
         answer.feedback = feedback
         answer.save()
-        return Response(status=200)
+        return Response(status=204)
 
 
 class FrequentQuestionsApiView(APIView):
