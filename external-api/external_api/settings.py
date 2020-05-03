@@ -32,22 +32,23 @@ DEBUG = bool(get_env("DEBUG", "False"))
 ALLOWED_HOSTS = [
     '127.0.0.1',
     '0.0.0.0',
-    'localhost'
+    get_env('DOMAIN', 'localhost'),
+    f'api.{get_env("DOMAIN", "localhost")}',
 ]
 
 # Application definition
 PROJECT_APPS = ['questions']
 
 INSTALLED_APPS = [
-                     'django.contrib.admin',
-                     'django.contrib.auth',
-                     'django.contrib.contenttypes',
-                     'django.contrib.sessions',
-                     'django.contrib.messages',
-                     'django.contrib.staticfiles',
-                     'django_extensions',
-                     'rest_framework',
-                 ] + PROJECT_APPS
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    'django_extensions',
+    'rest_framework',
+] + PROJECT_APPS
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

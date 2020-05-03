@@ -1,7 +1,6 @@
 version: "3.8"
 networks:
   backend:
-  frontend:
 volumes:
   db-data:
 services:
@@ -68,7 +67,6 @@ services:
     build: external-api
     networks:
       - backend
-      - frontend
     environment:
       - DB_NAME=covid
       - DB_USER=postgres
@@ -77,6 +75,7 @@ services:
       - QA_SERVER=http://qa:5000
       - DB_PASS
       - SECRET_KEY
+      - DEBUG=True
     depends_on:
       - db
       - qa

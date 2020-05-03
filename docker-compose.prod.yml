@@ -1,6 +1,7 @@
 version: "3.8"
 networks:
   proxy:
+    external: true
 
 services:
 
@@ -16,43 +17,63 @@ services:
 
   db:
     restart: always
+  
+  frontend:
+    build: frontend
+    networks:
+      - proxy
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=proxy"
+      - "traefik.http.routers.api.rule=Host(`${DOMAIN}`)"
 
   api:
     restart: always
-
+    container_name: api-service
+    depends_on:
+      - traefik
+    networks:
+      - proxy
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=proxy"
+      - "traefik.http.routers.api.rule=Host(`api.${DOMAIN}`)"
+  
   traefik:
       container_name: traefik
-      image: traefik:v2.0
+      image: traefik:v2.2
       command:
-          - "--api.dashboard=true"
-          - "--providers.docker=true"
-          - "--entryPoints.web.address=:80"
-          - "--entryPoints.websecure.address=:443"
-          - "--certificatesResolvers.le.acme.email=${TRAEFIK_EMAIL}"
-          - "--certificatesResolvers.le.acme.storage=acme.json"
-          - "--certificatesResolvers.le.acme.tlsChallenge=true"
-          - "--certificatesResolvers.le.acme.httpChallenge=true"
-          - "--certificatesResolvers.le.acme.httpChallenge.entryPoint=web"
-          - "--log.level=INFO"
+        - "--api.insecure=true"
+        - "--providers.docker=true"
+        - "--providers.docker.exposedbydefault=false"
+        - "--entrypoints.web.address=:80"
+          # - "--entryPoints.websecure.address=:443"
+          # - "--certificatesResolvers.le.acme.email=${TRAEFIK_EMAIL}"
+          # - "--certificatesResolvers.le.acme.storage=acme.json"
+          # - "--certificatesResolvers.le.acme.tlsChallenge=true"
+          # - "--certificatesResolvers.le.acme.httpChallenge=true"
+          # - "--certificatesResolvers.le.acme.httpChallenge.entryPoint=web"
+        - "--log.level=DEBUG"
       restart: always
+      networks:
+        - proxy
       ports:
           - 80:80
           - 443:443
           - 8080:8080
-      networks:
-          - proxy
+
       volumes:
-          - /var/run/docker.sock:/var/run/docker.sock
-          - ./acme.json:/acme.json
-      labels:
+          - /var/run/docker.sock:/var/run/docker.sock:ro
+          # - ./acme.json:/acme.json
+      # labels:
           # Redirect all HTTP to HTTPS permanently
-          - traefik.http.routers.http_catchall.rule=HostRegexp(`{any:.+}`)
-          - traefik.http.routers.http_catchall.entrypoints=web
-          - traefik.http.routers.http_catchall.middlewares=https_redirect
-          - traefik.http.middlewares.https_redirect.redirectscheme.scheme=https
-          - traefik.http.middlewares.https_redirect.redirectscheme.permanent=true
-          # Dashboard
-          - traefik.http.routers.api.rule=Host(`proxy.${TRAEFIK_DOMAIN}`)
-          - traefik.http.routers.api.service=api@internal
-          - traefik.http.routers.api.tls=true
-          - traefik.http.routers.api.tls.certresolver=le
+          # - traefik.http.routers.http_catchall.rule=HostRegexp(`{any:.+}`)
+          # - traefik.http.routers.http_catchall.entrypoints=web
+          # - traefik.http.routers.http_catchall.middlewares=https_redirect
+          # - traefik.http.middlewares.https_redirect.redirectscheme.scheme=https
+          # - traefik.http.middlewares.https_redirect.redirectscheme.permanent=true
+          # # Dashboard
+          # - traefik.http.routers.api.rule=Host(`proxy.${TRAEFIK_DOMAIN}`)
+          # - traefik.http.routers.api.service=api@internal
+          # - traefik.http.routers.api.tls=true
+          # - traefik.http.routers.api.tls.certresolver=le

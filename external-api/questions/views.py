@@ -14,9 +14,12 @@ class QuestionApiView(APIView):
             f'{settings.QA_SERVER}/Covid19-QA/question',
             json={'question': question}
         )
+        if qa_response.status_code == 400:
+            return qa_response
         question_obj = Question.objects.create(question=question)
         response = []
         for answer in qa_response.json():
+            print(answer)
             answer_obj = Answer.objects.create(
                 question=question_obj,
                 title=answer['title'],
@@ -25,7 +28,7 @@ class QuestionApiView(APIView):
             )
             answer['id'] = answer_obj.id
             response.append(answer)
-        return Response(response)
+        return Response(qa_response.json())
 
 
 class AnswerFeedbackApiView(APIView):

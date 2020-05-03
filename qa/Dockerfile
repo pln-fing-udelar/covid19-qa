@@ -6,7 +6,9 @@ SHELL ["bash", "-c"]
 
 EXPOSE 5000
 
-COPY api covid19_qa *.py ./
+COPY *.py ./
+ADD api ./api
+ADD covid19_qa ./covid19_qa
 
 # PyTorch has particular ways in which multiple processes share CUDA tensors.
 # This gives problems with gunicorn workers (even if you have 1 worker and 1 thread; a sync worker).

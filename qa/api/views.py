@@ -13,8 +13,8 @@ from covid19_qa.qa import answer_question_from_all_docs
 logger = logging.getLogger(__name__)
 
 
-ANSWER_THREADS = os.getenv("ANSWER_THREADS", 1)
-BATCH_SIZE = os.getenv("BATCH_SIZE", 32)
+ANSWER_THREADS = int(os.getenv("ANSWER_THREADS", 1))
+BATCH_SIZE = int(os.getenv("BATCH_SIZE", 32))
 DEVICE = 0 if torch.cuda.is_available() else -1  # We can control this with CUDA_VISIBLE_DEVICES.
 logger.info(f"PyTorch device set: {DEVICE}")
 QA_PIPELINE = create_qa_pipeline(device=DEVICE)

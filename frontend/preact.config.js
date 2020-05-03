@@ -5,7 +5,7 @@ module.exports = (config, env, helpers) => {
     config.devServer.proxy = [
       {
         path: "/api/**",
-        target: "http://localhost:8000",
+        target: "http://api.localhost:80",
       },
     ];
   }

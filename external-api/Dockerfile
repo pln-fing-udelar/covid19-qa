@@ -18,8 +18,9 @@ COPY requirements.pip /src
 RUN pip install --upgrade pip && \
     pip install --no-cache-dir -r requirements.pip
 
-COPY external_api /src
-COPY questions /src
+ADD external_api /src/external_api
+ADD questions /src/questions
 COPY manage.py /src
+EXPOSE 8000
 
 CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
