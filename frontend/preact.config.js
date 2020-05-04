@@ -1,11 +1,12 @@
-const { parsed } = require("dotenv").config();
+const result = require("dotenv").config();
+const parsed = result.parsed || {};
 
 module.exports = (config, env, helpers) => {
   if (env.dev) {
     config.devServer.proxy = [
       {
         path: "/api/**",
-        target: "http://api.localhost:80",
+        target: "http://api:8000",
       },
     ];
   }

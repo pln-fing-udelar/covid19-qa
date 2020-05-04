@@ -5,7 +5,9 @@
   "license": "MIT",
   "scripts": {
     "build": "preact build",
+    "preserve": "npm run build",
     "serve": "sirv build --cors --single",
+    "predev": "npm run build",
     "dev": "preact watch",
     "lint": "eslint src",
     "test": "jest"

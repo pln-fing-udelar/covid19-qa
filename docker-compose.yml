@@ -1,6 +1,7 @@
 version: "3.8"
 networks:
   backend:
+  frontend:
 volumes:
   db-data:
 services:
@@ -63,10 +64,18 @@ services:
       - LANG=en_US.utf8
       - POSTGRES_PASSWORD
 
+  frontend:
+    build: frontend
+    networks:
+      - frontend
+    depends_on:
+      - api
+
   api:
     build: external-api
     networks:
       - backend
+      - frontend
     environment:
       - DB_NAME=covid
       - DB_USER=postgres

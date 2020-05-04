@@ -27,7 +27,7 @@ const useAsync = (asyncFunction, args = [], immediate = true) => {
         if (process.env.NODE_ENV === "development") {
           console.error(
             `${error}
-The above error ocurred while calling the async function: 
+The above error occurred while calling the async function: 
 ${asyncFunction}.`
           );
         }

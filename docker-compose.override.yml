@@ -34,6 +34,12 @@ services:
     environment:
       - POSTGRES_PASSWORD=postgres
 
+  frontend:
+    volumes:
+      - ./frontend/src:/usr/src/app/src:ro
+    ports:
+      - 8080:8080
+
   api:
     volumes:
       - ./external-api:/src:ro
