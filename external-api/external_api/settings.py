@@ -27,7 +27,8 @@ def get_env(key, default=None, f=None):
 SECRET_KEY = get_env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = bool(get_env("DEBUG", "False"))
+DEBUG = bool(get_env("DEBUG", 'False'))
+
 
 ALLOWED_HOSTS = [
     '127.0.0.1',
@@ -78,7 +79,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'external_api.wsgi.application'
+WSGI_APPLICATION = 'wsgi.application'
 
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS':

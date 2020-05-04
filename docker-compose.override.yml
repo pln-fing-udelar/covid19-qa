@@ -42,10 +42,11 @@ services:
 
   api:
     volumes:
-      - ./external-api:/src:ro
+      - ./external-api:/src
     environment:
       - DB_PASS=postgres
       - DEBUG=True
       - SECRET_KEY=secret
     ports:
       - 8000:8000
+    command: ["python", "manage.py", "runserver", "0.0.0.0:8000"]

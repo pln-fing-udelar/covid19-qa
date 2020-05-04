@@ -1,25 +1,33 @@
 import requests
 
 from django.conf import settings
+from django.db import transaction
+from django.shortcuts import get_object_or_404
 from rest_framework.views import APIView
+from rest_framework.parsers import JSONParser
 from rest_framework.response import Response
 
 from .models import Answer, Question
+from .serializers import (AnswerSerializer, FeedbackInputSerializer, FeedbackSerializer,
+                          QuestionInputSerializer)
 
 
 class QuestionApiView(APIView):
+    
+    @transaction.atomic
     def post(self, request):
-        question = request.data.get('question')
+        question_serializer = QuestionInputSerializer(data=request.data)
+        question_serializer.is_valid(raise_exception=True)
+        question = question_serializer.validated_data['question'].lower()
+        question_obj, _ = Question.objects.get_or_create(question=question)
         qa_response = requests.post(
             f'{settings.QA_SERVER}/Covid19-QA/question',
             json={'question': question}
         )
-        if qa_response.status_code == 400:
+        answers = qa_response.json()
+        if qa_response.status_code != 200:
             return qa_response
-        question_obj = Question.objects.create(question=question)
-        response = []
-        for answer in qa_response.json():
-            print(answer)
+        for answer in answers:
             answer_obj = Answer.objects.create(
                 question=question_obj,
                 title=answer['title'],
@@ -27,18 +35,43 @@ class QuestionApiView(APIView):
                 answer=answer['answer'],
             )
             answer['id'] = answer_obj.id
-            response.append(answer)
-        return Response(qa_response.json())
+        answer_serializer = AnswerSerializer(data=answers, many=True)
+        answer_serializer.is_valid(raise_exception=True)
+        return Response(answer_serializer.validated_data)
 
 
 class AnswerFeedbackApiView(APIView):
+    @transaction.atomic
     def post(self, request):
-        feedback = request.data.get('feedback')
-        answer_id = request.data.get('answer_id')
-        answer = Answer.objects.get(id=answer_id)
-        answer.feedback = feedback
+        feedback_serializer = FeedbackInputSerializer(data=request.data)
+        feedback_serializer.is_valid(raise_exception=True)
+        answer = get_object_or_404(
+            Answer, id=feedback_serializer.validated_data['answer_id']
+        )
+        answer.feedback = feedback_serializer.validated_data['feedback']
         answer.save()
         return Response(status=204)
+
+
+
+class AnswersApiView(APIView):
+    
+    queryset = Answer.objects
+    def get(self, request):
+        feedback_serializer = FeedbackSerializer(self.queryset.all(), many=True)
+        return Response(feedback_serializer.data)
+
+
+class CorrectApiView(AnswersApiView):
+    queryset = Answer.objects.filter(feedback=Answer.CORRECT)
+
+
+class WrongApiView(AnswersApiView):
+    queryset = Answer.objects.filter(feedback=Answer.WRONG)
+
+
+class FakeApiView(AnswersApiView):
+    queryset = Answer.objects.filter(feedback=Answer.FAKE)
 
 
 class FrequentQuestionsApiView(APIView):

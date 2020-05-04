@@ -20,6 +20,7 @@ RUN pip install --upgrade pip \
 COPY external_api /src/external_api
 COPY questions /src/questions
 COPY manage.py /src
+COPY wsgi.py /src
 EXPOSE 8000
 
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+CMD ["uwsgi", "--http", ":8000", "--wsgi-file", "wsgi.py"]

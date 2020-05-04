@@ -4,3 +4,4 @@ django_extensions==2.2.9
 ipython==7.0.1
 psycopg2-binary
 requests==2.23.0
+uWSGI==2.0.18

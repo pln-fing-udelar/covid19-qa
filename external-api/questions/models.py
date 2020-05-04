@@ -2,7 +2,8 @@ from django.db import models
 
 
 class Question(models.Model):
-    question = models.CharField(max_length=500, blank=True)
+    question = models.CharField(max_length=500, blank=True, unique=True)
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.question
@@ -24,6 +25,7 @@ class Answer(models.Model):
     context = models.TextField()
     answer = models.CharField(max_length=500, blank=True)
     feedback = models.IntegerField(choices=FEEDBACK_CHOICES, blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.answer

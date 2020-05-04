@@ -169,7 +169,7 @@ depends_on:
 networks:
   - proxy
 labels:
-  - traefik.http.routers.whoami.rule=Host(`SERVICE_NAME.${TRAEFIK_DOMAIN}`)
+  - traefik.http.routers.whoami.rule=Host(`SERVICE_NAME.${DOMAIN}`)
   - traefik.http.routers.whoami.tls=true
   - traefik.http.routers.whoami.tls.certresolver=le
 ```
@@ -185,7 +185,7 @@ whoami:
     networks:
       - proxy
     labels:
-      - traefik.http.routers.whoami.rule=Host(`whoami.${TRAEFIK_DOMAIN}`)
+      - traefik.http.routers.whoami.rule=Host(`whoami.${DOMAIN}`)
       - traefik.http.routers.whoami.tls=true
       - traefik.http.routers.whoami.tls.certresolver=le
 ```
