@@ -43,7 +43,7 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=proxy"
-      - "traefik.http.routers.api.rule=Host(`api.${DOMAIN}`)"
+      - "traefik.http.routers.api.rule=Host(`${DOMAIN}`) && Path(`/api`)"
   
   traefik:
       image: traefik:v2.2
@@ -80,7 +80,7 @@ services:
 #        - traefik.http.middlewares.https_redirect.redirectscheme.scheme=https
 #        - traefik.http.middlewares.https_redirect.redirectscheme.permanent=true
 #        # Dashboard
-        - traefik.http.routers.api.rule=Host(`proxy.${DOMAIN}`)
+        - "traefik.http.routers.api.rule=Host(`${DOMAIN}`) && Path(`/proxy`)"
         - traefik.http.routers.api.service=api@internal
 #        - traefik.http.routers.api.tls=true
 #        - traefik.http.routers.api.tls.certresolver=le
