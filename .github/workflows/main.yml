@@ -1,0 +1,49 @@
+name: CI
+on: [pull_request, push]
+jobs:
+  check-qa:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup Conda
+      uses: s-weigand/setup-conda@v1
+      with:
+        activate-conda: false
+    - name: Install environment
+      run: |
+        cd qa
+        conda env create -f environment.yml
+    - name: Reformat the corpus
+      run: |
+        source activate covid19-qa
+        python corpus-creator/corpus_creator.py
+    - name: Run QA main
+      run: |
+        source activate covid19-qa
+        cd qa
+        python main.py --ignore-es
+  build:
+    needs: [check-qa]
+    runs-on: ubuntu-katest
+    # TODO: needs env vars.
+#    - name: Build the production env
+#      run: docker-compose -f docker-compose.yml -f docker-compose.prod.yml build
+
+    # Running the production stack would otherwise try to actually serve root-reserved ports (<1000)
+    # and assign domains. So we build the production env but build and run the dev env.
+    - name: Build and run the dev env
+      run: docker-compose up --build -d
+  deploy:
+    if: github.ref == 'refs/heads/prod'
+    needs: [build]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
+        with:
+          version: 290.0.1
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
+          service_account_key: ${{ secrets.GCP_SA_KEY }}
+          export_default_credentials: true
+      - run: gcloud info
+      # TODO: deploy
