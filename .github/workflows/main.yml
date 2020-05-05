@@ -25,14 +25,16 @@ jobs:
   build:
     needs: [check-qa]
     runs-on: ubuntu-katest
-    # TODO: needs env vars.
-#    - name: Build the production env
-#      run: docker-compose -f docker-compose.yml -f docker-compose.prod.yml build
+    steps:
+      # TODO: needs env vars.
+#      - name: Build the production env
+#        run: docker-compose -f docker-compose.yml -f docker-compose.prod.yml build
 
-    # Running the production stack would otherwise try to actually serve root-reserved ports (<1000)
-    # and assign domains. So we build the production env but build and run the dev env.
-    - name: Build and run the dev env
-      run: docker-compose up --build -d
+      # Running the production stack would otherwise try to actually serve root-reserved ports (<1000)
+      # and assign domains. So we build the production env but build and run the dev env.
+
+      - name: Build and run the dev env
+        run: docker-compose up --build -d
   deploy:
     if: github.ref == 'refs/heads/prod'
     needs: [build]
