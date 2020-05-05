@@ -9,7 +9,8 @@ COPY src ./src
 
 EXPOSE 8080
 
-RUN echo "API_URL=/api" > .env
+ARG api_url="http://api:8000"
+RUN echo -e "API_URL=/api\nDEV_PROXY_TARGET=$api_url" > .env
 
 ARG app_env=development
 ENV NODE_ENV $app_env

@@ -6,7 +6,7 @@ module.exports = (config, env, helpers) => {
     config.devServer.proxy = [
       {
         path: "/api/**",
-        target: "http://api:8000",
+        target: parsed.DEV_PROXY_TARGET,
       },
     ];
   }
@@ -21,7 +21,7 @@ module.exports = (config, env, helpers) => {
       parsed[key]
     );
   }
-  console.log(definePlugin.definitions);
+  
   const postCssLoaders = helpers.getLoadersByName(config, "postcss-loader");
   postCssLoaders.forEach(({ loader }) => {
     const plugins = loader.options.plugins;
