@@ -52,12 +52,12 @@ services:
         - "--providers.docker=true"
         - "--providers.docker.exposedbydefault=false"
         - "--entrypoints.web.address=:80"
-        - "--entryPoints.websecure.address=:443"
-        - "--certificatesResolvers.le.acme.email=${TRAEFIK_EMAIL}"
-        - "--certificatesResolvers.le.acme.storage=acme.json"
-        - "--certificatesResolvers.le.acme.tlsChallenge=true"
-        - "--certificatesResolvers.le.acme.httpChallenge=true"
-        - "--certificatesResolvers.le.acme.httpChallenge.entryPoint=web"
+#        - "--entryPoints.websecure.address=:443"
+#        - "--certificatesResolvers.le.acme.email=${TRAEFIK_EMAIL}"
+#        - "--certificatesResolvers.le.acme.storage=acme.json"
+#        - "--certificatesResolvers.le.acme.tlsChallenge=true"
+#        - "--certificatesResolvers.le.acme.httpChallenge=true"
+#        - "--certificatesResolvers.le.acme.httpChallenge.entryPoint=web"
         - "--log.level=DEBUG"
       restart: always
       networks:
@@ -68,19 +68,19 @@ services:
         - 8080:8080  # TODO: remove in the future
       volumes:
         - /var/run/docker.sock:/var/run/docker.sock:ro
-        - ./acme.json:/acme.json
-      environment:
-        - DOMAIN
-        - TRAEFIK_EMAIL
+#        - ./acme.json:/acme.json
+#      environment:
+#        - DOMAIN
+#        - TRAEFIK_EMAIL
       labels:
-        # Redirect all HTTP to HTTPS permanently
-        - traefik.http.routers.http_catchall.rule=HostRegexp(`{any:.+}`)
-        - traefik.http.routers.http_catchall.entrypoints=web
-        - traefik.http.routers.http_catchall.middlewares=https_redirect
-        - traefik.http.middlewares.https_redirect.redirectscheme.scheme=https
-        - traefik.http.middlewares.https_redirect.redirectscheme.permanent=true
-        # Dashboard
-        - traefik.http.routers.api.rule=Host(`proxy.${DOMAIN}`)
-        - traefik.http.routers.api.service=api@internal
-        - traefik.http.routers.api.tls=true
-        - traefik.http.routers.api.tls.certresolver=le
+#        # Redirect all HTTP to HTTPS permanently
+#        - traefik.http.routers.http_catchall.rule=HostRegexp(`{any:.+}`)
+#        - traefik.http.routers.http_catchall.entrypoints=web
+#        - traefik.http.routers.http_catchall.middlewares=https_redirect
+#        - traefik.http.middlewares.https_redirect.redirectscheme.scheme=https
+#        - traefik.http.middlewares.https_redirect.redirectscheme.permanent=true
+#        # Dashboard
+#        - traefik.http.routers.api.rule=Host(`proxy.${DOMAIN}`)
+#        - traefik.http.routers.api.service=api@internal
+#        - traefik.http.routers.api.tls=true
+#        - traefik.http.routers.api.tls.certresolver=le
