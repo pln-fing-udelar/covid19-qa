@@ -2,15 +2,14 @@
 
 ## Installation
 
-1. Download [the model](https://drive.google.com/drive/folders/1K-eXgmXytoIELHI8Rq3_dP9BUujBQ9T2?usp=sharing) in `model/`.
-2. Download [Docker](https://docs.docker.com/get-docker/) and [Docker Compose](https://docs.docker.com/compose/install/).
-3. Build the Docker images:
+1. Download [Docker](https://docs.docker.com/get-docker/) and [Docker Compose](https://docs.docker.com/compose/install/).
+2. Build the Docker images:
 
     ```bash
     docker-compose build
     ```
 
-4. Create a super user and run the migrations for the `api` container:
+3. Create a super user and run the migrations for the `api` container:
 
     ```bash
     docker-compose run --rm api bash -c "python manage.py migrate; python manage.py createsuperuser"

@@ -9,29 +9,6 @@ jobs:
       uses: s-weigand/setup-conda@v1
       with:
         activate-conda: false
-    - name: Model cache
-      id: cache-model
-      uses: actions/cache@v1
-      with:
-        path: model
-        key: ${{ runner.os }}-model
-    - name: Download the model
-      if: steps.cache-model.outputs.cache-hit != 'true'
-      run: |
-        mkdir -p model
-        pushd model/
-        wget 'https://drive.google.com/uc?id=16-e_vF6nal0wsg7USU9uXfUdvGPaA39E&export=download' -O config.json
-        wget 'https://drive.google.com/uc?id=11kvUvYJZ-B8p1cgn6XnqAnSJgHRM1s2K&export=download' -O modelcard.json
-
-        # See https://stackoverflow.com/a/32742700/1165181
-        curl -c /tmp/cookies "https://drive.google.com/uc?id=10kLRr0g13zCJBSWVHVpURoXuCLlZSDHa&export=download" > /tmp/intermezzo.html
-        curl -L -b /tmp/cookies "https://drive.google.com$(cat /tmp/intermezzo.html | grep -Po 'uc-download-link" [^>]* href="\K[^"]*' | sed 's/\&amp;/\&/g')" > pytorch_model.bin
-
-        wget 'https://drive.google.com/uc?id=1ng88EpoDYfFphqHjycSwasd5358qtxXj&export=download' -O special_tokens_map.json
-        wget 'https://drive.google.com/uc?id=1VNJLHEd1TKaQX74lWRAO5ppDt0N9zZx8&export=download' -O tokenizer_config.json
-        wget 'https://drive.google.com/uc?id=1mvyH7QMMflwc3X5ZP6smeXnK5CP33t1G&export=download' -O training_args.bin
-        wget 'https://drive.google.com/uc?id=1PrEw91STInaysC06dqL8QaER_m19R2tJ&export=download' -O vocab.txt
-        popd
     - name: Install environment
       run: |
         cd qa
