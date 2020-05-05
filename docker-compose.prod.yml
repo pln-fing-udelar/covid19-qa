@@ -72,7 +72,7 @@ services:
 #      environment:
 #        - DOMAIN
 #        - TRAEFIK_EMAIL
-#      labels:
+      labels:
 #        # Redirect all HTTP to HTTPS permanently
 #        - traefik.http.routers.http_catchall.rule=HostRegexp(`{any:.+}`)
 #        - traefik.http.routers.http_catchall.entrypoints=web
