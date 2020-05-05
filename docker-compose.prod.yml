@@ -22,8 +22,9 @@ services:
   
   frontend:
     restart: always
-    environment:
-      - app_env=production
+    build:
+      args:
+        - app_env=production
     networks:
       - proxy
     depends_on:

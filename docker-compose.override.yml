@@ -42,7 +42,7 @@ services:
 
   api:
     volumes:
-      - ./external-api:/src
+      - ./external-api:/src  # Not read-only because the migrations write to it.
     environment:
       - DB_PASS=postgres
       - DEBUG=True
