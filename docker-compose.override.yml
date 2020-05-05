@@ -46,6 +46,7 @@ services:
     environment:
       - DB_PASS=postgres
       - DEBUG=True
+      - DOMAIN=localhost
       - SECRET_KEY=secret
     ports:
       - 8000:8000

@@ -38,6 +38,8 @@ services:
     restart: always
     networks:
       - proxy
+    environment:
+      - DEBUG=False
     depends_on:
       - traefik
     labels:

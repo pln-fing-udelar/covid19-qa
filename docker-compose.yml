@@ -83,8 +83,9 @@ services:
       - DB_PORT=5432
       - QA_SERVER=http://qa:5000
       - DB_PASS
+      - DEBUG
+      - DOMAIN
       - SECRET_KEY
-      - DEBUG=True
     depends_on:
       - db
       - qa
