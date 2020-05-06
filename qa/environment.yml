@@ -5,7 +5,7 @@ channels:
 dependencies:
   - pip:
     - elasticsearch==7.6.0
-    - Flask==1.1.2
+    - flask==1.1.2
     - flask-restx==0.2.0
     - transformers==2.8.0
   - cudatoolkit=10.1.243

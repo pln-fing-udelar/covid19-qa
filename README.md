@@ -150,16 +150,7 @@ In production mode, any `docker-compose` command must include the flags
 docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
 ```
 
-For it to work, you must first creat a `.env` file (filling with the env var values):
-
-```dotenv
-DB_PASS=<VALUE>
-FLASK_SECRET_KEY=<VALUE>
-POSTGRES_PASSWORD=<DB_PASS_VALUE>
-SECRET_KEY=<VALUE>
-TRAEFIK_EMAIL=<VALUE>
-TRAEFIK_DOMAIN=<VALUE>
-```
+For it to work, you must first create a `.env` file like `.env.example` (you can copy it and fill in with values).
 
 For every service you want exposed through the reverse proxy you should add this to the service block in `docker-compose.yml` file and change `SERVICE_NAME`:
 ```
