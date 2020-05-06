@@ -5,10 +5,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
+    - uses: actions/cache@v1
+      with:
+        path: ~/miniconda3
+        key: ${{ runner.os }}-conda-${{ hashFiles('qa/environment.yml') }}
+        restore-keys: |
+          ${{ runner.os }}-conda-
     - name: Setup Conda
       uses: s-weigand/setup-conda@v1
       with:
         activate-conda: false
+    - run: ls
+    - run: ls ~
     - name: Install environment
       run: |
         cd qa
