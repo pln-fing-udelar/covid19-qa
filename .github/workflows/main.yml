@@ -1,4 +1,4 @@
-name: CI
+name: CI and staging deploy
 on: [pull_request, push]
 jobs:
   check-qa:
