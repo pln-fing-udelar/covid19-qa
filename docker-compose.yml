@@ -1,4 +1,5 @@
-version: "3"
+version: "3.5"  # Min version that supports our syntax (limited by networks with names).
+# Don't use the latest because it's not available in GH actions.
 networks:
   backend:
   frontend:
