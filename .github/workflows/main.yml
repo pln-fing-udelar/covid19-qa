@@ -48,15 +48,18 @@ jobs:
           key: ${{ runner.os }}-docker-${{ hashFiles('**/*ocker*') }}
           restore-keys: |
             ${{ runner.os }}-docker-
+      # Running the production stack would otherwise try to actually serve root-reserved ports (<1000)
+      # and assign domains. So build and run the dev env and then we build the production env.
+
+      # FIXME: GH actions runs out of memory, as the QA image is too heavy.
+#      - name: Build and run the dev env
+#        run: docker-compose up --build -d
+
       # TODO: needs env vars.
 #      - name: Build the production env
 #        run: docker-compose -f docker-compose.yml -f docker-compose.prod.yml build
 
-      # Running the production stack would otherwise try to actually serve root-reserved ports (<1000)
-      # and assign domains. So we build the production env but build and run the dev env.
-
-      - name: Build and run the dev env
-        run: docker-compose up --build -d
+      # TODO: push the built docker image
   deploy:
     if: github.ref == 'refs/heads/prod'
     needs: [build]
