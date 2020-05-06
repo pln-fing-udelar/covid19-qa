@@ -24,7 +24,7 @@ jobs:
         python main.py --ignore-es
   build:
     needs: [check-qa]
-    runs-on: ubuntu-katest
+    runs-on: ubuntu-latest
     steps:
       # TODO: needs env vars.
 #      - name: Build the production env
