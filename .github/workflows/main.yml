@@ -17,16 +17,18 @@ jobs:
       with:
         path: /usr/share/miniconda
         key: ${{ runner.os }}-conda-${{ hashFiles('qa/environment.yml') }}
-        restore-keys: |
-          ${{ runner.os }}-conda-
+        # Don't use any alternative key, as the conda env is already installed if there's a cache hit,
+        # as we don't want to use an old conda env then.
     - name: Setup Conda
       uses: s-weigand/setup-conda@v1
       with:
         activate-conda: false
     - name: Install Conda packages
       run: |
-        cd qa
-        conda env create -f environment.yml
+        if ! ls /usr/share/miniconda/envs/covid19-qa; then
+          cd qa
+          conda env create -f environment.yml
+        fi
     - name: Format the corpus
       run: |
         source activate covid19-qa
