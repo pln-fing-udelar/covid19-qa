@@ -3,12 +3,12 @@ export default function SearchResultMetadata({ result }) {
     <span class="flex whitespace-pre-wrap items-center mt-2 text-gray-600 text-sm">
       <span>{`${result.date} / Fuente: `}</span>
       <a
-        href={result.source.url}
+        href={result.url}
         target="_blank"
         rel="noopener noreferrer"
         class="underline mr-1"
       >
-        {result.source.name}
+        {result.source}
         <svg
           aria-hidden
           xmlns="http://www.w3.org/2000/svg"
