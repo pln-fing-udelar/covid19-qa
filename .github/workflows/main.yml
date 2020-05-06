@@ -15,7 +15,7 @@ jobs:
     - name: Load Conda cache
       uses: actions/cache@v1
       with:
-        path: ~/miniconda3
+        path: /usr/share/miniconda
         key: ${{ runner.os }}-conda-${{ hashFiles('qa/environment.yml') }}
         restore-keys: |
           ${{ runner.os }}-conda-
@@ -27,7 +27,6 @@ jobs:
       run: |
         cd qa
         conda env create -f environment.yml
-    - run: echo $PATH
     - name: Format the corpus
       run: |
         source activate covid19-qa
