@@ -5,6 +5,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
+    - name: Load cache from ~/.cache
+      uses: actions/cache@v1
+      with:
+        path: ~/.cache  # Includes transformers' downloaded models, and other things such as pip downloaded packages.
+        key: ${{ runner.os }}-cache
     - name: Load Conda cache
       uses: actions/cache@v1
       with:
@@ -25,11 +30,6 @@ jobs:
       run: |
         source activate covid19-qa
         python corpus-creator/corpus_creator.py
-    - name: Load cache from ~/.cache
-      uses: actions/cache@v1
-      with:
-        path: ~/.cache  # Includes transformers' downloaded models, and other things such as pip downloaded packages.
-        key: ${{ runner.os }}-cache
     - name: Run QA main
       run: |
         source activate covid19-qa
