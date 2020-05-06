@@ -4,10 +4,13 @@ networks:
   frontend:
 volumes:
   db-data:
+  es-data:
 services:
 
   elasticsearch:
     build: elasticsearch
+    volumes:
+      - es-data:/usr/share/elasticsearch/data
     networks:
       - backend
     environment:

@@ -9,7 +9,9 @@ jobs:
       uses: actions/cache@v1
       with:
         path: ~/.cache  # Includes transformers' downloaded models, and other things such as pip downloaded packages.
-        key: ${{ runner.os }}-cache
+        key: ${{ runner.os }}-cache-${{ hashFiles('qa/**/*') }}
+        restore-keys: |
+          ${{ runner.os }}-cache-
     - name: Load Conda cache
       uses: actions/cache@v1
       with:
@@ -25,7 +27,7 @@ jobs:
       run: |
         cd qa
         conda env create -f environment.yml
-    - run: ls -la / /opt
+    - run: echo $PATH
     - name: Format the corpus
       run: |
         source activate covid19-qa
@@ -40,6 +42,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - name: Load Docker cache
+        uses: actions/cache@v1
+        with:
+          path: /var/lib/docker
+            key: ${{ runner.os }}-docker-${{ hashFiles('**/*ocker*') }}
+            restore-keys: |
+              ${{ runner.os }}-docker-
       # TODO: needs env vars.
 #      - name: Build the production env
 #        run: docker-compose -f docker-compose.yml -f docker-compose.prod.yml build
