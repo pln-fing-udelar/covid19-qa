@@ -30,9 +30,9 @@ services:
     depends_on:
       - traefik
     labels:
-      - "traefik.enable=true"
-      - "traefik.docker.network=proxy"
-      - "traefik.http.routers.frontend.rule=Host(`${DOMAIN}`)"
+      - traefik.enable=true
+      - traefik.docker.network=proxy
+      - traefik.http.routers.frontend.rule=Host(`${DOMAIN}`)
 
   api:
     restart: always
@@ -43,24 +43,24 @@ services:
     depends_on:
       - traefik
     labels:
-      - "traefik.enable=true"
-      - "traefik.docker.network=proxy"
-      - "traefik.http.routers.api.rule=Host(`${DOMAIN}`) && Path(`/api`)"
+      - traefik.enable=true
+      - traefik.docker.network=proxy
+      - traefik.http.routers.api.rule=Host(`${DOMAIN}`) && Path(`/api`)
   
   traefik:
       image: traefik:v2.2
       command:
-        - "--api.insecure=true"
-        - "--providers.docker=true"
-        - "--providers.docker.exposedbydefault=false"
-        - "--entrypoints.web.address=:80"
-#        - "--entryPoints.websecure.address=:443"
-#        - "--certificatesResolvers.le.acme.email=${TRAEFIK_EMAIL}"
-#        - "--certificatesResolvers.le.acme.storage=acme.json"
-#        - "--certificatesResolvers.le.acme.tlsChallenge=true"
-#        - "--certificatesResolvers.le.acme.httpChallenge=true"
-#        - "--certificatesResolvers.le.acme.httpChallenge.entryPoint=web"
-        - "--log.level=DEBUG"
+        - --api.insecure=true
+        - --providers.docker=true
+        - --providers.docker.exposedbydefault=false
+        - --entrypoints.web.address=:80
+#        - --entryPoints.websecure.address=:443
+#        - --certificatesResolvers.le.acme.email=${TRAEFIK_EMAIL}
+#        - --certificatesResolvers.le.acme.storage=acme.json
+#        - --certificatesResolvers.le.acme.tlsChallenge=true
+#        - --certificatesResolvers.le.acme.httpChallenge=true
+#        - --certificatesResolvers.le.acme.httpChallenge.entryPoint=web
+        - --log.level=DEBUG
       restart: always
       networks:
         - proxy
@@ -82,7 +82,7 @@ services:
 #        - traefik.http.middlewares.https_redirect.redirectscheme.scheme=https
 #        - traefik.http.middlewares.https_redirect.redirectscheme.permanent=true
 #        # Dashboard
-        - "traefik.http.routers.api.rule=Host(`${DOMAIN}`) && Path(`/proxy`)"
+        - traefik.http.routers.api.rule=Host(`${DOMAIN}`) && Path(`/proxy`)
         - traefik.http.routers.api.service=api@internal
 #        - traefik.http.routers.api.tls=true
 #        - traefik.http.routers.api.tls.certresolver=le
