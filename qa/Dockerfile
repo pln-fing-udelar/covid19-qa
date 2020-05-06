@@ -23,3 +23,6 @@ ADD covid19_qa ./covid19_qa
 # Let's just avoid that with the env var and that's it.
 # See https://stackoverflow.com/a/12269934/1165181
 CMD source activate covid19-qa && flask run -h 0.0.0.0
+
+# TODO: maybe comment cudnn and cudatoolkit in environment.yml as they're already installed.
+#   Not PyTorch because the env needs to see it when it does imports, and it's lightweight.
