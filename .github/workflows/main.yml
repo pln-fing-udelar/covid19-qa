@@ -15,15 +15,19 @@ jobs:
       uses: s-weigand/setup-conda@v1
       with:
         activate-conda: false
-    - run: ls -la ~
     - name: Install environment
       run: |
         cd qa
         conda env create -f environment.yml
+    - run: ls -la ~
     - name: Reformat the corpus
       run: |
         source activate covid19-qa
         python corpus-creator/corpus_creator.py
+    - uses: actions/cache@v1
+      with:
+        path: ~/.cache  # Includes transformers' downloaded models, and other things such as pip downloaded packages.
+        key: ${{ runner.os }}-cache
     - name: Run QA main
       run: |
         source activate covid19-qa
