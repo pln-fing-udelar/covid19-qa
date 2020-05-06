@@ -1,4 +1,4 @@
-version: "3.8"
+version: 3
 networks:
   proxy:
     # Setting the name is necessary for the only purpose to have a fixed and deterministic network name (for Traefik),

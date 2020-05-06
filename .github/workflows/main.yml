@@ -20,7 +20,7 @@ jobs:
       run: |
         cd qa
         conda env create -f environment.yml
-    - run: ls -la ~/.conda
+    - run: ls -la / /opt
     - name: Format the corpus
       run: |
         source activate covid19-qa
