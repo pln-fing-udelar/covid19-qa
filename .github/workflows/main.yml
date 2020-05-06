@@ -15,8 +15,7 @@ jobs:
       uses: s-weigand/setup-conda@v1
       with:
         activate-conda: false
-    - run: ls
-    - run: ls ~
+    - run: ls -la ~
     - name: Install environment
       run: |
         cd qa
@@ -34,6 +33,7 @@ jobs:
     needs: [check-qa]
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v2
       # TODO: needs env vars.
 #      - name: Build the production env
 #        run: docker-compose -f docker-compose.yml -f docker-compose.prod.yml build
