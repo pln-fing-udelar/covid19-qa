@@ -8,27 +8,19 @@ jobs:
     - name: Load cache from ~/.cache
       uses: actions/cache@v1
       with:
-        path: ~/.cache  # Includes transformers' downloaded models, and other things such as pip downloaded packages.
-        key: ${{ runner.os }}-cache-${{ hashFiles('qa/**/*') }}
+        path: ~/.cache/torch  # transformers' downloaded models.
+        key: ${{ runner.os }}-torch-${{ hashFiles('qa/**/*') }}
         restore-keys: |
-          ${{ runner.os }}-cache-
-    - name: Load Conda cache
-      uses: actions/cache@v1
-      with:
-        path: /usr/share/miniconda
-        key: ${{ runner.os }}-conda-${{ hashFiles('qa/environment.yml') }}
-        # Don't use any alternative key, as the conda env is already installed if there's a cache hit,
-        # as we don't want to use an old conda env then.
+          ${{ runner.os }}-torch-
+    # Don't cache more stuff because it takes more time than to install the Conda env.
     - name: Setup Conda
       uses: s-weigand/setup-conda@v1
       with:
         activate-conda: false
     - name: Install Conda packages
       run: |
-        if ! ls /usr/share/miniconda/envs/covid19-qa; then
-          cd qa
-          conda env create -f environment.yml
-        fi
+        cd qa
+        conda env create -f environment.yml
     - name: Format the corpus
       run: |
         source activate covid19-qa
