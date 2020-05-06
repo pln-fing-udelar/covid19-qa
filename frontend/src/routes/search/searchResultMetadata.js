@@ -1,7 +1,7 @@
 export default function SearchResultMetadata({ result }) {
   return (
     <span class="flex whitespace-pre-wrap items-center mt-2 text-gray-600 text-sm">
-      <span>{`${result.date} / Fuente: `}</span>
+      <span>{`Probabilidad: ${result.prob}% / ${result.date} / Fuente: `}</span>
       <a
         href={result.url}
         target="_blank"

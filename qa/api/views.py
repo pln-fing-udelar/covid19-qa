@@ -46,6 +46,8 @@ class Covid19(Resource):
                     "date": answer.instance.document.date,
                     "source": answer.instance.document.source,
                     "url": answer.instance.document.url,
+                    "prob": answer.prob,
+                    "logit": answer.logit,
                 } for answer in answer_question_from_all_docs(question, QA_PIPELINE, batch_size=BATCH_SIZE,
                                                               threads=ANSWER_THREADS)
             ]

@@ -5,10 +5,10 @@
     "answer_start_index": 6,
     "answer_end_index": 36,
     "date": "25/03/2020",
-    "source": {
-      "name": "La Diaria",
-      "url": "https://ladiaria.com.uy/articulo/2020/4/hasta-este-sabado-habia-517-casos-de-coronavirus/"
-    }
+    "source": "La Diaria",
+    "url": "https://ladiaria.com.uy/articulo/2020/4/hasta-este-sabado-habia-517-casos-de-coronavirus/",
+    "prob": 0.75,
+    "logit": 6.28
   },
   {
     "title": "Información de interés actualizada sobre coronavirus COVID ",
@@ -16,10 +16,10 @@
     "answer_start_index": 12,
     "answer_end_index": 85,
     "date": "03/04/2020",
-    "source": {
-      "name": "La Diaria",
-      "url": "https://ladiaria.com.uy/articulo/2020/4/hasta-este-sabado-habia-517-casos-de-coronavirus/"
-    }
+    "source": "La Diaria",
+    "url": "https://ladiaria.com.uy/articulo/2020/4/hasta-este-sabado-habia-517-casos-de-coronavirus/",
+    "prob": 0.20,
+    "logit": 11
   },
   {
     "title": "Plan Nacional Coronavirus | Ministerio de Salud Pública",
@@ -27,10 +27,10 @@
     "answer_start_index": 27,
     "answer_end_index": 96,
     "date": "18/04/2020",
-    "source": {
-      "name": "La Diaria",
-      "url": "https://ladiaria.com.uy/articulo/2020/4/hasta-este-sabado-habia-517-casos-de-coronavirus/"
-    }
+    "source": "La Diaria",
+    "url": "https://ladiaria.com.uy/articulo/2020/4/hasta-este-sabado-habia-517-casos-de-coronavirus/",
+    "prob": 0.10,
+    "logit": -0.003
   },
   {
     "title": "Coronavirus en América: últimas noticias de la covid-19, en ...",
@@ -38,10 +38,10 @@
     "answer_start_index": 50,
     "answer_end_index": 105,
     "date": "05/03/2020",
-    "source": {
-      "name": "La Diaria",
-      "url": "https://ladiaria.com.uy/articulo/2020/4/hasta-este-sabado-habia-517-casos-de-coronavirus/"
-    }
+    "source": "La Diaria",
+    "url": "https://ladiaria.com.uy/articulo/2020/4/hasta-este-sabado-habia-517-casos-de-coronavirus/",
+    "prob": 0.08,
+    "logit": -1.223
   },
   {
     "title": "Coronavirus (CoV) GLOBAL - World Health Organization",
@@ -49,9 +49,9 @@
     "answer_start_index": 4,
     "answer_end_index": 96,
     "date": "20/02/2020",
-    "source": {
-      "name": "La Diaria",
-      "url": "https://ladiaria.com.uy/articulo/2020/4/hasta-este-sabado-habia-517-casos-de-coronavirus/"
-    }
+    "source": "La Diaria",
+    "url": "https://ladiaria.com.uy/articulo/2020/4/hasta-este-sabado-habia-517-casos-de-coronavirus/",
+    "prob": 0.0001,
+    "logit": -10.343
   }
 ]

@@ -13,7 +13,7 @@ from .serializers import (AnswerSerializer, FeedbackInputSerializer, FeedbackSer
 
 
 class QuestionApiView(APIView):
-    
+
     @transaction.atomic
     def post(self, request):
         question_serializer = QuestionInputSerializer(data=request.data)
@@ -53,10 +53,9 @@ class AnswerFeedbackApiView(APIView):
         return Response(status=204)
 
 
-
 class AnswersApiView(APIView):
-    
     queryset = Answer.objects
+
     def get(self, request):
         feedback_serializer = FeedbackSerializer(self.queryset.all(), many=True)
         return Response(feedback_serializer.data)
@@ -85,10 +84,10 @@ class FrequentQuestionsApiView(APIView):
                 "answer_start_index": 6,
                 "answer_end_index": 36,
                 "date": "25/03/2020",
-                "source": {
-                    "name": "La Diaria",
-                    "url": "https://ladiaria.com.uy/articulo/2020/4/hasta-este-sabado-habia-517-casos-de-coronavirus/"
-                }
+                "source": "La Diaria",
+                "url": "https://ladiaria.com.uy/articulo/2020/4/hasta-este-sabado-habia-517-casos-de-coronavirus/",
+                "prob": 0.76,
+                "logit": 6.24
             },
             {
                 "title": "Información de interés actualizada sobre coronavirus COVID ",
@@ -98,10 +97,10 @@ class FrequentQuestionsApiView(APIView):
                 "answer_start_index": 12,
                 "answer_end_index": 85,
                 "date": "03/04/2020",
-                "source": {
-                    "name": "La Diaria",
-                    "url": "https://ladiaria.com.uy/articulo/2020/4/hasta-este-sabado-habia-517-casos-de-coronavirus/"
-                }
+                "source": "La Diaria",
+                "url": "https://ladiaria.com.uy/articulo/2020/4/hasta-este-sabado-habia-517-casos-de-coronavirus/",
+                "prob": 0.15,
+                "logit": 11.45
             },
             {
                 "title": "Plan Nacional Coronavirus | Ministerio de Salud Pública",
@@ -111,10 +110,10 @@ class FrequentQuestionsApiView(APIView):
                 "answer_start_index": 27,
                 "answer_end_index": 96,
                 "date": "18/04/2020",
-                "source": {
-                    "name": "La Diaria",
-                    "url": "https://ladiaria.com.uy/articulo/2020/4/hasta-este-sabado-habia-517-casos-de-coronavirus/"
-                }
+                "source": "La Diaria",
+                "url": "https://ladiaria.com.uy/articulo/2020/4/hasta-este-sabado-habia-517-casos-de-coronavirus/",
+                "prob": 0.10,
+                "logit": 2.45
             },
             {
                 "title": "Coronavirus en América: últimas noticias de la covid-19, en ...",
@@ -124,10 +123,10 @@ class FrequentQuestionsApiView(APIView):
                 "answer_start_index": 50,
                 "answer_end_index": 105,
                 "date": "05/03/2020",
-                "source": {
-                    "name": "La Diaria",
-                    "url": "https://ladiaria.com.uy/articulo/2020/4/hasta-este-sabado-habia-517-casos-de-coronavirus/"
-                }
+                "source": "La Diaria",
+                "url": "https://ladiaria.com.uy/articulo/2020/4/hasta-este-sabado-habia-517-casos-de-coronavirus/",
+                "prob": 0.02,
+                "logit": -0.0001
             },
             {
                 "title": "Coronavirus (CoV) GLOBAL - World Health Organization",
@@ -137,10 +136,10 @@ class FrequentQuestionsApiView(APIView):
                 "answer_start_index": 4,
                 "answer_end_index": 96,
                 "date": "20/02/2020",
-                "source": {
-                    "name": "La Diaria",
-                    "url": "https://ladiaria.com.uy/articulo/2020/4/hasta-este-sabado-habia-517-casos-de-coronavirus/"
-                }
+                "source": "La Diaria",
+                "url": "https://ladiaria.com.uy/articulo/2020/4/hasta-este-sabado-habia-517-casos-de-coronavirus/",
+                "prob": 0.00001,
+                "logit": -10.231
             }
         ]
         return Response(hardcoded_response)

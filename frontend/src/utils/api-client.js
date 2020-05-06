@@ -32,16 +32,19 @@ async function client(endpoint, { body, ...customConfig } = {}) {
     });
 }
 
-const getFAQ = () => {
-  return client("frequent-questions");
-};
+const getFAQ = () => client("frequent-questions");
 
-const postFeedback = (answerId, feedback) => {
-  return client("feedback/", { body: { feedback, answer_id: answerId } });
-};
+const postFeedback = (answerId, feedback) => client("feedback/", {body: {feedback, answer_id: answerId}});
 
-const search = (question) => {
-  return client("question/", { body: { question } });
-};
+const search = question => client("question/", {body: {question}})
+    .then(answers => {
+        answers = answers.map(a => {
+            a.prob = Math.round(parseFloat(a.prob) * 100);
+            a.logit = parseFloat(a.logit);
+            return a;
+        })
+        answers.sort((a1, a2) => a2.prob - a1.prob);  // They're compared rounded, but it doesn't matter.
+        return answers.filter((a, i) => (i < 1) || (a.prob >= 10));
+    });
 
 export { getFAQ, postFeedback, search };

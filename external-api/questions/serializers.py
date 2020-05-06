@@ -17,6 +17,8 @@ class AnswerSerializer(serializers.Serializer):
     date = serializers.CharField()
     source = serializers.CharField()
     url = serializers.CharField()
+    prob = serializers.CharField()
+    logit = serializers.CharField()
 
 
 class FeedbackInputSerializer(serializers.Serializer):
