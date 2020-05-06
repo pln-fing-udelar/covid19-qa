@@ -5,7 +5,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - uses: actions/cache@v1
+    - name: Load Conda cache
+      uses: actions/cache@v1
       with:
         path: ~/miniconda3
         key: ${{ runner.os }}-conda-${{ hashFiles('qa/environment.yml') }}
@@ -15,16 +16,17 @@ jobs:
       uses: s-weigand/setup-conda@v1
       with:
         activate-conda: false
-    - name: Install environment
+    - name: Install Conda packages
       run: |
         cd qa
         conda env create -f environment.yml
-    - run: ls -la ~
-    - name: Reformat the corpus
+    - run: ls -la ~/.conda
+    - name: Format the corpus
       run: |
         source activate covid19-qa
         python corpus-creator/corpus_creator.py
-    - uses: actions/cache@v1
+    - name: Load cache from ~/.cache
+      uses: actions/cache@v1
       with:
         path: ~/.cache  # Includes transformers' downloaded models, and other things such as pip downloaded packages.
         key: ${{ runner.os }}-cache
