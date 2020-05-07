@@ -22,7 +22,7 @@ services:
     networks:
       - backend
     volumes:
-      - ./data/la_diaria_v1:/tmp/datos:ro
+      - ./data/la_diaria:/tmp/datos:ro
     depends_on:
       - elasticsearch
     environment:
@@ -38,7 +38,7 @@ services:
   corpus-creator:
     build: corpus-creator
     volumes:
-      - ./data/la_diaria_v1:/data/la_diaria_v1
+      - ./data/la_diaria:/data/la_diaria
 
   qa:
     build: qa

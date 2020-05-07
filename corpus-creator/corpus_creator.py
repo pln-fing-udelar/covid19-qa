@@ -5,7 +5,7 @@ import os
 import re
 import xml.etree.ElementTree as ET
 
-PATH_ARTICLES_FOLDER = "data/la_diaria_v1"
+PATH_ARTICLES_FOLDER = "data/la_diaria"
 
 
 def generate_corpus_from_json(file_name: str) -> None:
@@ -45,4 +45,4 @@ def create_xml_file(id_: int, html: str, slug: str) -> None:
 
 
 if __name__ == "__main__":
-    generate_corpus_from_json("la_diaria_v1.json")
+    generate_corpus_from_json("la_diaria.json")
