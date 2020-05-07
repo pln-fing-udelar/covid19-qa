@@ -1,11 +1,18 @@
 name: CI and staging deploy
-on: [pull_request, push]
+on:
+  push:
+    branches:
+    - master
+    - prod
+  pull_request:
+    branches:
+    - master
 jobs:
   check-qa:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - name: Load cache from ~/.cache
+    - name: Load PyTorch cache
       uses: actions/cache@v1
       with:
         path: ~/.cache/torch  # transformers' downloaded models.
@@ -34,37 +41,37 @@ jobs:
     needs: [check-qa]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - name: Load Docker cache
-        uses: actions/cache@v1
-        with:
-          path: /var/lib/docker
-          key: ${{ runner.os }}-docker-${{ hashFiles('**/*ocker*') }}
-          restore-keys: |
-            ${{ runner.os }}-docker-
-      # Running the production stack would otherwise try to actually serve root-reserved ports (<1000)
-      # and assign domains. So build and run the dev env and then we build the production env.
+    - uses: actions/checkout@v2
+    - name: Load Docker cache
+      uses: actions/cache@v1
+      with:
+        path: /var/lib/docker
+        key: ${{ runner.os }}-docker-${{ hashFiles('**/*ocker*') }}
+        restore-keys: |
+          ${{ runner.os }}-docker-
+    # Running the production stack would otherwise try to actually serve root-reserved ports (<1000)
+    # and assign domains. So build and run the dev env and then we build the production env.
 
-      # FIXME: GH actions runs out of memory, as the QA image is too heavy.
-#      - name: Build and run the dev env
-#        run: docker-compose up --build -d
+    # FIXME: GH actions runs out of memory, as the QA image is too heavy.
+#    - name: Build and run the dev env
+#      run: docker-compose up --build -d
 
-      # TODO: needs env vars.
-#      - name: Build the production env
-#        run: docker-compose -f docker-compose.yml -f docker-compose.prod.yml build
+    # TODO: needs env vars.
+#    - name: Build the production env
+#      run: docker-compose -f docker-compose.yml -f docker-compose.prod.yml build
 
-      # TODO: push the built docker image
+    # TODO: push the built docker image
   deploy:
     if: github.ref == 'refs/heads/prod'
     needs: [build]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
-        with:
-          version: 290.0.1
-          project_id: ${{ secrets.GCP_PROJECT_ID }}
-          service_account_key: ${{ secrets.GCP_SA_KEY }}
-          export_default_credentials: true
-      - run: gcloud info
-      # TODO: deploy
+    - uses: actions/checkout@v2
+    - uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
+      with:
+        version: 290.0.1
+        project_id: ${{ secrets.GCP_PROJECT_ID }}
+        service_account_key: ${{ secrets.GCP_SA_KEY }}
+        export_default_credentials: true
+    - run: gcloud info
+    # TODO: deploy
