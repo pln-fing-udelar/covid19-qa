@@ -153,7 +153,8 @@ docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
 For it to work, you must first create a `.env` file like `.env.example` (you can copy it and fill in with values).
 
 For every service you want exposed through the reverse proxy you should add this to the service block in `docker-compose.yml` file and change `SERVICE_NAME`:
-```
+
+```yaml
 depends_on:
   - traefik
 networks:
@@ -166,17 +167,33 @@ labels:
 
 This is an example service:
 
-```
+```yaml
 whoami:
-    image: "containous/whoami"
-    restart: always
-    depends_on:
-      - traefik
-    networks:
-      - proxy
-    labels:
-      - traefik.http.routers.whoami.rule=Host(`whoami.${DOMAIN}`)
-      - traefik.http.routers.whoami.tls=true
-      - traefik.http.routers.whoami.tls.certresolver=le
+  image: "containous/whoami"
+  restart: always
+  depends_on:
+    - traefik
+  networks:
+    - proxy
+  labels:
+    - traefik.http.routers.whoami.rule=Host(`whoami.${DOMAIN}`)
+    - traefik.http.routers.whoami.tls=true
+    - traefik.http.routers.whoami.tls.certresolver=le
 ```
 
+## Deploy
+
+1. Take the latest changes from the `master` branch to `prod` for the GitHub remote (i.e., merging and pushing).
+2. SSH to the server:
+
+    ```bash
+    gcloud compute ssh covid19-qa
+    ```
+
+3. Go to the project folder, pull and build:
+
+    ```bash
+    cd /opt/covid19-qa/
+    git pull
+    docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build frontend
+    ```
