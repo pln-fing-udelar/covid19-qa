@@ -16,6 +16,8 @@ services:
       - ANSWER_THREADS=8
       - BATCH_SIZE=672
       - FLASK_ENV=production
+    labels:
+      - logio=yes
 
   db:
     restart: always
@@ -46,6 +48,14 @@ services:
       - traefik.enable=true
       - traefik.docker.network=proxy
       - traefik.http.routers.api.rule=Host(`${DOMAIN}`) && Path(`/api`)
+      - logio=yes
+
+  logio:
+    image: geniousphp/logio
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    ports:
+      - 28778:28778
   
   traefik:
       image: traefik:v2.2
