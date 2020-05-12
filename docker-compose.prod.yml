@@ -55,7 +55,7 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
     ports:
-      - 28778:28778
+      - 28778:28778  # FIXME: With the domain we cax expose the logs through Traefik
   
   traefik:
       image: traefik:v2.2
