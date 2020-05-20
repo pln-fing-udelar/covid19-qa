@@ -22,6 +22,10 @@
             "covid-19 => coronavirus",
             "covid => coronavirus"
           ]
+        },
+        "light-spanish-stemmer": {
+          "type": "stemmer",
+          "language": "light_spanish"
         }
       },
       "analyzer": {
@@ -30,8 +34,8 @@
           "tokenizer": "standard",
           "filter": [
             "lowercase",
-            "asciifolding",
             "remove-stopwords",
+            "light-spanish-stemmer",
             "change-synonyms"
           ]
         }

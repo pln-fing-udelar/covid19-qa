@@ -3,8 +3,8 @@ import requests
 from django.conf import settings
 from django.db import transaction
 from django.shortcuts import get_object_or_404
+from rest_framework import status
 from rest_framework.views import APIView
-from rest_framework.parsers import JSONParser
 from rest_framework.response import Response
 
 from .models import Answer, Question
@@ -26,7 +26,7 @@ class QuestionApiView(APIView):
         )
         answers = qa_response.json()
         if qa_response.status_code != 200:
-            return qa_response
+            return Response(answers, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         for answer in answers:
             answer_obj = Answer.objects.create(
                 question=question_obj,
