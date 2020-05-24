@@ -1,7 +1,9 @@
+#!/usr/bin/python
+# -*- coding: latin-1 -*-
 import os
-from typing import Any, Dict, Iterator, Mapping
 
 from elasticsearch import Elasticsearch
+from typing import Any, Dict, Iterator, Mapping
 
 from covid19_qa.pipeline import Instance, Document
 
@@ -9,24 +11,27 @@ ES_HOST = os.getenv("ES_HOST")
 es = Elasticsearch([{"host": ES_HOST, "port": os.environ["ES_PORT"]}]) if ES_HOST else None
 
 DEFAULT_ES_QUERY_CONF = [
-    {"operator": "and", "minimum_should_match": 80, "fuzziness": 1, "boost": 3},
-    {"operator": "and", "minimum_should_match": 60, "fuzziness": 1, "boost": 4},
-    {"operator": "or", "minimum_should_match": 80, "fuzziness": 1, "boost": 3},
-    {"operator": "or", "minimum_should_match": 50, "fuzziness": 1, "boost": 1},
+    {"operator": "and", "minimum_should_match": 100, "fuzziness": 1, "boost": 5},
+    {"operator": "and", "minimum_should_match": 80, "fuzziness": 1, "boost": 4},
+    {"operator": "and", "minimum_should_match": 60, "fuzziness": 1, "boost": 3},
+    {"operator": "and", "minimum_should_match": 30, "fuzziness": 1, "boost": 3},
+    {"operator": "or", "minimum_should_match": None, "fuzziness": 1, "boost": 1},
 ]
 
 
 def get_match_query_from_conf(query: str, text_field: str, conf: Dict) -> Dict:
-    return {
-        "match": {
-            text_field: {
-                "query": query,
-                "operator": conf.get("operator"),
-                "minimum_should_match": f"{conf.get('minimum_should_match')}%",
-                "fuzziness": conf.get("fuzziness"),
-                "boost": conf.get("boost")
-            }
+    match_query = {
+        text_field: {
+            "query": query,
+            "operator": conf.get("operator"),
+            "fuzziness": conf.get("fuzziness"),
+            "boost": conf.get("boost")
         }
+    }
+    if conf.get('minimum_should_match'):
+        match_query[text_field]["minimum_should_match"] = f"{conf.get('minimum_should_match')}%"
+    return {
+        "match": match_query
     }
 
 
@@ -58,7 +63,7 @@ def search_query_string(query: str, index_pattern: str = "covid*", size: int = 2
         })["hits"]["hits"]
 
 
-def get_instances_from_es(question: str) -> Iterator[Instance]:
+def get_instances_from_es(question: str, es_query_configurations: Iterator) -> Iterator[Instance]:
     for result in search_query_string(question):
         document_dict = result["_source"]
         # We don't want to return the whole text of each document, so we just set it to null.

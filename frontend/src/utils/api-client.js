@@ -44,7 +44,7 @@ const search = question => client("question/", {body: {question}})
             return a;
         })
         answers.sort((a1, a2) => a2.prob - a1.prob);  // They're compared rounded, but it doesn't matter.
-        return answers.filter((a, i) => (i < 3) || (a.prob >= 10));
+        return answers.filter((a) => (a.prob >= 10));
     });
 
 export { getFAQ, postFeedback, search };

@@ -1,4 +1,6 @@
+import json
 import requests
+
 
 from django.conf import settings
 from django.db import transaction
@@ -6,6 +8,8 @@ from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
+
+from management.models import QueryConf
 
 from .models import Answer, Question
 from .serializers import (AnswerSerializer, FeedbackInputSerializer, FeedbackSerializer,
@@ -20,9 +24,17 @@ class QuestionApiView(APIView):
         question_serializer.is_valid(raise_exception=True)
         question = question_serializer.validated_data['question'].lower()
         question_obj, _ = Question.objects.get_or_create(question=question)
+        query_conf = None
+        es_query_conf = QueryConf.objects.filter(parameter_name='ES_QUERY_CONF').first()
+        if es_query_conf:
+            query_conf = es_query_conf.conf
+
         qa_response = requests.post(
             f'{settings.QA_SERVER}/Covid19-QA/question',
-            json={'question': question}
+            json={
+                'question': question,
+                'es_query_conf': json.dumps(query_conf),
+                }
         )
         answers = qa_response.json()
         if qa_response.status_code != 200:
