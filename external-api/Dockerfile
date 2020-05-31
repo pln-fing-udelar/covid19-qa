@@ -19,6 +19,7 @@ RUN pip install --upgrade pip \
 
 COPY external_api /src/external_api
 COPY questions /src/questions
+COPY management /src/management
 COPY manage.py /src
 COPY wsgi.py /src
 EXPOSE 8000
