@@ -36,6 +36,7 @@ class Covid19(Resource):
         json_data = request.get_json(force=True)
         try:
             question = json_data.get("question")
+            es_query_conf = json_data.get("es_query_conf")
             return [
                 {
                     "title": answer.instance.document.title,
@@ -49,7 +50,7 @@ class Covid19(Resource):
                     "prob": answer.prob,
                     "logit": answer.logit,
                 } for answer in answer_question_from_all_docs(question, QA_PIPELINE, batch_size=BATCH_SIZE,
-                                                              threads=ANSWER_THREADS)
+                                                              threads=ANSWER_THREADS, es_query_conf=es_query_conf)
             ]
         except Exception as e:
             return custom_response({"error": f"An error has occurred: {e}"}, 400)

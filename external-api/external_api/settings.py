@@ -38,7 +38,7 @@ ALLOWED_HOSTS = [
 ]
 
 # Application definition
-PROJECT_APPS = ['questions']
+PROJECT_APPS = ['questions', 'management']
 
 INSTALLED_APPS = [
     'django.contrib.admin',

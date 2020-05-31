@@ -19,9 +19,34 @@
         "change-synonyms": {
           "type": "synonym",
           "synonyms": [
-            "covid-19 => coronavirus",
-            "covid => coronavirus"
+            "covid-19, covid, sars, nuevo virus, sars-cov-2, covid19, virus => coronavirus",
+            "gripe común => gripe",
+            "remedio, vacuna => medicamento",
+            "sintomatología => síntomas",
+            "aislamiento, distanciamiento, encierro, quedarse en casa => cuarentena",
+            "autoridades => gobierno",
+            "contagiado, persona postiva => enfermo",
+            "test, hisopado, muestra => testeo",
+            "contagiado => enfermo",
+            "contagiar => transmitir",
+            "contagio => transmisión",
+            "adultos mayores, personas de riesgo, edad de riesgo => viejo",
+            "contagiar, afectar => enfermar",
+            "pandemia => epidemia",
+            "curva => gráfica",
+            "letalidad, pelogrosidad, mortandad => gravedad",
+            "recuperados => curados",
+            "mms, clorito de sodio => dióxido de cloro",
+            "combatir => curar",
+            "tapabocas, tapa bocas, barbijo => mascarilla",
+            "patología => enfermedad",
+            "morir => fallecer",
+            "muerto => fallecido"
           ]
+        },
+        "light-spanish-stemmer": {
+          "type": "stemmer",
+          "language": "light_spanish"
         }
       },
       "analyzer": {
@@ -30,8 +55,8 @@
           "tokenizer": "standard",
           "filter": [
             "lowercase",
-            "asciifolding",
             "remove-stopwords",
+            "light-spanish-stemmer",
             "change-synonyms"
           ]
         }
