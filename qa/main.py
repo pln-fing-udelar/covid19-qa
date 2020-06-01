@@ -65,7 +65,6 @@ def _plot_scores(args: argparse.Namespace, qa_pipeline: Pipeline) -> None:
     sns.set()
 
     instances = list(load_all_annotated_instances())
-    instances = instances
     answers = answer_from_instances(
         instances, qa_pipeline, remove_empty_answers=False, min_score=args.min_score,
         top_k_per_instance=args.top_k_per_document, sort_mode=args.sort_mode,
