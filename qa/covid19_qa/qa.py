@@ -43,7 +43,16 @@ def answer_question_from_all_docs(question: str, qa_pipeline: Pipeline, top_k: O
                                   top_k_per_instance: int = 1, remove_empty_answers: bool = True,
                                   min_score: Optional[float] = None, sort_mode: TYPE_SORT_MODE = DEFAULT_SORT_MODE,
                                   batch_size: int = 32, threads: int = 1, ignore_es: bool = False,
-                                  es_query_conf: Iterator = None) -> Iterator[Answer]:
+                                  es_query_conf: Iterator = None,
+                                  ensure_question_marks: bool = True) -> Iterator[Answer]:
+    question = question.strip()
+
+    if ensure_question_marks:
+        if not question.startswith("¿"):
+            question = "¿" + question
+        if not question.endswith("?"):
+            question += "?"
+
     if ignore_es:
         instances = get_instances_from_doc_ids(all_doc_ids(), question)
     else:
