@@ -3,6 +3,7 @@ import { useState } from "preact/hooks";
 import {
   PositiveFeedbackButton,
   NegativeFeedbackButton,
+  PartialFeedbackButton,
   ReportButton,
 } from "./feedbackButtons";
 import feedbackChoices from "./feedbackChoices";
@@ -31,6 +32,9 @@ export default function FeedbackSection({ answerId }) {
 
         <NegativeFeedbackButton
           onClick={() => onFeedbackSubmit(answerId, feedbackChoices.negative)}
+        />
+        <PartialFeedbackButton
+          onClick={() => onFeedbackSubmit(answerId, feedbackChoices.partial)}
         />
         <ReportButton
           onClick={() => onFeedbackSubmit(answerId, feedbackChoices.report)}

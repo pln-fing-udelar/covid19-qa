@@ -45,6 +45,7 @@ class QuestionApiView(APIView):
                 title=answer['title'],
                 context=answer['context'],
                 answer=answer['answer'],
+                prob=answer['prob'],
             )
             answer['id'] = answer_obj.id
         answer_serializer = AnswerSerializer(data=answers, many=True)
@@ -83,6 +84,10 @@ class WrongApiView(AnswersApiView):
 
 class FakeApiView(AnswersApiView):
     queryset = Answer.objects.filter(feedback=Answer.FAKE)
+
+
+class PartialApiView(AnswersApiView):
+    queryset = Answer.objects.filter(feedback=Answer.PARTIAL)
 
 
 class FrequentQuestionsApiView(APIView):
