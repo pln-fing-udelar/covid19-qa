@@ -3,6 +3,7 @@ from .models import Answer, Question
 
 
 class AnswerAdmin(admin.ModelAdmin):
+    list_display = ('question', 'answer', 'feedback' , 'prob')
     pass
 
 class QuestionAdmin(admin.ModelAdmin):
