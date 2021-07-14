@@ -4,7 +4,7 @@ from typing import Iterator
 
 from covid19_qa.pipeline import Instance, Document
 
-PATH_DATA_FOLDER = "../data/articles"
+PATH_DATA_FOLDER = "../data/annotated_articles"
 PATH_ANNOTATED_FILE = "../data/annotated.xml"
 
 
