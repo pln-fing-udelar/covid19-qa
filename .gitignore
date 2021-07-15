@@ -1,4 +1,4 @@
-/data/la_diaria*/*.xml
+/data/articles*/*.xml
 /model/
 *.pyc
 .DS_Store
