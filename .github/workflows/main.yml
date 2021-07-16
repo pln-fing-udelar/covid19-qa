@@ -31,7 +31,8 @@ jobs:
     - name: Format the corpus
       run: |
         source activate covid19-qa
-        python corpus-creator/corpus_creator.py
+        python corpus-creator/ladiaria_corpus_creator.py
+        python corpus-creator/montevideoportal_corpus_creator.py
     - name: Run QA main
       run: |
         source activate covid19-qa
