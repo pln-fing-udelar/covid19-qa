@@ -21,10 +21,13 @@ class AnswerSerializer(serializers.Serializer):
     logit = serializers.CharField()
 
 
-class FeedbackInputSerializer(serializers.Serializer):
+class AnswerFeedbackInputSerializer(serializers.Serializer):
     answer_id = serializers.IntegerField()
-    feedback = serializers.ChoiceField(choices=Answer.FEEDBACK_CHOICES)
+    answer_feedback = serializers.ChoiceField(choices=Answer.ANSWER_FEEDBACK_CHOICES)
 
+class ParagraphFeedbackInputSerializer(serializers.Serializer):
+    answer_id = serializers.IntegerField()
+    paragraph_feedback = serializers.ChoiceField(choices=Answer.PARAGRAPH_FEEDBACK_CHOICES)
 
 class FeedbackSerializer(serializers.Serializer):
     id = serializers.IntegerField()
