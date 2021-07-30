@@ -132,7 +132,7 @@ export default function FeedbackSection({ answerId }) {
       <div class="container w-50">
         {paragraphFeedbackSection(answerId, paragraphFeedbackSubmissionStatus, setParagraphFeedbackSubmissionStatus, onParagraphFeedbackSubmit)}
       </div>
-      <div class="container w-50">
+      <div class="container w-50 mb-3">
         {answerFeedbackSection(answerId, answerFeedbackSubmissionStatus, setAnswerFeedbackSubmissionStatus, onAnswerFeedbackSubmit)}
       </div>
     </Fragment>
