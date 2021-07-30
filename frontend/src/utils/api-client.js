@@ -34,7 +34,8 @@ async function client(endpoint, { body, ...customConfig } = {}) {
 
 const getFAQ = () => client("frequent-questions");
 
-const postFeedback = (answerId, feedback) => client("feedback/", {body: {feedback, answer_id: answerId}});
+const postAnswerFeedback = (answerId, answer_feedback) => client("answerFeedback/", {body: {answer_feedback, answer_id: answerId}});
+const postParagraphFeedback = (answerId, paragraph_feedback) => client("paragraphFeedback/", {body: {paragraph_feedback, answer_id: answerId}});
 
 const search = question => client("question/", {body: {question}})
     .then(answers => {
@@ -47,4 +48,4 @@ const search = question => client("question/", {body: {question}})
         return answers.filter((a) => (a.prob >= 10));
     });
 
-export { getFAQ, postFeedback, search };
+export { getFAQ, postAnswerFeedback, postParagraphFeedback, search };

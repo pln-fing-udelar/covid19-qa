@@ -12,7 +12,7 @@ from rest_framework.response import Response
 from management.models import QueryConf
 
 from .models import Answer, Question
-from .serializers import (AnswerSerializer, FeedbackInputSerializer, FeedbackSerializer,
+from .serializers import (AnswerSerializer, AnswerFeedbackInputSerializer, ParagraphFeedbackInputSerializer, FeedbackSerializer,
                           QuestionInputSerializer)
 
 
@@ -51,16 +51,27 @@ class QuestionApiView(APIView):
         answer_serializer.is_valid(raise_exception=True)
         return Response(answer_serializer.validated_data)
 
+class ParagraphFeedbackApiView(APIView):
+    @transaction.atomic
+    def post(self, request):
+        paragraph_feedback_serializer = ParagraphFeedbackInputSerializer(data=request.data)
+        paragraph_feedback_serializer.is_valid(raise_exception=True)
+        answer = get_object_or_404(
+            Answer, id=paragraph_feedback_serializer.validated_data['answer_id']
+        )
+        answer.paragraph_feedback = paragraph_feedback_serializer.validated_data['paragraph_feedback']
+        answer.save()
+        return Response(status=204)
 
 class AnswerFeedbackApiView(APIView):
     @transaction.atomic
     def post(self, request):
-        feedback_serializer = FeedbackInputSerializer(data=request.data)
-        feedback_serializer.is_valid(raise_exception=True)
+        answer_feedback_serializer = AnswerFeedbackInputSerializer(data=request.data)
+        answer_feedback_serializer.is_valid(raise_exception=True)
         answer = get_object_or_404(
-            Answer, id=feedback_serializer.validated_data['answer_id']
+            Answer, id=answer_feedback_serializer.validated_data['answer_id']
         )
-        answer.feedback = feedback_serializer.validated_data['feedback']
+        answer.answer_feedback = answer_feedback_serializer.validated_data['answer_feedback']
         answer.save()
         return Response(status=204)
 
@@ -73,16 +84,32 @@ class AnswersApiView(APIView):
         return Response(feedback_serializer.data)
 
 
-class CorrectApiView(AnswersApiView):
-    queryset = Answer.objects.filter(feedback=Answer.CORRECT)
+class ExactMatchApiView(AnswersApiView):
+    queryset = Answer.objects.filter(answer_feedback=Answer.EXACT_MATCH)
 
 
-class WrongApiView(AnswersApiView):
-    queryset = Answer.objects.filter(feedback=Answer.WRONG)
+class ContainedMatchApiView(AnswersApiView):
+    queryset = Answer.objects.filter(answer_feedback=Answer.CONTAINED_MATCH)
 
 
-class FakeApiView(AnswersApiView):
-    queryset = Answer.objects.filter(feedback=Answer.FAKE)
+class IncompleteMatchApiView(AnswersApiView):
+    queryset = Answer.objects.filter(answer_feedback=Answer.INCOMPLETE_MATCH)
+
+
+class NoMatchApiView(AnswersApiView):
+    queryset = Answer.objects.filter(answer_feedback=Answer.NO_MATCH)
+    
+
+class UnrelatedParagraphsApiView(AnswersApiView):
+    queryset = Answer.objects.filter(paragraph_feedback=Answer.UNRELATED_PARAGRAPHS)
+
+
+class RelatedParagraphsApiView(AnswersApiView):
+    queryset = Answer.objects.filter(paragraph_feedback=Answer.RELATED_PARAGRAPHS)
+
+
+class GoodParagraphsApiView(AnswersApiView):
+    queryset = Answer.objects.filter(paragraph_feedback=Answer.GOOD_PARAGRAPHS)
 
 
 class FrequentQuestionsApiView(APIView):

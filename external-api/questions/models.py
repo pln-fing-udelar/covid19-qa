@@ -10,21 +10,35 @@ class Question(models.Model):
 
 
 class Answer(models.Model):
-    CORRECT = 1
-    WRONG = 2
-    FAKE = 3
+    
+    NO_MATCH = 1
+    INCOMPLETE_MATCH = 2
+    CONTAINED_MATCH = 3
+    EXACT_MATCH = 4
 
-    FEEDBACK_CHOICES = (
-        (CORRECT, 'Respuesta Correcta'),
-        (WRONG, 'Respuesta Incorrecta'),
-        (FAKE, 'Noticia Falsa')
+    UNRELATED_PARAGRAPHS = 1
+    RELATED_PARAGRAPHS = 2
+    GOOD_PARAGRAPHS = 3
+
+    ANSWER_FEEDBACK_CHOICES = (
+        (EXACT_MATCH, 'Respuesta Correcta'),
+        (CONTAINED_MATCH, 'Respuesta Contenida'),
+        (INCOMPLETE_MATCH, 'Respuesta Incompleta'),
+        (NO_MATCH, 'Respuesta incorrecta')
+    )
+
+    PARAGRAPH_FEEDBACK_CHOICES = (
+        (UNRELATED_PARAGRAPHS, 'No relacionado'),
+        (RELATED_PARAGRAPHS, 'Relacionado'),
+        (GOOD_PARAGRAPHS, 'Contiene respuesta')
     )
 
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
     title = models.CharField(max_length=500, blank=True)
     context = models.TextField()
     answer = models.CharField(max_length=500, blank=True)
-    feedback = models.IntegerField(choices=FEEDBACK_CHOICES, blank=True, null=True)
+    answer_feedback = models.IntegerField(choices=ANSWER_FEEDBACK_CHOICES, blank=True, null=True)
+    paragraph_feedback = models.IntegerField(choices=PARAGRAPH_FEEDBACK_CHOICES, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
