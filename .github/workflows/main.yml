@@ -62,17 +62,17 @@ jobs:
 #      run: docker-compose -f docker-compose.yml -f docker-compose.prod.yml build
 
     # TODO: push the built docker image
-  deploy:
-    if: github.ref == 'refs/heads/prod'
-    needs: [build]
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2
-    - uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
-      with:
-        version: 290.0.1
-        project_id: ${{ secrets.GCP_PROJECT_ID }}
-        service_account_key: ${{ secrets.GCP_SA_KEY }}
-        export_default_credentials: true
-    - run: gcloud info
+#  deploy:
+#    if: github.ref == 'refs/heads/prod'
+#    needs: [build]
+#    runs-on: ubuntu-latest
+#    steps:
+#    - uses: actions/checkout@v2
+#    - uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
+#      with:
+#        version: 290.0.1
+#        project_id: ${{ secrets.GCP_PROJECT_ID }}
+#        service_account_key: ${{ secrets.GCP_SA_KEY }}
+#        export_default_credentials: true
+#    - run: gcloud info
     # TODO: deploy
