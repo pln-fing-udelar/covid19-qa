@@ -5,3 +5,5 @@ El modelo de QA extrae el corpus que se genera mediante el corpus_creator en la 
 La carpeta `corpus` contiene un ejemplo del corpus generado en setiembre de 2021.
 
 Dentro de la carpeta `corpus` hay una subcarpeta para los artículos (50 de la diaria y 10 de Montevideo COMM) de donde cada uno debe sacar sus preguntas. 
+
+[Aquí](https://docs.google.com/document/d/1oDfhDM0WZFBF0zJRhGwdCjSaCz6R_lk6vitTnA2-dmc/edit) está la guía de anotación. 
