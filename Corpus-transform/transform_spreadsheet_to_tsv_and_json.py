@@ -100,8 +100,11 @@ with open(FileInputDocs) as fileArticles:
 
 fileArticles.close()
 
+jsondict = dict()
+jsondict["data"] = data
+
 # write dict into json file
 with codecs.open(FileOutputJson, 'w', encoding="utf-8") as jsonFile:
-    json.dump(data, jsonFile, indent = 4, ensure_ascii=False)
+    json.dump(jsondict, jsonFile, indent = 4, ensure_ascii=False)
     jsonFile.close()
 
