@@ -12,7 +12,7 @@
                             "answers": [
                                 {
                                     "text": "",
-                                    "answer_start": 0
+                                    "answer_start": -1
                                 }
                             ]
                         },
@@ -22,7 +22,7 @@
                             "answers": [
                                 {
                                     "text": "un grupo de expertos de entidades nacionales e internacionales",
-                                    "answer_start": 0
+                                    "answer_start": 662
                                 }
                             ]
                         },
@@ -32,7 +32,7 @@
                             "answers": [
                                 {
                                     "text": "",
-                                    "answer_start": 0
+                                    "answer_start": -1
                                 }
                             ]
                         },
@@ -42,7 +42,7 @@
                             "answers": [
                                 {
                                     "text": "",
-                                    "answer_start": 0
+                                    "answer_start": -1
                                 }
                             ]
                         },
@@ -52,7 +52,7 @@
                             "answers": [
                                 {
                                     "text": "Ginés González García",
-                                    "answer_start": 0
+                                    "answer_start": 964
                                 }
                             ]
                         },
@@ -62,7 +62,7 @@
                             "answers": [
                                 {
                                     "text": "Entre Ríos, Misiones, Salta, San Juan y Neuquén",
-                                    "answer_start": 0
+                                    "answer_start": 1524
                                 }
                             ]
                         },
@@ -72,7 +72,7 @@
                             "answers": [
                                 {
                                     "text": "San Juan, Santa Cruz, Misiones, Entre Ríos, Mendoza y Neuquén",
-                                    "answer_start": 0
+                                    "answer_start": 1629
                                 }
                             ]
                         },
@@ -82,7 +82,7 @@
                             "answers": [
                                 {
                                     "text": "hasta el 10 de mayo",
-                                    "answer_start": 0
+                                    "answer_start": 1876
                                 }
                             ]
                         },
@@ -92,7 +92,7 @@
                             "answers": [
                                 {
                                     "text": "la ciudad de Buenos Aires y en la zona metropolitana",
-                                    "answer_start": 0
+                                    "answer_start": 1926
                                 }
                             ]
                         }
@@ -112,7 +112,7 @@
                             "answers": [
                                 {
                                     "text": "",
-                                    "answer_start": 0
+                                    "answer_start": -1
                                 }
                             ]
                         },
@@ -122,7 +122,7 @@
                             "answers": [
                                 {
                                     "text": "mayor a un metro",
-                                    "answer_start": 0
+                                    "answer_start": 1159
                                 }
                             ]
                         },
@@ -132,7 +132,7 @@
                             "answers": [
                                 {
                                     "text": "un metro o más",
-                                    "answer_start": 0
+                                    "answer_start": 1800
                                 }
                             ]
                         },
@@ -142,7 +142,7 @@
                             "answers": [
                                 {
                                     "text": "",
-                                    "answer_start": 0
+                                    "answer_start": -1
                                 }
                             ]
                         },
@@ -152,7 +152,7 @@
                             "answers": [
                                 {
                                     "text": "",
-                                    "answer_start": 0
+                                    "answer_start": -1
                                 }
                             ]
                         },
@@ -162,7 +162,7 @@
                             "answers": [
                                 {
                                     "text": "alrededor de 2%",
-                                    "answer_start": 0
+                                    "answer_start": 14768
                                 }
                             ]
                         },
@@ -172,7 +172,7 @@
                             "answers": [
                                 {
                                     "text": "más de 20 segundos",
-                                    "answer_start": 0
+                                    "answer_start": 1578
                                 }
                             ]
                         },
@@ -182,7 +182,7 @@
                             "answers": [
                                 {
                                     "text": "entre los dos y los 14 días después de haber contraído el virus",
-                                    "answer_start": 0
+                                    "answer_start": 2264
                                 }
                             ]
                         },
@@ -192,7 +192,7 @@
                             "answers": [
                                 {
                                     "text": "14 días",
-                                    "answer_start": 0
+                                    "answer_start": 2284
                                 }
                             ]
                         },
@@ -202,7 +202,7 @@
                             "answers": [
                                 {
                                     "text": "50%",
-                                    "answer_start": 0
+                                    "answer_start": 3958
                                 }
                             ]
                         },
@@ -212,7 +212,7 @@
                             "answers": [
                                 {
                                     "text": "alrededor de 5%",
-                                    "answer_start": 0
+                                    "answer_start": 4531
                                 }
                             ]
                         },
@@ -222,7 +222,7 @@
                             "answers": [
                                 {
                                     "text": "5%",
-                                    "answer_start": 0
+                                    "answer_start": 4544
                                 }
                             ]
                         },
@@ -232,7 +232,7 @@
                             "answers": [
                                 {
                                     "text": "alrededor de 80%",
-                                    "answer_start": 0
+                                    "answer_start": 4976
                                 }
                             ]
                         },
@@ -242,7 +242,7 @@
                             "answers": [
                                 {
                                     "text": "en el entorno de 15%",
-                                    "answer_start": 0
+                                    "answer_start": 5073
                                 }
                             ]
                         },
@@ -252,7 +252,7 @@
                             "answers": [
                                 {
                                     "text": "En abril",
-                                    "answer_start": 0
+                                    "answer_start": 6121
                                 }
                             ]
                         },
@@ -262,7 +262,7 @@
                             "answers": [
                                 {
                                     "text": "cuando está húmedo o cada cuatro horas",
-                                    "answer_start": 0
+                                    "answer_start": 7088
                                 }
                             ]
                         },
@@ -272,7 +272,7 @@
                             "answers": [
                                 {
                                     "text": "las personas que tengan un diagnóstico de covid-19 o que sospechen que pueden tener la enfermedad",
-                                    "answer_start": 0
+                                    "answer_start": 8647
                                 }
                             ]
                         },
@@ -282,7 +282,7 @@
                             "answers": [
                                 {
                                     "text": "siete",
-                                    "answer_start": 0
+                                    "answer_start": 12488
                                 }
                             ]
                         },
@@ -292,7 +292,7 @@
                             "answers": [
                                 {
                                     "text": "en diciembre de 2019",
-                                    "answer_start": 0
+                                    "answer_start": 12694
                                 }
                             ]
                         },
@@ -302,7 +302,7 @@
                             "answers": [
                                 {
                                     "text": "en la provincia china de Wuhan",
-                                    "answer_start": 0
+                                    "answer_start": 12716
                                 }
                             ]
                         },
@@ -312,7 +312,7 @@
                             "answers": [
                                 {
                                     "text": "SARS-CoV-2",
-                                    "answer_start": 0
+                                    "answer_start": 662
                                 }
                             ]
                         },
@@ -322,7 +322,7 @@
                             "answers": [
                                 {
                                     "text": "el 11 de febrero",
-                                    "answer_start": 0
+                                    "answer_start": 13064
                                 }
                             ]
                         },
@@ -332,7 +332,7 @@
                             "answers": [
                                 {
                                     "text": "la OMS",
-                                    "answer_start": 0
+                                    "answer_start": 2737
                                 }
                             ]
                         },
@@ -342,7 +342,7 @@
                             "answers": [
                                 {
                                     "text": "la cloroquina y la hidroxicloroquina",
-                                    "answer_start": 0
+                                    "answer_start": 13896
                                 }
                             ]
                         }
@@ -362,7 +362,7 @@
                             "answers": [
                                 {
                                     "text": "desde el 14 de marzo del corriente año, la Suprema Corte de Justicia (SCJ, órgano máximo de nuestro Poder Judicial) resolvió comenzar una Feria Judicial Sanitaria que en principio se extenderá, según la propia SCJ, hasta el jueves 30 de abril",
-                                    "answer_start": 0
+                                    "answer_start": 905
                                 }
                             ]
                         },
@@ -372,7 +372,7 @@
                             "answers": [
                                 {
                                     "text": "",
-                                    "answer_start": 0
+                                    "answer_start": -1
                                 }
                             ]
                         },
@@ -382,7 +382,7 @@
                             "answers": [
                                 {
                                     "text": "",
-                                    "answer_start": 0
+                                    "answer_start": -1
                                 }
                             ]
                         },
@@ -392,7 +392,7 @@
                             "answers": [
                                 {
                                     "text": "el lunes 4 de mayo",
-                                    "answer_start": 0
+                                    "answer_start": 1331
                                 }
                             ]
                         },
@@ -402,7 +402,7 @@
                             "answers": [
                                 {
                                     "text": "la Suprema Corte de Justicia (SCJ, órgano máximo de nuestro Poder Judicial)",
-                                    "answer_start": 0
+                                    "answer_start": 945
                                 }
                             ]
                         }
@@ -422,7 +422,7 @@
                             "answers": [
                                 {
                                     "text": "el etíope Tedros Adhanom Ghebreyesus",
-                                    "answer_start": 0
+                                    "answer_start": 496
                                 }
                             ]
                         },
@@ -432,7 +432,7 @@
                             "answers": [
                                 {
                                     "text": "",
-                                    "answer_start": 0
+                                    "answer_start": -1
                                 }
                             ]
                         },
@@ -442,7 +442,7 @@
                             "answers": [
                                 {
                                     "text": "",
-                                    "answer_start": 0
+                                    "answer_start": -1
                                 }
                             ]
                         },
@@ -452,7 +452,7 @@
                             "answers": [
                                 {
                                     "text": "",
-                                    "answer_start": 0
+                                    "answer_start": -1
                                 }
                             ]
                         },
@@ -462,7 +462,7 @@
                             "answers": [
                                 {
                                     "text": "Italia, España y Francia",
-                                    "answer_start": 0
+                                    "answer_start": 1188
                                 }
                             ]
                         },
@@ -472,7 +472,7 @@
                             "answers": [
                                 {
                                     "text": "el 30 de enero",
-                                    "answer_start": 0
+                                    "answer_start": 2956
                                 }
                             ]
                         },
@@ -482,7 +482,7 @@
                             "answers": [
                                 {
                                     "text": "estadounidense Donald Trump",
-                                    "answer_start": 0
+                                    "answer_start": 2682
                                 }
                             ]
                         }
@@ -502,7 +502,7 @@
                             "answers": [
                                 {
                                     "text": "20.861",
-                                    "answer_start": 0
+                                    "answer_start": 2730
                                 }
                             ]
                         },
@@ -512,7 +512,7 @@
                             "answers": [
                                 {
                                     "text": "",
-                                    "answer_start": 0
+                                    "answer_start": -1
                                 }
                             ]
                         },
@@ -522,7 +522,7 @@
                             "answers": [
                                 {
                                     "text": "3.313",
-                                    "answer_start": 0
+                                    "answer_start": 2675
                                 }
                             ]
                         },
@@ -532,7 +532,7 @@
                             "answers": [
                                 {
                                     "text": "San Pablo y Río de Janeiro",
-                                    "answer_start": 0
+                                    "answer_start": 2943
                                 }
                             ]
                         },
@@ -542,7 +542,7 @@
                             "answers": [
                                 {
                                     "text": "Luiz Henrique Mandetta",
-                                    "answer_start": 0
+                                    "answer_start": 1865
                                 }
                             ]
                         }
@@ -562,7 +562,7 @@
                             "answers": [
                                 {
                                     "text": "",
-                                    "answer_start": 0
+                                    "answer_start": -1
                                 }
                             ]
                         },
@@ -572,7 +572,7 @@
                             "answers": [
                                 {
                                     "text": "autoridades de esa gremial y el secretario de Presidencia, Álvaro Delgado",
-                                    "answer_start": 0
+                                    "answer_start": 622
                                 }
                             ]
                         },
@@ -582,7 +582,7 @@
                             "answers": [
                                 {
                                     "text": "en los próximos días",
-                                    "answer_start": 0
+                                    "answer_start": 412
                                 }
                             ]
                         },
@@ -592,7 +592,7 @@
                             "answers": [
                                 {
                                     "text": "Este viernes",
-                                    "answer_start": 0
+                                    "answer_start": 316
                                 }
                             ]
                         },
@@ -602,7 +602,7 @@
                             "answers": [
                                 {
                                     "text": "asociados al Centro de Almaceneros Minoristas, Baristas, Autoservicistas y Afines del Uruguay (CAMBADU)",
-                                    "answer_start": 0
+                                    "answer_start": 481
                                 }
                             ]
                         },
@@ -612,7 +612,7 @@
                             "answers": [
                                 {
                                     "text": "sector gastronómico",
-                                    "answer_start": 0
+                                    "answer_start": 842
                                 }
                             ]
                         }
@@ -632,7 +632,7 @@
                             "answers": [
                                 {
                                     "text": "El 13 de marzo",
-                                    "answer_start": 0
+                                    "answer_start": 315
                                 }
                             ]
                         },
@@ -642,7 +642,7 @@
                             "answers": [
                                 {
                                     "text": "",
-                                    "answer_start": 0
+                                    "answer_start": -1
                                 }
                             ]
                         },
@@ -652,7 +652,7 @@
                             "answers": [
                                 {
                                     "text": "",
-                                    "answer_start": 0
+                                    "answer_start": -1
                                 }
                             ]
                         },
@@ -662,7 +662,7 @@
                             "answers": [
                                 {
                                     "text": "CulturaenCasa.uy",
-                                    "answer_start": 0
+                                    "answer_start": 9257
                                 }
                             ]
                         },
@@ -672,7 +672,7 @@
                             "answers": [
                                 {
                                     "text": "El 13 de marzo",
-                                    "answer_start": 0
+                                    "answer_start": 315
                                 }
                             ]
                         }
@@ -692,7 +692,7 @@
                             "answers": [
                                 {
                                     "text": "",
-                                    "answer_start": 0
+                                    "answer_start": -1
                                 }
                             ]
                         },
@@ -702,7 +702,7 @@
                             "answers": [
                                 {
                                     "text": "58%",
-                                    "answer_start": 0
+                                    "answer_start": 64
                                 }
                             ]
                         },
@@ -712,7 +712,7 @@
                             "answers": [
                                 {
                                     "text": "",
-                                    "answer_start": 0
+                                    "answer_start": -1
                                 }
                             ]
                         },
@@ -722,7 +722,7 @@
                             "answers": [
                                 {
                                     "text": "las microempresas y las empresas del sector vinculado a los alojamientos y servicios de comida y comercio",
-                                    "answer_start": 0
+                                    "answer_start": 1523
                                 }
                             ]
                         },
@@ -732,7 +732,7 @@
                             "answers": [
                                 {
                                     "text": "35,4% considera que son “adecuadas” y 2,6% opina que se “ajustan perfectamente” a sus requerimientos",
-                                    "answer_start": 0
+                                    "answer_start": 832
                                 }
                             ]
                         },
@@ -742,7 +742,7 @@
                             "answers": [
                                 {
                                     "text": "33,1%",
-                                    "answer_start": 0
+                                    "answer_start": 1021
                                 }
                             ]
                         },
@@ -752,7 +752,7 @@
                             "answers": [
                                 {
                                     "text": "las del seguro de paro flexible (26,7%) y el aplazamiento de aportes tributarios (20,2%)",
-                                    "answer_start": 0
+                                    "answer_start": 1385
                                 }
                             ]
                         },
@@ -762,7 +762,7 @@
                             "answers": [
                                 {
                                     "text": "26,7%",
-                                    "answer_start": 0
+                                    "answer_start": 1418
                                 }
                             ]
                         },
@@ -772,7 +772,7 @@
                             "answers": [
                                 {
                                     "text": "20,2%",
-                                    "answer_start": 0
+                                    "answer_start": 1467
                                 }
                             ]
                         },
@@ -782,7 +782,7 @@
                             "answers": [
                                 {
                                     "text": "86,9%",
-                                    "answer_start": 0
+                                    "answer_start": 1687
                                 }
                             ]
                         },
@@ -792,7 +792,7 @@
                             "answers": [
                                 {
                                     "text": "las microempresas",
-                                    "answer_start": 0
+                                    "answer_start": 1523
                                 }
                             ]
                         },
@@ -802,7 +802,7 @@
                             "answers": [
                                 {
                                     "text": "las empresas de alojamiento y servicios de comida",
-                                    "answer_start": 0
+                                    "answer_start": 1877
                                 }
                             ]
                         },
@@ -812,7 +812,7 @@
                             "answers": [
                                 {
                                     "text": "91,4%",
-                                    "answer_start": 0
+                                    "answer_start": 1788
                                 }
                             ]
                         },
@@ -822,7 +822,7 @@
                             "answers": [
                                 {
                                     "text": "96,3%",
-                                    "answer_start": 0
+                                    "answer_start": 1928
                                 }
                             ]
                         },
@@ -832,7 +832,7 @@
                             "answers": [
                                 {
                                     "text": "88,9%",
-                                    "answer_start": 0
+                                    "answer_start": 2071
                                 }
                             ]
                         },
@@ -842,7 +842,7 @@
                             "answers": [
                                 {
                                     "text": "88,4%",
-                                    "answer_start": 0
+                                    "answer_start": 2164
                                 }
                             ]
                         },
@@ -852,7 +852,7 @@
                             "answers": [
                                 {
                                     "text": "seis de cada diez empresas",
-                                    "answer_start": 0
+                                    "answer_start": 2208
                                 }
                             ]
                         },
@@ -862,7 +862,7 @@
                             "answers": [
                                 {
                                     "text": "el sector de alojamiento y servicios de comida",
-                                    "answer_start": 0
+                                    "answer_start": 2322
                                 }
                             ]
                         },
@@ -872,7 +872,7 @@
                             "answers": [
                                 {
                                     "text": "81,5%",
-                                    "answer_start": 0
+                                    "answer_start": 2431
                                 }
                             ]
                         },
@@ -882,7 +882,7 @@
                             "answers": [
                                 {
                                     "text": "66,9%",
-                                    "answer_start": 0
+                                    "answer_start": 2493
                                 }
                             ]
                         },
@@ -892,7 +892,7 @@
                             "answers": [
                                 {
                                     "text": "60%",
-                                    "answer_start": 0
+                                    "answer_start": 2546
                                 }
                             ]
                         },
@@ -902,7 +902,7 @@
                             "answers": [
                                 {
                                     "text": "41,2%",
-                                    "answer_start": 0
+                                    "answer_start": 2632
                                 }
                             ]
                         },
@@ -912,7 +912,7 @@
                             "answers": [
                                 {
                                     "text": "Del total de empresas que enviaron al seguro de paro, la mitad",
-                                    "answer_start": 0
+                                    "answer_start": 2673
                                 }
                             ]
                         },
@@ -922,7 +922,7 @@
                             "answers": [
                                 {
                                     "text": "10%",
-                                    "answer_start": 0
+                                    "answer_start": 2828
                                 }
                             ]
                         },
@@ -932,7 +932,7 @@
                             "answers": [
                                 {
                                     "text": "50%",
-                                    "answer_start": 0
+                                    "answer_start": 2910
                                 }
                             ]
                         }
@@ -952,7 +952,7 @@
                             "answers": [
                                 {
                                     "text": "no tienen una posible fecha",
-                                    "answer_start": 0
+                                    "answer_start": 1569
                                 }
                             ]
                         },
@@ -962,7 +962,7 @@
                             "answers": [
                                 {
                                     "text": "",
-                                    "answer_start": 0
+                                    "answer_start": -1
                                 }
                             ]
                         },
@@ -972,7 +972,7 @@
                             "answers": [
                                 {
                                     "text": "",
-                                    "answer_start": 0
+                                    "answer_start": -1
                                 }
                             ]
                         },
@@ -982,7 +982,7 @@
                             "answers": [
                                 {
                                     "text": "",
-                                    "answer_start": 0
+                                    "answer_start": -1
                                 }
                             ]
                         },
@@ -992,7 +992,7 @@
                             "answers": [
                                 {
                                     "text": "Representantes de la Asociación de Institutos de Educación Privada (AIDEP) y de la Asociación Uruguaya de Educación Católica (AUDEC)",
-                                    "answer_start": 0
+                                    "answer_start": 483
                                 }
                             ]
                         },
@@ -1002,7 +1002,7 @@
                             "answers": [
                                 {
                                     "text": "se triplicaron",
-                                    "answer_start": 0
+                                    "answer_start": 6546
                                 }
                             ]
                         },
@@ -1012,7 +1012,7 @@
                             "answers": [
                                 {
                                     "text": "CREA, de Plan Ceibal",
-                                    "answer_start": 0
+                                    "answer_start": 5433
                                 }
                             ]
                         }
@@ -1032,7 +1032,7 @@
                             "answers": [
                                 {
                                     "text": "La consultora Grupo Radar",
-                                    "answer_start": 0
+                                    "answer_start": 303
                                 }
                             ]
                         },
@@ -1042,7 +1042,7 @@
                             "answers": [
                                 {
                                     "text": "",
-                                    "answer_start": 0
+                                    "answer_start": -1
                                 }
                             ]
                         },
@@ -1052,7 +1052,7 @@
                             "answers": [
                                 {
                                     "text": "",
-                                    "answer_start": 0
+                                    "answer_start": -1
                                 }
                             ]
                         },
@@ -1062,7 +1062,7 @@
                             "answers": [
                                 {
                                     "text": "entre el 4 y el 6 de abril, el 12 y el 14 y el 20 y el 22",
-                                    "answer_start": 0
+                                    "answer_start": 527
                                 }
                             ]
                         },
@@ -1072,7 +1072,7 @@
                             "answers": [
                                 {
                                     "text": "63% en el primero, 64% en el segundo y 61% en el tercero",
-                                    "answer_start": 0
+                                    "answer_start": 741
                                 }
                             ]
                         },
@@ -1082,7 +1082,7 @@
                             "answers": [
                                 {
                                     "text": "39%, 26% y 21%",
-                                    "answer_start": 0
+                                    "answer_start": 930
                                 }
                             ]
                         },
@@ -1092,7 +1092,7 @@
                             "answers": [
                                 {
                                     "text": "27%, 42% y, en la última, 46%",
-                                    "answer_start": 0
+                                    "answer_start": 1032
                                 }
                             ]
                         },
@@ -1102,7 +1102,7 @@
                             "answers": [
                                 {
                                     "text": "de 58% a 55% y a 51%",
-                                    "answer_start": 0
+                                    "answer_start": 1140
                                 }
                             ]
                         },
@@ -1112,7 +1112,7 @@
                             "answers": [
                                 {
                                     "text": "20%,17%,20%",
-                                    "answer_start": 0
+                                    "answer_start": 1275
                                 }
                             ]
                         }
@@ -1132,7 +1132,7 @@
                             "answers": [
                                 {
                                     "text": "42",
-                                    "answer_start": 0
+                                    "answer_start": 306
                                 }
                             ]
                         },
@@ -1142,7 +1142,7 @@
                             "answers": [
                                 {
                                     "text": "",
-                                    "answer_start": 0
+                                    "answer_start": -1
                                 }
                             ]
                         },
@@ -1152,7 +1152,7 @@
                             "answers": [
                                 {
                                     "text": "Salvador Illa",
-                                    "answer_start": 0
+                                    "answer_start": 605
                                 }
                             ]
                         },
@@ -1162,7 +1162,7 @@
                             "answers": [
                                 {
                                     "text": "se recomienda el uso de tapabocas, aunque no es obligatorio, y policías, a pie, en móviles e incluso en helicópteros, llamaban a las personas a mantener la distancia social",
-                                    "answer_start": 0
+                                    "answer_start": 884
                                 }
                             ]
                         },
@@ -1172,7 +1172,7 @@
                             "answers": [
                                 {
                                     "text": "salidas para hacer deporte de forma individual, los paseos en familia y paseos breves para las personas mayores",
-                                    "answer_start": 0
+                                    "answer_start": 1275
                                 }
                             ]
                         }
@@ -1192,7 +1192,7 @@
                             "answers": [
                                 {
                                     "text": "julio",
-                                    "answer_start": 0
+                                    "answer_start": 65
                                 }
                             ]
                         },
@@ -1202,7 +1202,7 @@
                             "answers": [
                                 {
                                     "text": "julio",
-                                    "answer_start": 0
+                                    "answer_start": 65
                                 }
                             ]
                         },
@@ -1212,7 +1212,7 @@
                             "answers": [
                                 {
                                     "text": "28 de junio",
-                                    "answer_start": 0
+                                    "answer_start": 1479
                                 }
                             ]
                         },
@@ -1222,7 +1222,7 @@
                             "answers": [
                                 {
                                     "text": "prohibición de aglomeraciones de gente",
-                                    "answer_start": 0
+                                    "answer_start": 1591
                                 }
                             ]
                         },
@@ -1232,7 +1232,7 @@
                             "answers": [
                                 {
                                     "text": "director ejecutivo de la competencia",
-                                    "answer_start": 0
+                                    "answer_start": 754
                                 }
                             ]
                         },
@@ -1242,7 +1242,7 @@
                             "answers": [
                                 {
                                     "text": "CEO de la Fórmula 1",
-                                    "answer_start": 0
+                                    "answer_start": 1001
                                 }
                             ]
                         },
@@ -1252,7 +1252,7 @@
                             "answers": [
                                 {
                                     "text": "Austria",
-                                    "answer_start": 0
+                                    "answer_start": 951
                                 }
                             ]
                         }
@@ -1272,7 +1272,7 @@
                             "answers": [
                                 {
                                     "text": "",
-                                    "answer_start": 0
+                                    "answer_start": -1
                                 }
                             ]
                         },
@@ -1282,7 +1282,7 @@
                             "answers": [
                                 {
                                     "text": "",
-                                    "answer_start": 0
+                                    "answer_start": -1
                                 }
                             ]
                         }
@@ -1302,7 +1302,7 @@
                             "answers": [
                                 {
                                     "text": "han mermado los circuitos de exhibición y las posibilidades materiales de realizar películas",
-                                    "answer_start": 0
+                                    "answer_start": 705
                                 }
                             ]
                         },
@@ -1312,7 +1312,7 @@
                             "answers": [
                                 {
                                     "text": "han mermado los circuitos de exhibición y las posibilidades materiales de realizar películas",
-                                    "answer_start": 0
+                                    "answer_start": 705
                                 }
                             ]
                         },
@@ -1322,7 +1322,7 @@
                             "answers": [
                                 {
                                     "text": "Largo viaje hacia la noche",
-                                    "answer_start": 0
+                                    "answer_start": 29
                                 }
                             ]
                         },
@@ -1332,7 +1332,7 @@
                             "answers": [
                                 {
                                     "text": "Largo viaje hacia la noche, del chino Bi Gan, y Atlantique, de la francosenegalesa Mati Diop",
-                                    "answer_start": 0
+                                    "answer_start": 1563
                                 }
                             ]
                         }
@@ -1352,7 +1352,7 @@
                             "answers": [
                                 {
                                     "text": "",
-                                    "answer_start": 0
+                                    "answer_start": -1
                                 }
                             ]
                         },
@@ -1362,7 +1362,7 @@
                             "answers": [
                                 {
                                     "text": "",
-                                    "answer_start": 0
+                                    "answer_start": -1
                                 }
                             ]
                         },
@@ -1372,7 +1372,7 @@
                             "answers": [
                                 {
                                     "text": "Facultad de Veterinaria de la Universidad de la República",
-                                    "answer_start": 0
+                                    "answer_start": 1201
                                 }
                             ]
                         },
@@ -1382,7 +1382,7 @@
                             "answers": [
                                 {
                                     "text": "doctor Alejandro Benech, grado 5 y director del Departamento de Pequeños Animales de dicha facultad",
-                                    "answer_start": 0
+                                    "answer_start": 1624
                                 }
                             ]
                         },
@@ -1392,7 +1392,7 @@
                             "answers": [
                                 {
                                     "text": "una molécula presente en las células que se encarga de mediar entre la información almacenada en el ADN y la síntesis de proteínas adecuada",
-                                    "answer_start": 0
+                                    "answer_start": 2499
                                 }
                             ]
                         },
@@ -1402,7 +1402,7 @@
                             "answers": [
                                 {
                                     "text": "una especie de mensajero entre la información que existe y la producción de proteínas",
-                                    "answer_start": 0
+                                    "answer_start": 2669
                                 }
                             ]
                         }
@@ -1422,7 +1422,7 @@
                             "answers": [
                                 {
                                     "text": "",
-                                    "answer_start": 0
+                                    "answer_start": -1
                                 }
                             ]
                         },
@@ -1432,7 +1432,7 @@
                             "answers": [
                                 {
                                     "text": "",
-                                    "answer_start": 0
+                                    "answer_start": -1
                                 }
                             ]
                         }
@@ -1452,7 +1452,7 @@
                             "answers": [
                                 {
                                     "text": "",
-                                    "answer_start": 0
+                                    "answer_start": -1
                                 }
                             ]
                         },
@@ -1462,7 +1462,7 @@
                             "answers": [
                                 {
                                     "text": "",
-                                    "answer_start": 0
+                                    "answer_start": -1
                                 }
                             ]
                         },
@@ -1472,7 +1472,7 @@
                             "answers": [
                                 {
                                     "text": "Ecuador, Brasil o Colombia",
-                                    "answer_start": 0
+                                    "answer_start": 1978
                                 }
                             ]
                         }
@@ -1492,7 +1492,7 @@
                             "answers": [
                                 {
                                     "text": "al menos en dos países europeos: Alemania y Portugal",
-                                    "answer_start": 0
+                                    "answer_start": 406
                                 }
                             ]
                         },
@@ -1502,7 +1502,7 @@
                             "answers": [
                                 {
                                     "text": "no se habló de fechas",
-                                    "answer_start": 0
+                                    "answer_start": 1426
                                 }
                             ]
                         },
@@ -1512,7 +1512,7 @@
                             "answers": [
                                 {
                                     "text": "",
-                                    "answer_start": 0
+                                    "answer_start": -1
                                 }
                             ]
                         },
@@ -1522,7 +1522,7 @@
                             "answers": [
                                 {
                                     "text": "día por medio",
-                                    "answer_start": 0
+                                    "answer_start": 1308
                                 }
                             ]
                         },
@@ -1532,7 +1532,7 @@
                             "answers": [
                                 {
                                     "text": "Mitchell Duarte",
-                                    "answer_start": 0
+                                    "answer_start": 1008
                                 }
                             ]
                         }
@@ -1552,7 +1552,7 @@
                             "answers": [
                                 {
                                     "text": "millones",
-                                    "answer_start": 0
+                                    "answer_start": 756
                                 }
                             ]
                         },
@@ -1562,7 +1562,7 @@
                             "answers": [
                                 {
                                     "text": "podría llegar a los 25 millones",
-                                    "answer_start": 0
+                                    "answer_start": 3570
                                 }
                             ]
                         },
@@ -1572,7 +1572,7 @@
                             "answers": [
                                 {
                                     "text": "muchas empresas, gran parte de ellas pequeñas y medianas",
-                                    "answer_start": 0
+                                    "answer_start": 1066
                                 }
                             ]
                         },
@@ -1582,7 +1582,7 @@
                             "answers": [
                                 {
                                     "text": "",
-                                    "answer_start": 0
+                                    "answer_start": -1
                                 }
                             ]
                         },
@@ -1592,7 +1592,7 @@
                             "answers": [
                                 {
                                     "text": "",
-                                    "answer_start": 0
+                                    "answer_start": -1
                                 }
                             ]
                         },
@@ -1602,7 +1602,7 @@
                             "answers": [
                                 {
                                     "text": "",
-                                    "answer_start": 0
+                                    "answer_start": -1
                                 }
                             ]
                         },
@@ -1612,7 +1612,7 @@
                             "answers": [
                                 {
                                     "text": "al capital",
-                                    "answer_start": 0
+                                    "answer_start": 1485
                                 }
                             ]
                         },
@@ -1622,7 +1622,7 @@
                             "answers": [
                                 {
                                     "text": "25 millones",
-                                    "answer_start": 0
+                                    "answer_start": 3590
                                 }
                             ]
                         },
@@ -1632,7 +1632,7 @@
                             "answers": [
                                 {
                                     "text": "personas trabajadoras en condiciones de informalidad, cuentapropistas, monotributistas, independientes, de economías de plataformas, trabajadoras domésticas",
-                                    "answer_start": 0
+                                    "answer_start": 3772
                                 }
                             ]
                         },
@@ -1642,7 +1642,7 @@
                             "answers": [
                                 {
                                     "text": "aproximadamente 4.000",
-                                    "answer_start": 0
+                                    "answer_start": 4448
                                 }
                             ]
                         },
@@ -1652,7 +1652,7 @@
                             "answers": [
                                 {
                                     "text": "Telesur, del Banco del Sur, de la Unión de Naciones Suramericanas (Unasur)",
-                                    "answer_start": 0
+                                    "answer_start": 7231
                                 }
                             ]
                         }
@@ -1672,7 +1672,7 @@
                             "answers": [
                                 {
                                     "text": "34",
-                                    "answer_start": 0
+                                    "answer_start": 1072
                                 }
                             ]
                         },
@@ -1682,7 +1682,7 @@
                             "answers": [
                                 {
                                     "text": "",
-                                    "answer_start": 0
+                                    "answer_start": -1
                                 }
                             ]
                         },
@@ -1692,7 +1692,7 @@
                             "answers": [
                                 {
                                     "text": "hasta el próximo viernes",
-                                    "answer_start": 0
+                                    "answer_start": 160
                                 }
                             ]
                         },
@@ -1702,7 +1702,7 @@
                             "answers": [
                                 {
                                     "text": "",
-                                    "answer_start": 0
+                                    "answer_start": -1
                                 }
                             ]
                         },
@@ -1712,7 +1712,7 @@
                             "answers": [
                                 {
                                     "text": "el pasado febrero",
-                                    "answer_start": 0
+                                    "answer_start": 1857
                                 }
                             ]
                         }
@@ -1732,7 +1732,7 @@
                             "answers": [
                                 {
                                     "text": "",
-                                    "answer_start": 0
+                                    "answer_start": -1
                                 }
                             ]
                         },
@@ -1742,7 +1742,7 @@
                             "answers": [
                                 {
                                     "text": "más de 7.000",
-                                    "answer_start": 0
+                                    "answer_start": 2570
                                 }
                             ]
                         },
@@ -1752,7 +1752,7 @@
                             "answers": [
                                 {
                                     "text": "1.125",
-                                    "answer_start": 0
+                                    "answer_start": 465
                                 }
                             ]
                         },
@@ -1762,7 +1762,7 @@
                             "answers": [
                                 {
                                     "text": "15 equipos compuestos por cuatro empleados de morgues y bomberos",
-                                    "answer_start": 0
+                                    "answer_start": 1382
                                 }
                             ]
                         },
@@ -1772,7 +1772,7 @@
                             "answers": [
                                 {
                                     "text": "casi 175.000",
-                                    "answer_start": 0
+                                    "answer_start": 2596
                                 }
                             ]
                         }
@@ -1792,7 +1792,7 @@
                             "answers": [
                                 {
                                     "text": "a finales del 2019",
-                                    "answer_start": 0
+                                    "answer_start": 802
                                 }
                             ]
                         },
@@ -1802,7 +1802,7 @@
                             "answers": [
                                 {
                                     "text": "",
-                                    "answer_start": 0
+                                    "answer_start": -1
                                 }
                             ]
                         },
@@ -1812,7 +1812,7 @@
                             "answers": [
                                 {
                                     "text": "primavera de 2020",
-                                    "answer_start": 0
+                                    "answer_start": 427
                                 }
                             ]
                         },
@@ -1822,7 +1822,7 @@
                             "answers": [
                                 {
                                     "text": "varios millones",
-                                    "answer_start": 0
+                                    "answer_start": 711
                                 }
                             ]
                         },
@@ -1832,7 +1832,7 @@
                             "answers": [
                                 {
                                     "text": "21",
-                                    "answer_start": 0
+                                    "answer_start": 1167
                                 }
                             ]
                         }
@@ -1852,7 +1852,7 @@
                             "answers": [
                                 {
                                     "text": "el Grupo de Investigación de Sociología de Género de la Facultad de Ciencias Sociales de la Universidad de la República, que coordina la socióloga y docente Karina Batthyány",
-                                    "answer_start": 0
+                                    "answer_start": 1010
                                 }
                             ]
                         },
@@ -1862,7 +1862,7 @@
                             "answers": [
                                 {
                                     "text": "las mujeres trabajadoras de sectores medios que pueden realizar sus tareas laborales desde sus casas",
-                                    "answer_start": 0
+                                    "answer_start": 2347
                                 }
                             ]
                         },
@@ -1872,7 +1872,7 @@
                             "answers": [
                                 {
                                     "text": "las mujeres que están obligadas a seguir trabajando fuera de sus hogares, como las profesionales de la salud o las trabajadoras de supermercados y farmacias",
-                                    "answer_start": 0
+                                    "answer_start": 3201
                                 }
                             ]
                         },
@@ -1882,7 +1882,7 @@
                             "answers": [
                                 {
                                     "text": "",
-                                    "answer_start": 0
+                                    "answer_start": -1
                                 }
                             ]
                         },
@@ -1892,7 +1892,7 @@
                             "answers": [
                                 {
                                     "text": "La romantización del “quédate en casa”",
-                                    "answer_start": 0
+                                    "answer_start": 1340
                                 }
                             ]
                         },
@@ -1902,7 +1902,7 @@
                             "answers": [
                                 {
                                     "text": "11% de los hogares en Uruguay",
-                                    "answer_start": 0
+                                    "answer_start": 4891
                                 }
                             ]
                         },
@@ -1912,7 +1912,7 @@
                             "answers": [
                                 {
                                     "text": "el trabajo doméstico, los sectores vinculados al turismo o los servicios",
-                                    "answer_start": 0
+                                    "answer_start": -1
                                 }
                             ]
                         },
@@ -1922,7 +1922,7 @@
                             "answers": [
                                 {
                                     "text": "los trabajadores y las trabajadoras con mayor desprotección, informales y que trabajan en base a jornales",
-                                    "answer_start": 0
+                                    "answer_start": 6150
                                 }
                             ]
                         }
@@ -1942,7 +1942,7 @@
                             "answers": [
                                 {
                                     "text": "",
-                                    "answer_start": 0
+                                    "answer_start": -1
                                 }
                             ]
                         },
@@ -1952,7 +1952,7 @@
                             "answers": [
                                 {
                                     "text": "desde hace 15 días",
-                                    "answer_start": 0
+                                    "answer_start": 422
                                 }
                             ]
                         },
@@ -1962,7 +1962,7 @@
                             "answers": [
                                 {
                                     "text": "la Facultad de Psicología y el equipo de DATA",
-                                    "answer_start": 0
+                                    "answer_start": 58
                                 }
                             ]
                         },
@@ -1972,7 +1972,7 @@
                             "answers": [
                                 {
                                     "text": "Alejandro Maiche, profesor e investigador de la Facultad de Psicología de la Universidad de la República",
-                                    "answer_start": 0
+                                    "answer_start": 869
                                 }
                             ]
                         },
@@ -1982,7 +1982,7 @@
                             "answers": [
                                 {
                                     "text": "más de 150 resultados",
-                                    "answer_start": 0
+                                    "answer_start": 1976
                                 }
                             ]
                         },
@@ -1992,7 +1992,7 @@
                             "answers": [
                                 {
                                     "text": "",
-                                    "answer_start": 0
+                                    "answer_start": -1
                                 }
                             ]
                         },
@@ -2002,7 +2002,7 @@
                             "answers": [
                                 {
                                     "text": "cuarentena.uy",
-                                    "answer_start": 0
+                                    "answer_start": 408
                                 }
                             ]
                         },
@@ -2012,7 +2012,7 @@
                             "answers": [
                                 {
                                     "text": "en cuarentena.uy/resultados",
-                                    "answer_start": 0
+                                    "answer_start": 4032
                                 }
                             ]
                         },
@@ -2022,7 +2022,7 @@
                             "answers": [
                                 {
                                     "text": "Alejandro Maiche, profesor e investigador de la Facultad de Psicología de la Universidad de la República",
-                                    "answer_start": 0
+                                    "answer_start": 869
                                 }
                             ]
                         }
@@ -2042,7 +2042,7 @@
                             "answers": [
                                 {
                                     "text": "",
-                                    "answer_start": 0
+                                    "answer_start": -1
                                 }
                             ]
                         },
@@ -2052,7 +2052,7 @@
                             "answers": [
                                 {
                                     "text": "El Comité Ejecutivo de la UEFA",
-                                    "answer_start": 0
+                                    "answer_start": 289
                                 }
                             ]
                         },
@@ -2062,7 +2062,7 @@
                             "answers": [
                                 {
                                     "text": "",
-                                    "answer_start": 0
+                                    "answer_start": -1
                                 }
                             ]
                         },
@@ -2072,7 +2072,7 @@
                             "answers": [
                                 {
                                     "text": "de inmediato",
-                                    "answer_start": 0
+                                    "answer_start": 3058
                                 }
                             ]
                         },
@@ -2082,7 +2082,7 @@
                             "answers": [
                                 {
                                     "text": "Aleksander Čeferin",
-                                    "answer_start": 0
+                                    "answer_start": 3618
                                 }
                             ]
                         },
@@ -2092,7 +2092,7 @@
                             "answers": [
                                 {
                                     "text": "antes de agosto",
-                                    "answer_start": 0
+                                    "answer_start": 1325
                                 }
                             ]
                         },
@@ -2102,7 +2102,7 @@
                             "answers": [
                                 {
                                     "text": "50 millones de euros para los clubes que han cedido jugadores a las 39 federaciones que no participan en los play off de los Clasificatorios Europeos; 17,7 millones de euros para los clubes que han cedido jugadores a las 16 federaciones que participan en los play off de los Clasificatorios Europeos",
-                                    "answer_start": 0
+                                    "answer_start": 3157
                                 }
                             ]
                         }
@@ -2122,7 +2122,7 @@
                             "answers": [
                                 {
                                     "text": "",
-                                    "answer_start": 0
+                                    "answer_start": -1
                                 }
                             ]
                         },
@@ -2132,7 +2132,7 @@
                             "answers": [
                                 {
                                     "text": "",
-                                    "answer_start": 0
+                                    "answer_start": -1
                                 }
                             ]
                         },
@@ -2142,7 +2142,7 @@
                             "answers": [
                                 {
                                     "text": "",
-                                    "answer_start": 0
+                                    "answer_start": -1
                                 }
                             ]
                         },
@@ -2152,7 +2152,7 @@
                             "answers": [
                                 {
                                     "text": "202",
-                                    "answer_start": 0
+                                    "answer_start": 186
                                 }
                             ]
                         },
@@ -2162,7 +2162,7 @@
                             "answers": [
                                 {
                                     "text": "5,1 millones",
-                                    "answer_start": 0
+                                    "answer_start": 2379
                                 }
                             ]
                         },
@@ -2172,7 +2172,7 @@
                             "answers": [
                                 {
                                     "text": "110.609",
-                                    "answer_start": 0
+                                    "answer_start": 2415
                                 }
                             ]
                         },
@@ -2182,7 +2182,7 @@
                             "answers": [
                                 {
                                     "text": "27,3 millones",
-                                    "answer_start": 0
+                                    "answer_start": 2258
                                 }
                             ]
                         },
@@ -2192,7 +2192,7 @@
                             "answers": [
                                 {
                                     "text": "12,2 millones",
-                                    "answer_start": 0
+                                    "answer_start": 2131
                                 }
                             ]
                         }
@@ -2212,7 +2212,7 @@
                             "answers": [
                                 {
                                     "text": "más de 250 millones",
-                                    "answer_start": 0
+                                    "answer_start": 452
                                 }
                             ]
                         },
@@ -2222,7 +2222,7 @@
                             "answers": [
                                 {
                                     "text": "265 millones",
-                                    "answer_start": 0
+                                    "answer_start": 664
                                 }
                             ]
                         },
@@ -2232,7 +2232,7 @@
                             "answers": [
                                 {
                                     "text": "Yemen, República Democrática del Congo, Afganistán, Venezuela, Etiopía, Sudán del Sur, Siria, Sudán, Nigeria y Haití",
-                                    "answer_start": 0
+                                    "answer_start": 1075
                                 }
                             ]
                         },
@@ -2242,7 +2242,7 @@
                             "answers": [
                                 {
                                     "text": "Programa Mundial de Alimentos de las Naciones Unidas (WFP, por sus siglas en inglés)",
-                                    "answer_start": 0
+                                    "answer_start": 334
                                 }
                             ]
                         },
@@ -2252,7 +2252,7 @@
                             "answers": [
                                 {
                                     "text": "130 millones",
-                                    "answer_start": 0
+                                    "answer_start": 717
                                 }
                             ]
                         },
@@ -2262,7 +2262,7 @@
                             "answers": [
                                 {
                                     "text": "Arif Husain",
-                                    "answer_start": 0
+                                    "answer_start": 1220
                                 }
                             ]
                         }
@@ -2282,7 +2282,7 @@
                             "answers": [
                                 {
                                     "text": "",
-                                    "answer_start": 0
+                                    "answer_start": -1
                                 }
                             ]
                         },
@@ -2292,7 +2292,7 @@
                             "answers": [
                                 {
                                     "text": "",
-                                    "answer_start": 0
+                                    "answer_start": -1
                                 }
                             ]
                         },
@@ -2302,7 +2302,7 @@
                             "answers": [
                                 {
                                     "text": "",
-                                    "answer_start": 0
+                                    "answer_start": -1
                                 }
                             ]
                         },
@@ -2312,7 +2312,7 @@
                             "answers": [
                                 {
                                     "text": "tres",
-                                    "answer_start": 0
+                                    "answer_start": 1141
                                 }
                             ]
                         },
@@ -2322,7 +2322,7 @@
                             "answers": [
                                 {
                                     "text": "cada 14 días",
-                                    "answer_start": 0
+                                    "answer_start": 3037
                                 }
                             ]
                         },
@@ -2332,7 +2332,7 @@
                             "answers": [
                                 {
                                     "text": "Centros de Control y Prevención de Enfermedades (CDC)",
-                                    "answer_start": 0
+                                    "answer_start": 998
                                 }
                             ]
                         }
@@ -2352,7 +2352,7 @@
                             "answers": [
                                 {
                                     "text": "",
-                                    "answer_start": 0
+                                    "answer_start": -1
                                 }
                             ]
                         },
@@ -2362,7 +2362,7 @@
                             "answers": [
                                 {
                                     "text": "6.467",
-                                    "answer_start": 0
+                                    "answer_start": 1135
                                 }
                             ]
                         },
@@ -2372,7 +2372,7 @@
                             "answers": [
                                 {
                                     "text": "994.615",
-                                    "answer_start": 0
+                                    "answer_start": 1174
                                 }
                             ]
                         },
@@ -2382,7 +2382,7 @@
                             "answers": [
                                 {
                                     "text": "más de 1,4 millones",
-                                    "answer_start": 0
+                                    "answer_start": 1028
                                 }
                             ]
                         },
@@ -2392,7 +2392,7 @@
                             "answers": [
                                 {
                                     "text": "mayores de 12 años",
-                                    "answer_start": 0
+                                    "answer_start": 334
                                 }
                             ]
                         },
@@ -2402,7 +2402,7 @@
                             "answers": [
                                 {
                                     "text": "cuatro de cada diez",
-                                    "answer_start": 0
+                                    "answer_start": 628
                                 }
                             ]
                         }
@@ -2422,7 +2422,7 @@
                             "answers": [
                                 {
                                     "text": "",
-                                    "answer_start": 0
+                                    "answer_start": -1
                                 }
                             ]
                         },
@@ -2432,7 +2432,7 @@
                             "answers": [
                                 {
                                     "text": "3.668",
-                                    "answer_start": 0
+                                    "answer_start": 1687
                                 }
                             ]
                         },
@@ -2442,7 +2442,7 @@
                             "answers": [
                                 {
                                     "text": "",
-                                    "answer_start": 0
+                                    "answer_start": -1
                                 }
                             ]
                         },
@@ -2452,7 +2452,7 @@
                             "answers": [
                                 {
                                     "text": "este lunes",
-                                    "answer_start": 0
+                                    "answer_start": 523
                                 }
                             ]
                         },
@@ -2462,7 +2462,7 @@
                             "answers": [
                                 {
                                     "text": "todo tipo de espacios públicos cerrados",
-                                    "answer_start": 0
+                                    "answer_start": 674
                                 }
                             ]
                         },
@@ -2472,7 +2472,7 @@
                             "answers": [
                                 {
                                     "text": "56,4",
-                                    "answer_start": 0
+                                    "answer_start": 1550
                                 }
                             ]
                         }
@@ -2492,7 +2492,7 @@
                             "answers": [
                                 {
                                     "text": "",
-                                    "answer_start": 0
+                                    "answer_start": -1
                                 }
                             ]
                         },
@@ -2502,7 +2502,7 @@
                             "answers": [
                                 {
                                     "text": "",
-                                    "answer_start": 0
+                                    "answer_start": -1
                                 }
                             ]
                         },
@@ -2512,7 +2512,7 @@
                             "answers": [
                                 {
                                     "text": "por ejemplo, que en la caravana sólo pueda ir una persona por moto o bicicleta, no más de dos por auto –una persona adelante y otra atrás– y “todo el mundo con tapaboca”.",
-                                    "answer_start": 0
+                                    "answer_start": 1328
                                 }
                             ]
                         },
@@ -2522,7 +2522,7 @@
                             "answers": [
                                 {
                                     "text": "el MI “va a ayudar a la seguridad de esa caravana” con la Policía de Tránsito",
-                                    "answer_start": 0
+                                    "answer_start": 2210
                                 }
                             ]
                         },
@@ -2532,7 +2532,7 @@
                             "answers": [
                                 {
                                     "text": "“la casa de familia” de cada uno de los trabajadores",
-                                    "answer_start": 0
+                                    "answer_start": 900
                                 }
                             ]
                         }
@@ -2552,7 +2552,7 @@
                             "answers": [
                                 {
                                     "text": "casi 150%",
-                                    "answer_start": 0
+                                    "answer_start": 1105
                                 }
                             ]
                         },
@@ -2562,7 +2562,7 @@
                             "answers": [
                                 {
                                     "text": "",
-                                    "answer_start": 0
+                                    "answer_start": -1
                                 }
                             ]
                         },
@@ -2572,7 +2572,7 @@
                             "answers": [
                                 {
                                     "text": "",
-                                    "answer_start": 0
+                                    "answer_start": -1
                                 }
                             ]
                         },
@@ -2582,7 +2582,7 @@
                             "answers": [
                                 {
                                     "text": "",
-                                    "answer_start": 0
+                                    "answer_start": -1
                                 }
                             ]
                         },
@@ -2592,7 +2592,7 @@
                             "answers": [
                                 {
                                     "text": "",
-                                    "answer_start": 0
+                                    "answer_start": -1
                                 }
                             ]
                         },
@@ -2602,7 +2602,7 @@
                             "answers": [
                                 {
                                     "text": "hasta 32%",
-                                    "answer_start": 0
+                                    "answer_start": 1524
                                 }
                             ]
                         },
@@ -2612,7 +2612,7 @@
                             "answers": [
                                 {
                                     "text": "hasta 44%",
-                                    "answer_start": 0
+                                    "answer_start": 1593
                                 }
                             ]
                         },
@@ -2622,7 +2622,7 @@
                             "answers": [
                                 {
                                     "text": "40%",
-                                    "answer_start": 0
+                                    "answer_start": 2153
                                 }
                             ]
                         },
@@ -2632,7 +2632,7 @@
                             "answers": [
                                 {
                                     "text": "138%",
-                                    "answer_start": 0
+                                    "answer_start": 2183
                                 }
                             ]
                         },
@@ -2642,7 +2642,7 @@
                             "answers": [
                                 {
                                     "text": "179%",
-                                    "answer_start": 0
+                                    "answer_start": 2203
                                 }
                             ]
                         },
@@ -2652,7 +2652,7 @@
                             "answers": [
                                 {
                                     "text": "8% promedio",
-                                    "answer_start": 0
+                                    "answer_start": 2566
                                 }
                             ]
                         },
@@ -2662,7 +2662,7 @@
                             "answers": [
                                 {
                                     "text": "Apple",
-                                    "answer_start": 0
+                                    "answer_start": 2643
                                 }
                             ]
                         },
@@ -2672,7 +2672,7 @@
                             "answers": [
                                 {
                                     "text": "20%",
-                                    "answer_start": 0
+                                    "answer_start": 2673
                                 }
                             ]
                         }

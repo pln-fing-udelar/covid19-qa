@@ -92,7 +92,10 @@ with open(FileInputDocs) as fileArticles:
                         # here we don't iterate because we have just one answer
                         item_answer = dict()
                         item_answer["text"] = answer
-                        item_answer["answer_start"] = 0 # no yet implemented
+                        if answer =="":
+                            item_answer["answer_start"] = -1
+                        else:
+                            item_answer["answer_start"] = text.find(answer)
                         item_qas['answers'].append(item_answer)
 
                         item_paragraph['qas'].append(item_qas)
