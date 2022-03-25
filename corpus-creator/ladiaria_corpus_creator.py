@@ -10,7 +10,7 @@ PATH_ARTICLES_FOLDER = "data/articles"
 
 def generate_corpus_from_json(file_name: str) -> None:
     """Given a JSON containing news, creates several files according to our XML schema """
-    with open(os.path.join(PATH_JSON_FOLDER, file_name)) as file:
+    with open(os.path.join(PATH_JSON_FOLDER, file_name), encoding='utf-8') as file:
         articles = json.load(file)["articles"]
 
     for i, article in enumerate(articles, start=1):
@@ -29,7 +29,9 @@ def create_xml_file(id_: int, html: str, slug: str) -> None:
 
     capture_title = re.split(r'\s{3,}', txt)  # title is surrounded by whitespaces
     txt = re.sub(capture_title[1], '', txt, 1)
-
+    txt = re.sub(capture_title[1] + "\s*", capture_title[1] + '\n', txt, 1)
+    txt = txt.strip()
+    txt = re.sub(r"^.*\s{3,}", '', txt, 1, flags=re.MULTILINE)
     article = ET.Element('article')  # create xml
 
     article.set("id", xml_id)
@@ -40,7 +42,7 @@ def create_xml_file(id_: int, html: str, slug: str) -> None:
 
     article.text = txt
 
-    with open(os.path.join(PATH_ARTICLES_FOLDER, xml_id + ".xml"), "w") as file:
+    with open(os.path.join(PATH_ARTICLES_FOLDER, xml_id + ".xml"), "w", encoding='utf-8') as file:
         file.write('\n'.join(ET.tostringlist(article, encoding='unicode')))
 
 
