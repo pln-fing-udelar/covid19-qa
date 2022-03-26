@@ -24,19 +24,21 @@ def create_xml_file(id_: int, html: str, slug: str) -> None:
     month = date[1]
     day = date[2]
     xml_id = "ld" + str(id_).zfill(4)
-    txt = re.sub(r"<.*?>", "", html)  # clean html tags
+    
+    title = re.search(r"<title>(.*?)</title>",  html, flags=re.DOTALL)
+    article_start = re.search(r"^<.*?article-body\s*paywalled-content.*?>", html, flags=re.DOTALL)
+    
+    txt = html[article_start.span()[1]:]
+    txt = re.sub(r"<.*?>", "", txt)  # clean html tags
     txt = re.sub(r'\d+ De \w+ De \d+ \|', "", txt)  # clean date
-
-    capture_title = re.split(r'\s{3,}', txt)  # title is surrounded by whitespaces
-    txt = re.sub(capture_title[1], '', txt, 1)
-    txt = re.sub(capture_title[1] + "\s*", capture_title[1] + '\n', txt, 1)
     txt = txt.strip()
-    txt = re.sub(r"^.*\s{3,}", '', txt, 1, flags=re.MULTILINE)
+    txt = title.group(1) + "\n" + txt
+    
     article = ET.Element('article')  # create xml
 
     article.set("id", xml_id)
     article.set("date", year + "-" + month + "-" + day)
-    article.set("title", capture_title[1])
+    article.set("title", title.group(1))
     article.set("url", "https://ladiaria.com.uy/articulo/" + year + "/" + month + "/" + slug)
     article.set("src", "ladiaria")
 
