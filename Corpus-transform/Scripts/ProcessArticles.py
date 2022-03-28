@@ -41,8 +41,8 @@ def process_article_files(article_files):
 
 articles_files = []
 
-for filename in glob.iglob('DatasetCovid/corpus/*'):
+for filename in glob.iglob('../DatasetCovid/corpus/*'):
     articles_files.append(filename)
     
 df = process_article_files(articles_files)
-df.to_csv('DatasetCovid/Articles.tsv' , sep = '\t', index=False)
+df.to_csv('../DatasetCovid/Articles.tsv' , sep = '\t', index=False)

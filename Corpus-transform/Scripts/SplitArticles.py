@@ -2,7 +2,7 @@ import nltk
 import pandas as pd
 import csv
 
-FileInputDocs = 'DatasetCovid/Articles.tsv'
+FileInputDocs = '../DatasetCovid/Articles.tsv'
 
 def remove_special_chars(text,char_list):
     for char in char_list:
@@ -57,4 +57,4 @@ def process_Articles_csv():
         return df
 
 df = process_Articles_csv()
-df.to_csv('DatasetCovid/ArticlesSplit.tsv' , sep = '\t', index=False)
+df.to_csv('../DatasetCovid/ArticlesSplit.tsv' , sep = '\t', index=False)
